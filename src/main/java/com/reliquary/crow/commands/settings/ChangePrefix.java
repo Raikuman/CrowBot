@@ -35,7 +35,7 @@ public class ChangePrefix implements CommandInterface {
 				.append("Prefix changed to ")
 				.append("<")
 				.append(args.get(0))
-				.append(">");
+				.append(">```");
 
 		} else {
 			descriptionBuilder

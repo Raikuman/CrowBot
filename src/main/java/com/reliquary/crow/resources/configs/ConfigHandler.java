@@ -19,7 +19,7 @@ public class ConfigHandler {
 
 		// Check if file exists
 		File file = new File(
-			envConfig.get("configdirectory") + "/" + fileName.toLowerCase() + ".cfg"
+			envConfig.get("configdirectory") + "/" + fileName + ".cfg"
 		);
 
 		String readConfig = null;
@@ -55,26 +55,25 @@ public class ConfigHandler {
 
 		// Check if file exists
 		File file = new File(
-			envConfig.get("configdirectory" + "/" + fileName.toLowerCase())
+			envConfig.get("configdirectory") + "/" + fileName + ".cfg"
 		);
 
 		if (file.exists()) {
 			try {
 				// Read file first, save array
 				List<String> configArrayOriginal = readConfigFile(file);
-				List<String> configArray = configArrayOriginal;
+				List<String> configArray = new ArrayList<>(configArrayOriginal);
 
 				// Look for config setting
-				for (String configRead : configArray) {
-					if (configRead.contains(configName))
-						// Change config setting
+				for (String line : configArrayOriginal) {
+					if (line.contains(configName)) {
 						configArray.set(
-							configArray.indexOf(configRead),
+							configArrayOriginal.indexOf(line),
 							configName + "=" + configSetting
 						);
 						break;
+					}
 				}
-
 				if (!configArray.equals(configArrayOriginal)) {
 					// Write to file with BufferedWriter
 					BufferedWriter writer = new BufferedWriter(new FileWriter(file, false));
