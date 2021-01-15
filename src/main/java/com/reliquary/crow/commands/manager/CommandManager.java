@@ -3,6 +3,7 @@ package com.reliquary.crow.commands.manager;
 import com.reliquary.crow.commands.Help;
 import com.reliquary.crow.commands.admin.Shutdown;
 import com.reliquary.crow.commands.basic.Ping;
+import com.reliquary.crow.commands.dnd.Dice;
 import com.reliquary.crow.commands.settings.ChangePrefix;
 import com.reliquary.crow.resources.configs.ConfigHandler;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -23,6 +24,9 @@ public class CommandManager {
 
 		// Basic Commands
 		addCommand(new Ping());
+
+		// DnD Commands
+		addCommand(new Dice());
 
 		// Setting Commands
 		addCommand(new ChangePrefix());
