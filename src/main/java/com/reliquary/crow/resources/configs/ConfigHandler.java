@@ -19,7 +19,7 @@ public class ConfigHandler {
 
 		// Check if file exists
 		File file = new File(
-			envConfig.get("configdirectory") + "/" + fileName.toLowerCase()
+			envConfig.get("configdirectory") + "/" + fileName.toLowerCase() + ".cfg"
 		);
 
 		String readConfig = null;

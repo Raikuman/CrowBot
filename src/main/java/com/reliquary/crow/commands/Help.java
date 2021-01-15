@@ -22,7 +22,7 @@ public class Help implements CommandInterface {
 	// Categories + category emoji hashmap
 	Map<String, String> categoryMap = Map.ofEntries(
 		entry("basic", ":egg:"),
-		entry("fun", ":joystick"),
+		entry("fun", ":joystick:"),
 		entry("dnd", ":mage:"),
 		entry("music", ":notes:"),
 		entry("settings", ":gear:"),
