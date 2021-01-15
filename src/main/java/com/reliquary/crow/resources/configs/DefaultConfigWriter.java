@@ -38,7 +38,7 @@ public class DefaultConfigWriter {
 	 */
 	private void writeConfigFile(List<String> config, File file) {
 
-		if (file.exists()) {
+		if (!file.exists()) {
 			try {
 			// Write to file with BufferedWriter
 			BufferedWriter writer = new BufferedWriter(new FileWriter(file));
@@ -52,9 +52,10 @@ public class DefaultConfigWriter {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		}
-		else
-		logger.info("Error creating config " + file.getName());
+		} else if (file.exists()) {
+			logger.info("Config " + file.getName() + " already created. Continuing...");
+		} else
+			logger.info("Error creating config " + file.getName());
 	}
 
 	/*
