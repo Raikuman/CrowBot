@@ -28,3 +28,6 @@ target/
 config/
 test/
 /TODO
+
+#Sheets API
+credentials.json

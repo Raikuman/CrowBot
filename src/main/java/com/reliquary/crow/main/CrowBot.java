@@ -6,7 +6,6 @@ import com.reliquary.crow.resources.configs.PresenceHandler;
 import com.reliquary.crow.resources.configs.envConfig;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
-import net.dv8tion.jda.api.managers.Presence;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.slf4j.Logger;
