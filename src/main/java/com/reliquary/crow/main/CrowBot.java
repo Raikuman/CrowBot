@@ -44,7 +44,8 @@ public class CrowBot {
 
 		// Generate folders
 		List<String> folders = new ArrayList<>(Arrays.asList(
-			"config"
+			envConfig.get("configdirectory"),
+			envConfig.get("configdirectory") + "/" + envConfig.get("presencedirectory")
 		));
 
 		// Directories
