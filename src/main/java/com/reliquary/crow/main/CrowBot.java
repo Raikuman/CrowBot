@@ -1,6 +1,7 @@
 package com.reliquary.crow.main;
 
 import com.reliquary.crow.listeners.TextChannelListener;
+import com.reliquary.crow.resources.configs.ConfigHandler;
 import com.reliquary.crow.resources.configs.DefaultConfigWriter;
 import com.reliquary.crow.resources.configs.PresenceHandler;
 import com.reliquary.crow.resources.configs.envConfig;
@@ -41,24 +42,35 @@ public class CrowBot {
 		// Block jda until connected
 		jda.awaitStatus(JDA.Status.CONNECTED);
 
+		// Generate config folder first
+		File directory = new File(envConfig.get("configdirectory"));
+		if (directory.mkdir())
+			logger.info("Created directory " + directory.getName() + " successfully");
+
+		// Generate botSetting config first
+		DefaultConfigWriter defaultConfigWriter = new DefaultConfigWriter();
+		defaultConfigWriter.writeBotSettingsConfigFile();
+
 		// Generate folders
 		List<String> folders = new ArrayList<>(Arrays.asList(
 			envConfig.get("configdirectory"),
-			envConfig.get("configdirectory") + "/" + envConfig.get("presencedirectory")
+			envConfig.get("configdirectory") + "/" +
+				ConfigHandler.loadConfigSetting("botSettings", "presencedirectory"),
+			ConfigHandler.loadConfigSetting("botSettings", "commandresourcedirectory"),
+			ConfigHandler.loadConfigSetting("botSettings", "commandresourcedirectory") + "/" +
+				ConfigHandler.loadConfigSetting("botSettings", "quotes")
 		));
 
+		// Generate other configs
+		defaultConfigWriter.writePresenceSettingsConfigFile();
+
 		// Directories
-		File directory;
 		for (String folderName : folders) {
 			directory = new File(folderName);
 
 			if (directory.mkdir())
 				logger.info("Created directory " + folderName + " successfully");
 		}
-
-		// Configs
-		DefaultConfigWriter defaultConfigWriter = new DefaultConfigWriter();
-		defaultConfigWriter.writeBotSettingsConfigFile();
 
 		// Bot Presence
 		PresenceHandler.writePresenceFiles();

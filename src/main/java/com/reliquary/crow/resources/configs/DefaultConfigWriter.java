@@ -22,11 +22,34 @@ public class DefaultConfigWriter {
 	public void writeBotSettingsConfigFile() {
 
 		List<String> configSettings = new ArrayList<>(Arrays.asList(
-			"prefix=!"
+			"prefix=!",
+			"presencedirectory=presence",
+			"commandresourcedirectory=commandresources",
+			"quotedirectory=quotes"
 		));
 
 		String directory = "config";
 		String fileName = "botSettings";
+
+		// Create config
+		writeConfigFile(configSettings, createConfigFile(directory + "/" + fileName));
+	}
+
+	/*
+	writePresenceSettingsConfigFile
+	Writes default config for presence settings
+	 */
+	public void writePresenceSettingsConfigFile() {
+
+		List<String> configSettings = new ArrayList<>(Arrays.asList(
+			"yamEmoji=U+1f360",
+			"yamTargetChannel=",
+			"yamPostChannel=",
+			"checkmarkEmoji=U+2705"
+		));
+
+		String directory = "config";
+		String fileName = "presenceSettings";
 
 		// Create config
 		writeConfigFile(configSettings, createConfigFile(directory + "/" + fileName));
@@ -38,7 +61,7 @@ public class DefaultConfigWriter {
 	 */
 	private void writeConfigFile(List<String> config, File file) {
 
-		if (!file.exists()) {
+		if (file.exists()) {
 			try {
 			// Write to file with BufferedWriter
 			BufferedWriter writer = new BufferedWriter(new FileWriter(file));
@@ -52,7 +75,7 @@ public class DefaultConfigWriter {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		} else if (file.exists()) {
+		} else if (!file.exists()) {
 			logger.info("Config " + file.getName() + " already created. Continuing...");
 		} else
 			logger.info("Error creating config " + file.getName());
