@@ -23,7 +23,7 @@ public class PresenceHandler {
 
 		// Check for presence files
 		String presenceDirectory = envConfig.get("configdirectory") +
-			"/" + envConfig.get("presencedirectory") + "/";
+			"/" + ConfigHandler.loadConfigSetting("botSettings", "presencedirectory") + "/";
 
 		File playingFile = new File(presenceDirectory + "playing.txt");
 		File watchingFile = new File(presenceDirectory + "watching.txt");
@@ -51,7 +51,7 @@ public class PresenceHandler {
 
 		// Load presence array from files
 		String presenceDirectory = envConfig.get("configdirectory") +
-			"/" + envConfig.get("presencedirectory") + "/";
+			"/" + ConfigHandler.loadConfigSetting("botSettings", "presencedirectory") + "/";
 
 		File playingFile = new File(presenceDirectory + "playing.txt");
 		File watchingFile = new File(presenceDirectory + "watching.txt");
