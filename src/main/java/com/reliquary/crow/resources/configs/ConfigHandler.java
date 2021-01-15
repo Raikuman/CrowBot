@@ -1,5 +1,6 @@
 package com.reliquary.crow.resources.configs;
 
+import com.reliquary.crow.resources.TextLineLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +26,7 @@ public class ConfigHandler {
 		String readConfig = null;
 		if (file.exists()) {
 			// Get config from file
-			for (String arrayString : readConfigFile(file)) {
+			for (String arrayString : TextLineLoader.readFileToArray(file)) {
 				if (arrayString.contains(config.toLowerCase())) {
 					readConfig = arrayString;
 					break;
@@ -61,7 +62,7 @@ public class ConfigHandler {
 		if (file.exists()) {
 			try {
 				// Read file first, save array
-				List<String> configArrayOriginal = readConfigFile(file);
+				List<String> configArrayOriginal = TextLineLoader.readFileToArray(file);
 				List<String> configArray = new ArrayList<>(configArrayOriginal);
 
 				// Look for config setting
@@ -96,29 +97,5 @@ public class ConfigHandler {
 		}
 		else
 			logger.info("Config file " + file.getName() + " does not exist");
-	}
-
-	/*
-	readConfigFile
-	Reads a config file, returning an array
-	 */
-	public List<String> readConfigFile(File file) {
-
-		// Write config file to ArrayList
-		List<String> configArray = new ArrayList<>();
-
-		String line;
-		try {
-			BufferedReader reader = new BufferedReader(new FileReader(file));
-
-			while ((line = reader.readLine()) != null)
-				configArray.add(line);
-
-			reader.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return configArray;
 	}
 }
