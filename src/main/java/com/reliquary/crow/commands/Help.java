@@ -4,7 +4,7 @@ import com.reliquary.crow.commands.manager.CommandContext;
 import com.reliquary.crow.commands.manager.CommandInterface;
 import com.reliquary.crow.commands.manager.CommandManager;
 import com.reliquary.crow.resources.RandomClasses.RandomColor;
-import com.reliquary.crow.resources.configs.envConfig;
+import com.reliquary.crow.resources.configs.ConfigHandler;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -17,6 +17,7 @@ import static java.util.Map.entry;
 public class Help implements CommandInterface {
 
 	private final CommandManager manager;
+	private final ConfigHandler configHandler = new ConfigHandler();
 
 	// Categories + category emoji hashmap
 	Map<String, String> categoryMap = Map.ofEntries(
@@ -94,7 +95,7 @@ public class Help implements CommandInterface {
 
 		descriptionBuilder
 			.append("Use `")
-			.append(envConfig.get("prefix"))
+			.append(configHandler.loadConfigSetting("botSettings", "prefix"))
 			.append("help <category>` to view commands in a category!\n\n");
 
 		// Append each category & info to description
@@ -152,7 +153,7 @@ public class Help implements CommandInterface {
 			if (command.getCategory().equals(category)) {
 				descriptionBuilder
 					.append("```asciidoc\n")
-					.append(envConfig.get("prefix"))
+					.append(configHandler.loadConfigSetting("botSettings", "prefix"))
 					.append(command.getInvoke());
 
 				if (!command.getUsage().isEmpty())
@@ -188,7 +189,7 @@ public class Help implements CommandInterface {
 
 		descriptionBuilder
 			.append("```asciidoc\n")
-			.append(envConfig.get("prefix"))
+			.append(configHandler.loadConfigSetting("botSettings", "prefix"))
 			.append(command.getInvoke());
 
 		if (!command.getUsage().isEmpty())
@@ -222,7 +223,7 @@ public class Help implements CommandInterface {
 			.append(arg)
 			.append("` does not exist\n")
 			.append("Use `")
-			.append(envConfig.get("prefix"))
+			.append(configHandler.loadConfigSetting("botSettings", "prefix"))
 			.append(getInvoke())
 			.append("` for a list of commands");
 

@@ -4,7 +4,6 @@ import com.reliquary.crow.commands.manager.CommandContext;
 import com.reliquary.crow.commands.manager.CommandInterface;
 import com.reliquary.crow.resources.RandomClasses.RandomColor;
 import com.reliquary.crow.resources.configs.ConfigHandler;
-import com.reliquary.crow.resources.configs.envConfig;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 

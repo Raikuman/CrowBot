@@ -1,9 +1,10 @@
 package com.reliquary.crow.commands.manager;
 
+import com.reliquary.crow.commands.Help;
 import com.reliquary.crow.commands.admin.Shutdown;
 import com.reliquary.crow.commands.basic.Ping;
 import com.reliquary.crow.commands.settings.ChangePrefix;
-import com.reliquary.crow.resources.configs.envConfig;
+import com.reliquary.crow.resources.configs.ConfigHandler;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 import javax.annotation.Nullable;
@@ -15,6 +16,7 @@ import java.util.regex.Pattern;
 public class CommandManager {
 
 	private final List<CommandInterface> commands = new ArrayList<>();
+	private final ConfigHandler configHandler = new ConfigHandler();
 
 	// Constructor to add commands
 	public CommandManager() {
@@ -27,6 +29,9 @@ public class CommandManager {
 
 		// Admin Commands
 		addCommand(new Shutdown());
+
+		// Help Command
+		addCommand(new Help(this));
 	}
 
 	/*
@@ -84,7 +89,11 @@ public class CommandManager {
 
 		// Remove prefix, split input into string array
 		String[] split = event.getMessage().getContentRaw()
-			.replaceFirst("(?i)" + Pattern.quote(envConfig.get("prefix")), "")
+			.replaceFirst("(?i)" +
+				Pattern.quote(
+					configHandler.loadConfigSetting("botSettings", "prefix")),
+					""
+				)
 			.split("\\s+");
 
 		// Get invoke string for command
