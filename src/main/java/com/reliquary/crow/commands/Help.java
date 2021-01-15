@@ -10,24 +10,22 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import static java.util.Map.entry;
 
 public class Help implements CommandInterface {
 
 	private final CommandManager manager;
-	private final ConfigHandler configHandler = new ConfigHandler();
 
-	// Categories + category emoji hashmap
-	Map<String, String> categoryMap = Map.ofEntries(
-		entry("basic", ":egg:"),
-		entry("fun", ":joystick:"),
-		entry("dnd", ":mage:"),
-		entry("music", ":notes:"),
-		entry("settings", ":gear:"),
-		entry("admin", ":vertical_traffic_light:")
-	);
+	// Create array of categories
+	ArrayList<Category> categories = new ArrayList<>(List.of(
+		new Category("basic", ":egg:"),
+		new Category("fun", ":joystick:"),
+		new Category("dnd", ":mage:"),
+		new Category("music", ":notes:"),
+		new Category("settings", ":gear:"),
+		new Category("admin", ":vertical_traffic_light:")
+	));
 
 	public Help(CommandManager manager) {
 		this.manager = manager;
@@ -46,11 +44,12 @@ public class Help implements CommandInterface {
 		}
 
 		// Check arg, search if category
-		if (categoryMap.containsKey(args.get(0))) {
-			generateCategoryCommandsEmbed(channel, args.get(0));
-			return;
+		for (Category category : categories) {
+			if (category.getName().toLowerCase().contains(args.get(0))) {
+				generateCategoryCommandsEmbed(channel, args.get(0));
+				return;
+			}
 		}
-
 		// Check if arg is a command
 		CommandInterface command = manager.getCommand(args.get(0));
 		if (command != null) {
@@ -95,34 +94,35 @@ public class Help implements CommandInterface {
 
 		descriptionBuilder
 			.append("Use `")
-			.append(configHandler.loadConfigSetting("botSettings", "prefix"))
+			.append(ConfigHandler.loadConfigSetting("botSettings", "prefix"))
 			.append("help <category>` to view commands in a category!\n\n");
 
 		// Append each category & info to description
-		for (Map.Entry<String, String> category : categoryMap.entrySet()) {
+		for (Category category : categories) {
+			// Append emoji
 			descriptionBuilder
-				.append(category.getValue())
+				.append(category.getEmoji())
 				.append(" ");
 
 			// Uppercase first char in category, append
-			String categoryName = category.getKey().substring(0, 1).toUpperCase() +
-				category.getKey().substring(1).toLowerCase();
+			String categoryName = category.getName().substring(0, 1).toUpperCase() +
+				category.getName().substring(1).toLowerCase();
 
 			descriptionBuilder
 				.append("**")
 				.append(categoryName)
 				.append("**\n");
 
-			// Changes plurality of word 'command' for categories
+			// Change plurality of word 'command' for categories
 			String strCommand;
-			if (getNumOfCommands(category.getKey()) == 1)
+			if (getNumOfCommands(category.getName()) == 1)
 				strCommand = "command";
 			else
 				strCommand = "commands";
 
 			descriptionBuilder
 				.append("*")
-				.append(getNumOfCommands(category.getKey()))
+				.append(getNumOfCommands(category.getName()))
 				.append(" ")
 				.append(strCommand)
 				.append("*\n\n");
@@ -153,7 +153,7 @@ public class Help implements CommandInterface {
 			if (command.getCategory().equals(category)) {
 				descriptionBuilder
 					.append("```asciidoc\n")
-					.append(configHandler.loadConfigSetting("botSettings", "prefix"))
+					.append(ConfigHandler.loadConfigSetting("botSettings", "prefix"))
 					.append(command.getInvoke());
 
 				if (!command.getUsage().isEmpty())
@@ -189,7 +189,7 @@ public class Help implements CommandInterface {
 
 		descriptionBuilder
 			.append("```asciidoc\n")
-			.append(configHandler.loadConfigSetting("botSettings", "prefix"))
+			.append(ConfigHandler.loadConfigSetting("botSettings", "prefix"))
 			.append(command.getInvoke());
 
 		if (!command.getUsage().isEmpty())
@@ -223,7 +223,7 @@ public class Help implements CommandInterface {
 			.append(arg)
 			.append("` does not exist\n")
 			.append("Use `")
-			.append(configHandler.loadConfigSetting("botSettings", "prefix"))
+			.append(ConfigHandler.loadConfigSetting("botSettings", "prefix"))
 			.append(getInvoke())
 			.append("` for a list of commands");
 
@@ -247,5 +247,25 @@ public class Help implements CommandInterface {
 				num++;
 
 		return num;
+	}
+}
+
+class Category {
+
+	String name, emoji;
+
+	// Constructor
+	public Category(String name, String emoji) {
+		this.name = name;
+		this.emoji = emoji;
+	}
+
+	// Accessors
+	public String getName() {
+		return name;
+	}
+
+	public String getEmoji() {
+		return emoji;
 	}
 }
