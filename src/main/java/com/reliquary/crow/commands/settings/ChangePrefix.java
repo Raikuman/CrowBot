@@ -23,8 +23,7 @@ public class ChangePrefix implements CommandInterface {
 
 		// Check arguments
 		if (!args.isEmpty()) {
-			ConfigHandler configHandler = new ConfigHandler();
-			configHandler.writeConfigSetting(
+			ConfigHandler.writeConfigSetting(
 				"botSettings",
 				"prefix",
 				args.get(0)
@@ -53,9 +52,8 @@ public class ChangePrefix implements CommandInterface {
 
 	@Override
 	public String getHelp() {
-		ConfigHandler configHandler = new ConfigHandler();
 		return "Changes the prefix for commands. Current prefix: '"
-			+ configHandler.loadConfigSetting("botSettings", "prefix");
+			+ ConfigHandler.loadConfigSetting("botSettings", "prefix");
 	}
 
 	@Override

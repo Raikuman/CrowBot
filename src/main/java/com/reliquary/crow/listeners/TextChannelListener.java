@@ -32,9 +32,7 @@ public class TextChannelListener extends ListenerAdapter {
 			return;
 
 		// Check for prefix, then handle event
-		ConfigHandler configHandler = new ConfigHandler();
-
-		String prefix = configHandler.loadConfigSetting(
+		String prefix = ConfigHandler.loadConfigSetting(
 			"botSettings",
 			"prefix"
 		);

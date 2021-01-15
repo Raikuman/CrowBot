@@ -16,7 +16,7 @@ public class ConfigHandler {
 	loadConfigSetting
 	Loads configs from config files
 	 */
-	public String loadConfigSetting(String fileName, String config) {
+	public static String loadConfigSetting(String fileName, String config) {
 
 		// Check if file exists
 		File file = new File(
@@ -52,7 +52,7 @@ public class ConfigHandler {
 	writeConfigSetting
 	Write config setting to config file
 	 */
-	public void writeConfigSetting(String fileName, String configName, String configSetting) {
+	public static void writeConfigSetting(String fileName, String configName, String configSetting) {
 
 		// Check if file exists
 		File file = new File(
