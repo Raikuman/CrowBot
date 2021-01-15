@@ -2,9 +2,11 @@ package com.reliquary.crow.main;
 
 import com.reliquary.crow.listeners.TextChannelListener;
 import com.reliquary.crow.resources.configs.DefaultConfigWriter;
+import com.reliquary.crow.resources.configs.PresenceHandler;
 import com.reliquary.crow.resources.configs.envConfig;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.managers.Presence;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.slf4j.Logger;
@@ -12,9 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class CrowBot {
 
@@ -62,6 +62,14 @@ public class CrowBot {
 		defaultConfigWriter.writeBotSettingsConfigFile();
 
 		// Bot Presence
+		PresenceHandler.writePresenceFiles();
 
+		Timer timer = new Timer();
+		timer.schedule(new TimerTask() {
+			@Override
+			public void run() {
+				PresenceHandler.updatePresence(jda);
+			}
+		}, 0, 5 * 60 * 1000);
 	}
 }
