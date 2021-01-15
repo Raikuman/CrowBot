@@ -32,6 +32,8 @@ public class Character {
 	// Equipped Items (Max 12)
 	Equipment[] equippedEquipment;
 
+	List<String> items;
+
 	// Features & Traits
 	List<String> featsAndTraits;
 
@@ -57,6 +59,7 @@ public class Character {
 		languages = new String[12];
 		equippedWeapons = new Weapon[5];
 		equippedEquipment = new Equipment[5];
+		items = new ArrayList<>();
 
 		characterClasses = new ArrayList<>();
 		backgroundInfo = new ArrayList<>();
@@ -89,6 +92,10 @@ public class Character {
 
 	public void setEquippedEquipment(Equipment[] equippedEquipment) {
 		this.equippedEquipment = equippedEquipment;
+	}
+
+	public void setItems(List<String> items) {
+		this.items = items;
 	}
 
 	public void setFeatsAndTraits(List<String> featsAndTraits) {
@@ -130,6 +137,10 @@ public class Character {
 
 	public Equipment[] getEquippedEquipment() {
 		return equippedEquipment;
+	}
+
+	public List<String> getItems() {
+		return items;
 	}
 
 	public List<String> getFeatsAndTraits() {
