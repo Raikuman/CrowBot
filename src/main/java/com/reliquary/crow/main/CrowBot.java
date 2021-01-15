@@ -1,6 +1,7 @@
 package com.reliquary.crow.main;
 
 import com.reliquary.crow.listeners.TextChannelListener;
+import com.reliquary.crow.resources.configs.DefaultConfigWriter;
 import com.reliquary.crow.resources.configs.envConfig;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -46,6 +47,7 @@ public class CrowBot {
 			"config"
 		));
 
+		// Directories
 		File directory;
 		for (String folderName : folders) {
 			directory = new File(folderName);
@@ -53,6 +55,10 @@ public class CrowBot {
 			if (directory.mkdir())
 				logger.info("Created directory " + folderName + " successfully");
 		}
+
+		// Configs
+		DefaultConfigWriter defaultConfigWriter = new DefaultConfigWriter();
+		defaultConfigWriter.writeBotSettingsConfigFile();
 
 		// Bot Presence
 
