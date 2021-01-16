@@ -27,7 +27,7 @@ public class ConfigHandler {
 		if (file.exists()) {
 			// Get config from file
 			for (String arrayString : TextLineLoader.readFileToArray(file)) {
-				if (arrayString.contains(config.toLowerCase())) {
+				if (arrayString.toLowerCase().contains(config.toLowerCase())) {
 					readConfig = arrayString;
 					break;
 				}
