@@ -17,7 +17,7 @@ public class PresenceHandler {
 
 	/*
 	writePresenceFiles
-	Open new thread to change presence on a timer
+	Creates files for presence
 	 */
 	public static void writePresenceFiles() {
 

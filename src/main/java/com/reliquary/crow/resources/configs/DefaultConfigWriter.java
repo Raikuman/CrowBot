@@ -36,10 +36,10 @@ public class DefaultConfigWriter {
 	}
 
 	/*
-	writePresenceSettingsConfigFile
-	Writes default config for presence settings
+	writeYamBoardSettingsConfigFile
+	Writes default config for yam boards settings
 	 */
-	public void writePresenceSettingsConfigFile() {
+	public void writeYamBoardSettingsConfigFile() {
 
 		List<String> configSettings = new ArrayList<>(Arrays.asList(
 			"yamEmoji=U+1f360",
@@ -49,7 +49,7 @@ public class DefaultConfigWriter {
 		));
 
 		String directory = "config";
-		String fileName = "presenceSettings";
+		String fileName = "yamboardSettings";
 
 		// Create config
 		writeConfigFile(configSettings, createConfigFile(directory + "/" + fileName));

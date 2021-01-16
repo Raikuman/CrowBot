@@ -90,7 +90,6 @@ public class ConfigHandler {
 						" was changed to " + configSetting);
 				} else
 					logger.info("Config file " + file.getName() + " was not changed");
-
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
