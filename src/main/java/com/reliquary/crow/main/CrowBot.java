@@ -1,5 +1,6 @@
 package com.reliquary.crow.main;
 
+import com.reliquary.crow.listeners.ReactionChannelListener;
 import com.reliquary.crow.listeners.TextChannelListener;
 import com.reliquary.crow.resources.configs.ConfigHandler;
 import com.reliquary.crow.resources.configs.DefaultConfigWriter;
@@ -36,7 +37,7 @@ public class CrowBot {
 			.enableCache(
 				CacheFlag.VOICE_STATE
 			)
-			.addEventListeners(new TextChannelListener())
+			.addEventListeners(new TextChannelListener(), new ReactionChannelListener())
 			.build();
 
 		// Block jda until connected
@@ -62,7 +63,7 @@ public class CrowBot {
 		));
 
 		// Generate other configs
-		defaultConfigWriter.writePresenceSettingsConfigFile();
+		defaultConfigWriter.writeYamBoardSettingsConfigFile();
 
 		// Directories
 		for (String folderName : folders) {
