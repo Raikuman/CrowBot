@@ -1,0 +1,50 @@
+package com.reliquary.crow.commands.music.manager;
+
+import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
+import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
+import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
+
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+
+public class TrackScheduler extends AudioEventAdapter {
+
+	private final AudioPlayer player;
+	private final BlockingQueue<AudioTrack> queue;
+
+	// Constructor
+	public TrackScheduler(AudioPlayer player) {
+		this.player = player;
+		this.queue = new LinkedBlockingQueue<>();
+	}
+
+	@Override
+	public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
+
+		// Check if the audio player can play the next track
+		if (endReason.mayStartNext) {
+			nextTrack();
+		}
+	}
+
+	/*
+	queue
+	Queue next track to player
+	 */
+	public void queue(AudioTrack track) {
+
+		// If no track has started, queue the next track
+		if (!this.player.startTrack(track, true)) {
+			this.queue.offer(track);
+		}
+	}
+
+	/*
+	nextTrack
+	Get the next track from the top of the stack of tracks
+	 */
+	public void nextTrack() {
+		this.player.startTrack(this.queue.poll(), false);
+	}
+}
