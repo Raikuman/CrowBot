@@ -63,7 +63,8 @@ public class CrowBot {
 		));
 
 		// Generate other configs
-		defaultConfigWriter.writeYamBoardSettingsConfigFile();
+		defaultConfigWriter.writeChannelIdConfigFile();
+		defaultConfigWriter.writeEmojiConfigFile();
 
 		// Directories
 		for (String folderName : folders) {

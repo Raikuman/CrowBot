@@ -41,9 +41,9 @@ public class ReactionChannelListener extends ListenerAdapter {
 			return;
 
 		// Check if reaction is yam
-		if (ReactionChecker.checkReaction(reaction, ConfigHandler.loadConfigSetting("yamboardSettings", "yamEmoji"))) {
+		if (ReactionChecker.checkReaction(reaction, ConfigHandler.loadConfigSetting("emojiSettings", "yamEmoji"))) {
 			// Proceed if there was no yam reaction previously
-			if ((ReactionChecker.countNumberOfReactions(reactions, ConfigHandler.loadConfigSetting("yamboardSettings", "yamEmoji")) - 1) == 0) {
+			if ((ReactionChecker.countNumberOfReactions(reactions, ConfigHandler.loadConfigSetting("emojiSettings", "yamEmoji")) - 1) == 0) {
 				// Check the yam board if the message already exists
 				if (!YamBoard.checkForId(message.getId())) {
 					YamBoard yamBoard = new YamBoard();
@@ -51,7 +51,7 @@ public class ReactionChannelListener extends ListenerAdapter {
 					// Post board
 					TextChannel postChannel = event.getGuild()
 						.getTextChannelById(Objects.requireNonNull(ConfigHandler.loadConfigSetting(
-							"yamboardSettings",
+							"channelIds",
 							"yamPostChannel")));
 
 					// Append board ids
@@ -80,9 +80,9 @@ public class ReactionChannelListener extends ListenerAdapter {
 			return;
 
 		// Check if reaction is yam
-		if (ReactionChecker.checkReaction(reaction, ConfigHandler.loadConfigSetting("yamboardSettings", "yamEmoji"))) {
+		if (ReactionChecker.checkReaction(reaction, ConfigHandler.loadConfigSetting("emojiSettings", "yamEmoji"))) {
 			// Proceed if there are no more reactions on the message
-			if (ReactionChecker.countNumberOfReactions(reactions, ConfigHandler.loadConfigSetting("yamboardSettings", "yamEmoji")) == 0) {
+			if (ReactionChecker.countNumberOfReactions(reactions, ConfigHandler.loadConfigSetting("emojiSettings", "yamEmoji")) == 0) {
 				// Check if the yam board has the message
 				if (YamBoard.checkForId(message.getId())) {
 					YamBoard yamBoard = new YamBoard();
@@ -92,7 +92,7 @@ public class ReactionChannelListener extends ListenerAdapter {
 						event.getJDA().getTextChannelById(
 							Objects.requireNonNull(
 								ConfigHandler.loadConfigSetting(
-									"yamboardSettings",
+									"channelIds",
 									"yamPostChannel"))))
 						.deleteMessageById(yamBoard.getPostMessageId(message.getId())).queue();
 

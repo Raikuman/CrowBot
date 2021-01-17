@@ -31,28 +31,59 @@ public class DefaultConfigWriter {
 		String directory = "config";
 		String fileName = "botSettings";
 
-		// Create config
-		writeConfigFile(configSettings, createConfigFile(directory + "/" + fileName));
+		File file = new File(directory + "/" + fileName + ".cfg");
+
+		if (!file.exists()) {
+			// Create config
+			writeConfigFile(configSettings, createConfigFile(directory + "/" + fileName));
+		} else
+			logger.info("Config " + file.getName() + " already created. Continuing...");
 	}
 
 	/*
-	writeYamBoardSettingsConfigFile
+	writeEmojiConfigFile
 	Writes default config for yam boards settings
 	 */
-	public void writeYamBoardSettingsConfigFile() {
+	public void writeEmojiConfigFile() {
 
 		List<String> configSettings = new ArrayList<>(Arrays.asList(
 			"yamEmoji=U+1f360",
-			"yamTargetChannel=",
-			"yamPostChannel=",
 			"checkmarkEmoji=U+2705"
 		));
 
 		String directory = "config";
-		String fileName = "yamboardSettings";
+		String fileName = "emojiSettings";
 
-		// Create config
-		writeConfigFile(configSettings, createConfigFile(directory + "/" + fileName));
+		File file = new File(directory + "/" + fileName + ".cfg");
+
+		if (!file.exists()) {
+			// Create config
+			writeConfigFile(configSettings, createConfigFile(directory + "/" + fileName));
+		} else
+			logger.info("Config " + file.getName() + " already created. Continuing...");
+	}
+
+	/*
+	writeEmojiConfigFile
+	Writes default config for yam boards settings
+	 */
+	public void writeChannelIdConfigFile() {
+
+		List<String> configSettings = new ArrayList<>(Arrays.asList(
+			"mainTextChannel=",
+			"yamPostChannel="
+		));
+
+		String directory = "config";
+		String fileName = "channelIds";
+
+		File file = new File(directory + "/" + fileName + ".cfg");
+
+		if (!file.exists()) {
+			// Create config
+			writeConfigFile(configSettings, createConfigFile(directory + "/" + fileName));
+		} else
+			logger.info("Config " + file.getName() + " already created. Continuing...");
 	}
 
 	/*
@@ -61,24 +92,19 @@ public class DefaultConfigWriter {
 	 */
 	private void writeConfigFile(List<String> config, File file) {
 
-		if (!file.exists()) {
-			try {
-			// Write to file with BufferedWriter
-			BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+		try {
+		// Write to file with BufferedWriter
+		BufferedWriter writer = new BufferedWriter(new FileWriter(file));
 
-			for (String configSetting : config) {
-				writer.write(configSetting);
-				writer.newLine();
-			}
+		for (String configSetting : config) {
+			writer.write(configSetting);
+			writer.newLine();
+		}
 
-			writer.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		} else if (file.exists()) {
-			logger.info("Config " + file.getName() + " already created. Continuing...");
-		} else
-			logger.info("Error creating config " + file.getName());
+		writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/*
@@ -87,7 +113,7 @@ public class DefaultConfigWriter {
 	*/
 	private File createConfigFile(String fileName) {
 
-		// Create file, check if exists
+		// Create file
 		File configFile = new File(fileName + ".cfg");
 
 		try {
