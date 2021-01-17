@@ -19,6 +19,7 @@ import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Objects;
 
+@SuppressWarnings("ConstantConditions")
 public class ReactionChannelListener extends ListenerAdapter {
 
 	private static final Logger logger = LoggerFactory.getLogger(ReactionChannelListener.class);
@@ -91,11 +92,9 @@ public class ReactionChannelListener extends ListenerAdapter {
 					String channelId = ConfigHandler.loadConfigSetting("channelIds", "yamPostChannel");
 
 					// Get text channel
-					assert channelId != null;
 					TextChannel textChannel = event.getJDA().getTextChannelById(channelId);
 
 					// Delete board
-					assert textChannel != null;
 					textChannel.deleteMessageById(yamBoard.getPostMessageId(message.getId())).queue();
 
 					// Remove board ids
