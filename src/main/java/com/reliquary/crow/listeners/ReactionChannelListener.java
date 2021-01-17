@@ -1,6 +1,7 @@
 package com.reliquary.crow.listeners;
 
 import com.reliquary.crow.commands.fun.YamBoard;
+import com.reliquary.crow.resources.ReactionChecker;
 import com.reliquary.crow.resources.configs.ConfigHandler;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageReaction;
@@ -39,15 +40,14 @@ public class ReactionChannelListener extends ListenerAdapter {
 		if (user.isBot())
 			return;
 
-		// Yam Board Handler
-		YamBoard yamBoard = new YamBoard();
-
 		// Check if reaction is yam
-		if (yamBoard.checkReaction(reaction)) {
+		if (ReactionChecker.checkReaction(reaction, ConfigHandler.loadConfigSetting("yamboardSettings", "yamEmoji"))) {
 			// Proceed if there was no yam reaction previously
-			if ((yamBoard.countNumberOfReactions(reactions) - 1) == 0) {
+			if ((ReactionChecker.countNumberOfReactions(reactions, ConfigHandler.loadConfigSetting("yamboardSettings", "yamEmoji")) - 1) == 0) {
 				// Check the yam board if the message already exists
-				if (!yamBoard.checkForId(message.getId())) {
+				if (!YamBoard.checkForId(message.getId())) {
+					YamBoard yamBoard = new YamBoard();
+
 					// Post board
 					TextChannel postChannel = event.getGuild()
 						.getTextChannelById(Objects.requireNonNull(ConfigHandler.loadConfigSetting(
@@ -79,15 +79,14 @@ public class ReactionChannelListener extends ListenerAdapter {
 		if (user.isBot())
 			return;
 
-		// Yam Board Handler
-		YamBoard yamBoard = new YamBoard();
-
 		// Check if reaction is yam
-		if (yamBoard.checkReaction(reaction)) {
+		if (ReactionChecker.checkReaction(reaction, ConfigHandler.loadConfigSetting("yamboardSettings", "yamEmoji"))) {
 			// Proceed if there are no more reactions on the message
-			if (yamBoard.countNumberOfReactions(reactions) == 0) {
+			if (ReactionChecker.countNumberOfReactions(reactions, ConfigHandler.loadConfigSetting("yamboardSettings", "yamEmoji")) == 0) {
 				// Check if the yam board has the message
-				if (yamBoard.checkForId(message.getId())) {
+				if (YamBoard.checkForId(message.getId())) {
+					YamBoard yamBoard = new YamBoard();
+
 					// Delete board
 					Objects.requireNonNull(
 						event.getJDA().getTextChannelById(

@@ -29,7 +29,7 @@ public class YamBoard {
 	checkReaction
 	Check the reaction if its a yam reaction
 	 */
-	public boolean checkReaction(MessageReaction reaction) {
+	public static boolean checkReaction(MessageReaction reaction) {
 		return reaction.getReactionEmote().toString().split(":")[1].toLowerCase()
 			.equals(ConfigHandler.loadConfigSetting("yamboardSettings", "yamEmoji"));
 	}
@@ -38,7 +38,7 @@ public class YamBoard {
 	countNumberOfReactions
 	Count the number of appearances yam has on a message
 	 */
-	public int countNumberOfReactions(List<MessageReaction> reactions) {
+	public static int countNumberOfReactions(List<MessageReaction> reactions) {
 
 		int count = 0;
 		for (MessageReaction reaction : reactions) {
@@ -67,7 +67,7 @@ public class YamBoard {
 	checkForId
 	Check the yam board for the id
 	 */
-	public boolean checkForId(String originalId) {
+	public static boolean checkForId(String originalId) {
 		return loadYamBoardMap(new File(DEFAULT_YAMBOARD_LOCATION)).containsKey(originalId);
 	}
 
@@ -117,7 +117,7 @@ public class YamBoard {
 	loadYamBoardMap
 	Loads the yam board from the file to a hashmap
 	 */
-	private HashMap<String, String> loadYamBoardMap(File file) {
+	private static HashMap<String, String> loadYamBoardMap(File file) {
 
 		HashMap<String, String> yamBoardMap = new HashMap<>();
 		String[] splitString;
@@ -141,7 +141,7 @@ public class YamBoard {
 	createYamBoardFile
 	Writes a yam board file
 	 */
-	private void createYamBoardFile(File file) {
+	private static void createYamBoardFile(File file) {
 
 		try {
 			if (file.createNewFile())
