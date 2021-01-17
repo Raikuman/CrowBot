@@ -125,7 +125,7 @@ public class YamBoard {
 		// Check if file exists
 		if (file.exists()) {
 			for (String line : TextLineLoader.readFileToArray(file)) {
-				splitString = line.split(":", 1);
+				splitString = line.split(":");
 				yamBoardMap.put(
 					splitString[0],
 					splitString[1]

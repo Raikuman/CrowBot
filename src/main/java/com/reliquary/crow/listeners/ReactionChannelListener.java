@@ -87,14 +87,16 @@ public class ReactionChannelListener extends ListenerAdapter {
 				if (YamBoard.checkForId(message.getId())) {
 					YamBoard yamBoard = new YamBoard();
 
+					// Test channel id
+					String channelId = ConfigHandler.loadConfigSetting("channelIds", "yamPostChannel");
+
+					// Get text channel
+					assert channelId != null;
+					TextChannel textChannel = event.getJDA().getTextChannelById(channelId);
+
 					// Delete board
-					Objects.requireNonNull(
-						event.getJDA().getTextChannelById(
-							Objects.requireNonNull(
-								ConfigHandler.loadConfigSetting(
-									"channelIds",
-									"yamPostChannel"))))
-						.deleteMessageById(yamBoard.getPostMessageId(message.getId())).queue();
+					assert textChannel != null;
+					textChannel.deleteMessageById(yamBoard.getPostMessageId(message.getId())).queue();
 
 					// Remove board ids
 					yamBoard.removeFromYamBoard(message.getId());
