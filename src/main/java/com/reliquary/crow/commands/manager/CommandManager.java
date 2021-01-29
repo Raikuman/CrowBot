@@ -4,6 +4,7 @@ import com.reliquary.crow.commands.Help;
 import com.reliquary.crow.commands.admin.Shutdown;
 import com.reliquary.crow.commands.basic.Ping;
 import com.reliquary.crow.commands.dnd.Dice;
+import com.reliquary.crow.commands.music.*;
 import com.reliquary.crow.commands.settings.ChangePrefix;
 import com.reliquary.crow.resources.configs.ConfigHandler;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -14,10 +15,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
+@SuppressWarnings("ConstantConditions")
 public class CommandManager {
 
 	private final List<CommandInterface> commands = new ArrayList<>();
-	private final ConfigHandler configHandler = new ConfigHandler();
 
 	// Constructor to add commands
 	public CommandManager() {
@@ -27,6 +28,18 @@ public class CommandManager {
 
 		// DnD Commands
 		addCommand(new Dice());
+
+		// Music Commands
+		addCommand(new Join());
+		addCommand(new Play());
+		addCommand(new Stop());
+		addCommand(new Skip());
+		addCommand(new NowPlaying());
+		addCommand(new Queue());
+		addCommand(new Repeat());
+		addCommand(new Leave());
+		addCommand(new Pause());
+		addCommand(new Resume());
 
 		// Setting Commands
 		addCommand(new ChangePrefix());
@@ -95,7 +108,7 @@ public class CommandManager {
 		String[] split = event.getMessage().getContentRaw()
 			.replaceFirst("(?i)" +
 				Pattern.quote(
-					configHandler.loadConfigSetting("botSettings", "prefix")),
+					ConfigHandler.loadConfigSetting("botSettings", "prefix")),
 					""
 				)
 			.split("\\s+");

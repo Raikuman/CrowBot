@@ -10,8 +10,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class TrackScheduler extends AudioEventAdapter {
 
-	private final AudioPlayer player;
-	private final BlockingQueue<AudioTrack> queue;
+	public final AudioPlayer player;
+	public final BlockingQueue<AudioTrack> queue;
+	public boolean repeating = false;
 
 	// Constructor
 	public TrackScheduler(AudioPlayer player) {
@@ -24,6 +25,11 @@ public class TrackScheduler extends AudioEventAdapter {
 
 		// Check if the audio player can play the next track
 		if (endReason.mayStartNext) {
+			if (this.repeating) {
+				this.player.startTrack(track.makeClone(), false);
+				return;
+			}
+
 			nextTrack();
 		}
 	}
