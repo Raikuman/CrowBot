@@ -2,6 +2,7 @@
 .idea/
 *.iml
 *.iws
+vcs.xml
 
 #Eclipse
 .metadata
