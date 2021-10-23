@@ -58,6 +58,7 @@ public class PlayerManager {
 	public void loadAndPlay(TextChannel channel, String trackUrl, User user) {
 
 		GuildMusicManager musicManager = this.getMusicManager(channel.getGuild());
+		musicManager.audioPlayer.setVolume(50);
 
 		this.audioPlayerManager.loadItemOrdered(musicManager, trackUrl, new AudioLoadResultHandler() {
 
