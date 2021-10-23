@@ -4,9 +4,11 @@ import com.reliquary.crow.commands.manager.CommandContext;
 import com.reliquary.crow.commands.manager.CommandInterface;
 import com.reliquary.crow.commands.music.manager.GuildMusicManager;
 import com.reliquary.crow.commands.music.manager.PlayerManager;
+import com.reliquary.crow.resources.RandomClasses.RandomColor;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.entities.Member;
@@ -76,6 +78,12 @@ public class NowPlaying implements CommandInterface {
 
 		// Send info embed
 		final AudioTrackInfo info = track.getInfo();
+		EmbedBuilder builder = new EmbedBuilder()
+			.setTitle("Now Playing ♪")
+			.setColor(RandomColor.getRandomColor());
+		StringBuilder descriptionBuilder =  builder.getDescriptionBuilder();
+
+		// Pls finish this
 	}
 
 	@Override

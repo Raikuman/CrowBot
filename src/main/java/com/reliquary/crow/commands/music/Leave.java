@@ -2,7 +2,6 @@ package com.reliquary.crow.commands.music;
 
 import com.reliquary.crow.commands.manager.CommandContext;
 import com.reliquary.crow.commands.manager.CommandInterface;
-import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
@@ -21,12 +20,12 @@ public class Leave implements CommandInterface {
 	public void handle(CommandContext ctx) {
 
 		final TextChannel channel = ctx.getChannel();
-		final Member self = ctx.getSelfMember();
+		final Member self = ctx.getGuild().getSelfMember();
 		final GuildVoiceState selfVoiceState = self.getVoiceState();
 
 		// Check if the bot is in a voice channel
-		if (selfVoiceState.inVoiceChannel()) {
-			channel.sendMessage("I'm already in a voice channel: `" + selfVoiceState.getChannel() + "`")
+		if (!selfVoiceState.inVoiceChannel()) {
+			channel.sendMessage("I must be in a voice channel")
 				.delay(Duration.ofSeconds(10))
 				.flatMap(Message::delete)
 				.queue();
@@ -34,7 +33,7 @@ public class Leave implements CommandInterface {
 		}
 
 		// Check if a user is in a voice channel
-		final Member member = ctx.getMember();
+		final Member member = ctx.getEvent().getMember();
 		final GuildVoiceState memberVoiceState = member.getVoiceState();
 
 		if (!memberVoiceState.inVoiceChannel()) {

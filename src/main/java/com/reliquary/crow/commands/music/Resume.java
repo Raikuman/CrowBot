@@ -19,12 +19,12 @@ public class Resume implements CommandInterface {
 	public void handle(CommandContext ctx) {
 
 		final TextChannel channel = ctx.getChannel();
-		final Member self = ctx.getSelfMember();
+		final Member self = ctx.getGuild().getSelfMember();
 		final GuildVoiceState selfVoiceState = self.getVoiceState();
 
 		// Check if the bot is in a voice channel
-		if (selfVoiceState.inVoiceChannel()) {
-			channel.sendMessage("I'm already in a voice channel: `" + selfVoiceState.getChannel() + "`")
+		if (!selfVoiceState.inVoiceChannel()) {
+			channel.sendMessage("I must be in a voice channel")
 				.delay(Duration.ofSeconds(10))
 				.flatMap(Message::delete)
 				.queue();
@@ -32,7 +32,7 @@ public class Resume implements CommandInterface {
 		}
 
 		// Check if a user is in a voice channel
-		final Member member = ctx.getMember();
+		final Member member = ctx.getEvent().getMember();
 		final GuildVoiceState memberVoiceState = member.getVoiceState();
 
 		if (!memberVoiceState.inVoiceChannel()) {
@@ -68,27 +68,29 @@ public class Resume implements CommandInterface {
 		// Resume track
 		audioPlayer.setPaused(false);
 
-		// Send resume embed
+		// Send resume reaction
+		ctx.getEvent().getMessage()
+			.addReaction("U+25B6").queue();
 
 	}
 
 	@Override
 	public String getInvoke() {
-		return null;
+		return "resume";
 	}
 
 	@Override
 	public String getHelp() {
-		return null;
+		return "Resumes the current track";
 	}
 
 	@Override
 	public String getUsage() {
-		return null;
+		return "";
 	}
 
 	@Override
 	public String getCategory() {
-		return null;
+		return "music";
 	}
 }

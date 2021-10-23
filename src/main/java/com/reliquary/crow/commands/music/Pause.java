@@ -5,6 +5,7 @@ import com.reliquary.crow.commands.manager.CommandInterface;
 import com.reliquary.crow.commands.music.manager.GuildMusicManager;
 import com.reliquary.crow.commands.music.manager.PlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
@@ -23,8 +24,8 @@ public class Pause implements CommandInterface {
 		final GuildVoiceState selfVoiceState = self.getVoiceState();
 
 		// Check if the bot is in a voice channel
-		if (selfVoiceState.inVoiceChannel()) {
-			channel.sendMessage("I'm already in a voice channel: `" + selfVoiceState.getChannel() + "`")
+		if (!selfVoiceState.inVoiceChannel()) {
+			channel.sendMessage("I must be in a voice channel")
 				.delay(Duration.ofSeconds(10))
 				.flatMap(Message::delete)
 				.queue();
@@ -59,7 +60,9 @@ public class Pause implements CommandInterface {
 		// Pause track
 		audioPlayer.setPaused(true);
 
-		// Send pause embed
+		// Send pause reaction
+		ctx.getEvent().getMessage()
+			.addReaction("U+23F8").queue();
 	}
 
 	@Override

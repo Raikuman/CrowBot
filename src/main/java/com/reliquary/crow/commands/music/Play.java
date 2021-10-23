@@ -2,6 +2,7 @@ package com.reliquary.crow.commands.music;
 
 import com.reliquary.crow.commands.manager.CommandContext;
 import com.reliquary.crow.commands.manager.CommandInterface;
+import com.reliquary.crow.commands.music.manager.PlayerManager;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.managers.AudioManager;
@@ -20,21 +21,28 @@ public class Play implements CommandInterface {
 		final Member self = ctx.getSelfMember();
 		final GuildVoiceState selfVoiceState = self.getVoiceState();
 
-		// Check if the bot is in a voice channel
-		if (selfVoiceState.inVoiceChannel()) {
-			channel.sendMessage("I'm already in a voice channel: `" + selfVoiceState.getChannel() + "`")
-				.delay(Duration.ofSeconds(10))
-				.flatMap(Message::delete)
-				.queue();
-			return;
-		}
-
 		// Check if a user is in a voice channel
 		final Member member = ctx.getMember();
 		final GuildVoiceState memberVoiceState = member.getVoiceState();
 
 		if (!memberVoiceState.inVoiceChannel()) {
 			channel.sendMessage("You must be in a voice channel to use this command")
+				.delay(Duration.ofSeconds(10))
+				.flatMap(Message::delete)
+				.queue();
+			return;
+		}
+
+		// Check if the bot is in a voice channel
+		if (!selfVoiceState.inVoiceChannel()) {
+			// Get audio manager for guild
+			final AudioManager audioManager = ctx.getGuild().getAudioManager();
+			final VoiceChannel memberChannel = memberVoiceState.getChannel();
+
+			// Join audio channel
+			audioManager.openAudioConnection(memberChannel);
+		} else if (selfVoiceState.getChannel() != memberVoiceState.getChannel()) {
+			channel.sendMessage("I'm already in a voice channel: `" + selfVoiceState.getChannel() + "`")
 				.delay(Duration.ofSeconds(10))
 				.flatMap(Message::delete)
 				.queue();
@@ -62,7 +70,7 @@ public class Play implements CommandInterface {
 		// Youtube Search
 		String link = String.join(" ", ctx.getArgs());
 
-		if (isUrl(link)) {
+		if (!isUrl(link)) {
 			link = "ytsearch:" + link;
 		}
 
@@ -73,8 +81,8 @@ public class Play implements CommandInterface {
 		// Join audio channel
 		audioManager.openAudioConnection(memberChannel);
 
-
-
+		PlayerManager.getInstance()
+			.loadAndPlay(channel, link, ctx.getAuthor());
 	}
 
 	@Override

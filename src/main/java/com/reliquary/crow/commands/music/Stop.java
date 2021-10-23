@@ -23,8 +23,8 @@ public class Stop implements CommandInterface {
 		final GuildVoiceState selfVoiceState = self.getVoiceState();
 
 		// Check if the bot is in a voice channel
-		if (selfVoiceState.inVoiceChannel()) {
-			channel.sendMessage("I'm already in a voice channel: `" + selfVoiceState.getChannel() + "`")
+		if (!selfVoiceState.inVoiceChannel()) {
+			channel.sendMessage("I must be in a voice channel")
 				.delay(Duration.ofSeconds(10))
 				.flatMap(Message::delete)
 				.queue();
