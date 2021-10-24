@@ -59,9 +59,9 @@ public class ReactionChannelListener extends ListenerAdapter {
 					assert postChannel != null;
 					yamBoard.appendToYamBoard(
 						message.getId(),
-						postChannel.sendMessage(
-							yamBoard.createYamBoardEmbed(message, event.getChannel().getName()).build())
-							.complete().getId()
+						postChannel.sendMessageEmbeds(
+							yamBoard.createYamBoardEmbed(message, event.getChannel().getName()).build()
+						).complete().getId()
 					);
 				}
 			}
