@@ -1,6 +1,7 @@
 package com.reliquary.crow.listeners;
 
-import com.reliquary.crow.commands.manager.CommandManager;
+import com.reliquary.crow.slashcommands.manager.SlashManager;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
@@ -13,11 +14,16 @@ import javax.annotation.Nonnull;
 public class SlashCommandListener extends ListenerAdapter {
 
 	private static final Logger logger = LoggerFactory.getLogger(TextChannelListener.class);
-	private final CommandManager manager = new CommandManager();
+	private final SlashManager manager = new SlashManager();
 
 	@Override
 	public void onReady(@Nonnull ReadyEvent event) {
 		logger.info("{} SlashListener is initialized", event.getJDA().getSelfUser().getAsTag());
+
+		// Create slash command on guild
+		Guild guild = event.getJDA().getGuildById("685394913281441855");
+		assert guild != null;
+		guild.upsertCommand("dice", "Rolls a d20").queue();
 	}
 
 	@Override
@@ -29,7 +35,6 @@ public class SlashCommandListener extends ListenerAdapter {
 			return;
 
 		// Check for the command name
-		if (!event.getName().equals("dice")) return;
-		event.reply("Dice").setEphemeral(false).queue();
+		manager.handle(event);
 	}
 }

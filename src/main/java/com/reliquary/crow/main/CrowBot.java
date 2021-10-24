@@ -88,8 +88,5 @@ public class CrowBot {
 				PresenceHandler.updatePresence(jda);
 			}
 		}, 0, 5 * 60 * 1000);
-
-		// Slash command testing
-		jda.getGuildById("685394913281441855").upsertCommand("dice", "Rolls a d20").queue();
 	}
 }
