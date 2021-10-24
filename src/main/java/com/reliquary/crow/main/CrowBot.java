@@ -1,6 +1,7 @@
 package com.reliquary.crow.main;
 
 import com.reliquary.crow.listeners.ReactionChannelListener;
+import com.reliquary.crow.listeners.SlashCommandListener;
 import com.reliquary.crow.listeners.TextChannelListener;
 import com.reliquary.crow.resources.configs.ConfigHandler;
 import com.reliquary.crow.resources.configs.DefaultConfigWriter;
@@ -37,7 +38,10 @@ public class CrowBot {
 			.enableCache(
 				CacheFlag.VOICE_STATE
 			)
-			.addEventListeners(new TextChannelListener(), new ReactionChannelListener())
+			.addEventListeners(
+				new TextChannelListener(),
+				new ReactionChannelListener(),
+				new SlashCommandListener())
 			.build();
 
 		// Block jda until connected
@@ -84,5 +88,8 @@ public class CrowBot {
 				PresenceHandler.updatePresence(jda);
 			}
 		}, 0, 5 * 60 * 1000);
+
+		// Slash command testing
+		jda.getGuildById("685394913281441855").upsertCommand("dice", "Rolls a d20").queue();
 	}
 }
