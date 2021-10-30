@@ -8,7 +8,7 @@ public class ReactionChecker {
 
 	/*
 	checkReaction
-	Check the reaction if its a yam reaction
+	Check the reaction of a message with a specific reaction
 	 */
 	public static boolean checkReaction(MessageReaction reaction, String compareReaction) {
 		return reaction.getReactionEmote().toString().split(":")[1].toLowerCase()
@@ -17,7 +17,7 @@ public class ReactionChecker {
 
 	/*
 	countNumberOfReactions
-	Count the number of appearances yam has on a message
+	Count the number of appearances a reaction has on a message
 	 */
 	public static int countNumberOfReactions(List<MessageReaction> reactions, String compareReaction) {
 
