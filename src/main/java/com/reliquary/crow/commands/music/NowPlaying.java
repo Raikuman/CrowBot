@@ -4,10 +4,10 @@ import com.reliquary.crow.commands.manager.CommandContext;
 import com.reliquary.crow.commands.manager.CommandInterface;
 import com.reliquary.crow.commands.music.manager.GuildMusicManager;
 import com.reliquary.crow.commands.music.manager.PlayerManager;
+import com.reliquary.crow.resources.RandomClasses.DateAndTime;
 import com.reliquary.crow.resources.RandomClasses.RandomColor;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
@@ -30,21 +30,21 @@ public class NowPlaying implements CommandInterface {
 		final Member self = ctx.getSelfMember();
 		final GuildVoiceState selfVoiceState = self.getVoiceState();
 
-		// Check if the bot is in a voice channel
-		if (selfVoiceState.inVoiceChannel()) {
-			channel.sendMessage("I'm already in a voice channel: `" + selfVoiceState.getChannel() + "`")
-				.delay(Duration.ofSeconds(10))
-				.flatMap(Message::delete)
-				.queue();
-			return;
-		}
-
 		// Check if a user is in a voice channel
 		final Member member = ctx.getMember();
 		final GuildVoiceState memberVoiceState = member.getVoiceState();
 
 		if (!memberVoiceState.inVoiceChannel()) {
 			channel.sendMessage("You must be in a voice channel to use this command")
+				.delay(Duration.ofSeconds(10))
+				.flatMap(Message::delete)
+				.queue();
+			return;
+		}
+
+		// Check if the bot is in a voice channel
+		if (!selfVoiceState.inVoiceChannel()) {
+			channel.sendMessage("I must be in a voice channel to use this command")
 				.delay(Duration.ofSeconds(10))
 				.flatMap(Message::delete)
 				.queue();
@@ -77,13 +77,17 @@ public class NowPlaying implements CommandInterface {
 		AudioTrack track = audioPlayer.getPlayingTrack();
 
 		// Send info embed
-		final AudioTrackInfo info = track.getInfo();
 		EmbedBuilder builder = new EmbedBuilder()
-			.setTitle("Now Playing ♪")
+			.setAuthor("♪ Now Playing ♪", track.getInfo().uri, member.getUser().getAvatarUrl())
+			.setTitle(track.getInfo().title, track.getInfo().uri)
 			.setColor(RandomColor.getRandomColor());
-		StringBuilder descriptionBuilder =  builder.getDescriptionBuilder();
+		builder.addField("Channel", track.getInfo().author, true);
+		builder.addField("Song Duration", DateAndTime.formatTime(track.getDuration()), true);
+		builder.addField("Position in queue", "1", true);
 
-		// Pls finish this
+		// Send message
+		channel.sendMessageEmbeds(builder.build())
+			.queue();
 	}
 
 	@Override
