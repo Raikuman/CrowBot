@@ -103,7 +103,7 @@ public class PlayerManager {
 
 				// Playlist embed
 				EmbedBuilder builder = new EmbedBuilder()
-					.setAuthor("**Adding playlist to queue** :notes:", null, user.getAvatarUrl())
+					.setAuthor("Adding playlist to queue:", null, user.getAvatarUrl())
 					.setTitle(audioPlaylist.getName(), trackUrl)
 					.setColor(RandomColor.getRandomColor());
 				builder.addField("Songs in Playlist",
@@ -155,9 +155,9 @@ public class PlayerManager {
 		// Set title based on queue size
 		String title;
 		if (queueSize == 1)
-			title = "**Playing** :notes:";
+			title = "Playing:";
 		else
-			title = "**Adding to queue** :notes:";
+			title = "Adding to queue:";
 
 		// Playing embed
 		EmbedBuilder builder = new EmbedBuilder()
