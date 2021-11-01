@@ -5,7 +5,6 @@ import com.reliquary.crow.commands.manager.CommandInterface;
 import com.reliquary.crow.commands.music.manager.GuildMusicManager;
 import com.reliquary.crow.commands.music.manager.PlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
@@ -23,21 +22,21 @@ public class Pause implements CommandInterface {
 		final Member self = ctx.getSelfMember();
 		final GuildVoiceState selfVoiceState = self.getVoiceState();
 
-		// Check if the bot is in a voice channel
-		if (!selfVoiceState.inVoiceChannel()) {
-			channel.sendMessage("I must be in a voice channel")
-				.delay(Duration.ofSeconds(10))
-				.flatMap(Message::delete)
-				.queue();
-			return;
-		}
-
 		// Check if a user is in a voice channel
 		final Member member = ctx.getMember();
 		final GuildVoiceState memberVoiceState = member.getVoiceState();
 
 		if (!memberVoiceState.inVoiceChannel()) {
 			channel.sendMessage("You must be in a voice channel to use this command")
+				.delay(Duration.ofSeconds(10))
+				.flatMap(Message::delete)
+				.queue();
+			return;
+		}
+
+		// Check if the bot is in a voice channel
+		if (!selfVoiceState.inVoiceChannel()) {
+			channel.sendMessage("I must be in a voice channel to use this command")
 				.delay(Duration.ofSeconds(10))
 				.flatMap(Message::delete)
 				.queue();
