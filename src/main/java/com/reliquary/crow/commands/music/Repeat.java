@@ -23,21 +23,21 @@ public class Repeat implements CommandInterface {
 		final Member self = ctx.getSelfMember();
 		final GuildVoiceState selfVoiceState = self.getVoiceState();
 
-		// Check if the bot is in a voice channel
-		if (!selfVoiceState.inVoiceChannel()) {
-			channel.sendMessage("I must be in a voice channel")
-				.delay(Duration.ofSeconds(10))
-				.flatMap(Message::delete)
-				.queue();
-			return;
-		}
-
 		// Check if a user is in a voice channel
 		final Member member = ctx.getMember();
 		final GuildVoiceState memberVoiceState = member.getVoiceState();
 
 		if (!memberVoiceState.inVoiceChannel()) {
 			channel.sendMessage("You must be in a voice channel to use this command")
+				.delay(Duration.ofSeconds(10))
+				.flatMap(Message::delete)
+				.queue();
+			return;
+		}
+
+		// Check if the bot is in a voice channel
+		if (!selfVoiceState.inVoiceChannel()) {
+			channel.sendMessage("I must be in a voice channel to use this command")
 				.delay(Duration.ofSeconds(10))
 				.flatMap(Message::delete)
 				.queue();
@@ -67,6 +67,8 @@ public class Repeat implements CommandInterface {
 		}
 
 		musicManager.scheduler.repeating = !musicManager.scheduler.repeating;
+
+		//TODO: Complete repeat embed
 
 		// Send embed whether it is repeating or not
 		// channel.sendMessageFormat("Set to **%s**", !musicManager.scheduler.repeating ? "repeating" : "not repeating").queue();
