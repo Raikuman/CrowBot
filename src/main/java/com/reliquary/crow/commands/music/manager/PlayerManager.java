@@ -154,7 +154,7 @@ public class PlayerManager {
 
 		// Set title based on queue size
 		String title;
-		if (queueSize == 1)
+		if (queueSize == 0)
 			title = "Playing:";
 		else
 			title = "Adding to queue:";
