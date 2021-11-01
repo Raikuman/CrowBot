@@ -22,21 +22,21 @@ public class Stop implements CommandInterface {
 		final Member self = ctx.getSelfMember();
 		final GuildVoiceState selfVoiceState = self.getVoiceState();
 
-		// Check if the bot is in a voice channel
-		if (!selfVoiceState.inVoiceChannel()) {
-			channel.sendMessage("I must be in a voice channel")
-				.delay(Duration.ofSeconds(10))
-				.flatMap(Message::delete)
-				.queue();
-			return;
-		}
-
 		// Check if a user is in a voice channel
 		final Member member = ctx.getMember();
 		final GuildVoiceState memberVoiceState = member.getVoiceState();
 
 		if (!memberVoiceState.inVoiceChannel()) {
 			channel.sendMessage("You must be in a voice channel to use this command")
+				.delay(Duration.ofSeconds(10))
+				.flatMap(Message::delete)
+				.queue();
+			return;
+		}
+
+		// Check if the bot is in a voice channel
+		if (!selfVoiceState.inVoiceChannel()) {
+			channel.sendMessage("I must be in a voice channel to use this command")
 				.delay(Duration.ofSeconds(10))
 				.flatMap(Message::delete)
 				.queue();
@@ -60,6 +60,7 @@ public class Stop implements CommandInterface {
 		musicManager.scheduler.queue.clear();
 
 		// Send stop embed
+		// TODO: Complete stop embed
 	}
 
 	@Override
