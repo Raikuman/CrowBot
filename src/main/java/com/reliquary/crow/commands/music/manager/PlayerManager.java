@@ -69,8 +69,9 @@ public class PlayerManager {
 				musicManager.scheduler.queue(audioTrack);
 
 				// Send message
-				channel.sendMessageEmbeds(trackEmbed(musicManager.scheduler.queue.size(), audioTrack, user).build())
-					.queue();
+				channel.sendMessageEmbeds(
+					trackEmbed(musicManager.scheduler.queue.size(), audioTrack, user, channel.getGuild()).build()
+					).queue();
 			}
 
 			@Override
@@ -89,8 +90,9 @@ public class PlayerManager {
 						musicManager.scheduler.queue(firstTrack);
 
 						// Send message
-						channel.sendMessageEmbeds(trackEmbed(musicManager.scheduler.queue.size(), firstTrack, user).build())
-							.queue();
+						channel.sendMessageEmbeds(
+							trackEmbed(musicManager.scheduler.queue.size(), firstTrack, user, channel.getGuild()).build()
+							).queue();
 
 						return;
 					}
@@ -150,7 +152,9 @@ public class PlayerManager {
 	trackEmbed
 	Creates an EmbedBuilder for playing tracks
 	 */
-	private EmbedBuilder trackEmbed(int queueSize, AudioTrack audioTrack, User user) {
+	private EmbedBuilder trackEmbed(int queueSize, AudioTrack audioTrack, User user, Guild guild) {
+
+		GuildMusicManager musicManager = this.getMusicManager(guild);
 
 		// Set title based on queue size
 		String title;
@@ -166,7 +170,7 @@ public class PlayerManager {
 			.setColor(RandomColor.getRandomColor());
 		builder.addField("Channel", audioTrack.getInfo().author, true);
 		builder.addField("Song Duration", DateAndTime.formatTime(audioTrack.getDuration()), true);
-		builder.addField("Position in queue", String.valueOf(audioTrack.getPosition()) + 1, true);
+		builder.addField("Position in queue", String.valueOf(musicManager.scheduler.queue.size() + 1), true);
 
 		return builder;
 	}
