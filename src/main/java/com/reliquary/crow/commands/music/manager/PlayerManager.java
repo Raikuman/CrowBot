@@ -159,9 +159,9 @@ public class PlayerManager {
 		// Set title based on queue size
 		String title;
 		if (queueSize == 0)
-			title = "Playing:";
+			title = "▶️ Playing:";
 		else
-			title = "Adding to queue:";
+			title = "⏭️ Adding to queue:";
 
 		// Playing embed
 		EmbedBuilder builder = new EmbedBuilder()
