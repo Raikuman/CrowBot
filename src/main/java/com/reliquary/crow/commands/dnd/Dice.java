@@ -2,10 +2,12 @@ package com.reliquary.crow.commands.dnd;
 
 import com.reliquary.crow.commands.manager.CommandContext;
 import com.reliquary.crow.commands.manager.CommandInterface;
+import com.reliquary.crow.resources.RandomClasses.DateAndTime;
 import com.reliquary.crow.resources.RandomClasses.RandomColor;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 
+import java.security.SecureRandom;
 import java.util.List;
 
 public class Dice implements CommandInterface {
@@ -13,19 +15,42 @@ public class Dice implements CommandInterface {
 	@Override
 	public void handle(CommandContext ctx) {
 
-		List<String> args = ctx.getArgs();
-		TextChannel channel = ctx.getChannel();
-
 		EmbedBuilder builder = new EmbedBuilder()
-			.setTitle("")
-			.setColor(RandomColor.getRandomColor());
-		StringBuilder descriptionBuilder =  builder.getDescriptionBuilder();
+			.setTitle(ctx.getEvent().getAuthor().getName() + " rolled 1d20")
+			.setColor(RandomColor.getRandomColor())
+			.setFooter(DateAndTime.getDate() + " " + DateAndTime.getTime(), ctx.getEvent().getAuthor().getAvatarUrl());
+		StringBuilder descriptionBuilder = builder.getDescriptionBuilder();
 
-		if (args.isEmpty()) {
+		// Gets random numbers
+		StringBuilder diceRolls = new StringBuilder();
+		int diceTotal = 0, currentNum;
+		SecureRandom rand = new SecureRandom();
 
-		} else {
-
+		for (int i = 0; i < 1; i++) {
+			currentNum = rand.nextInt(20) + 1;
+			diceTotal += currentNum;
+			diceRolls
+				.append(currentNum)
+				.append(" ");
+			rand.reseed();
 		}
+
+		// Appends the rolls to the roll embed
+		descriptionBuilder
+			.append("```md\n")
+			.append("<Total: ")
+			.append(diceTotal)
+			.append("> < Rolls: ")
+			.append(diceRolls)
+			.append(">")
+			.append("```");
+
+		// Send message
+		ctx.getChannel().sendMessageEmbeds(builder.build())
+			.queue();
+
+		// Delete command message
+		ctx.getMessage().delete().queue();
 
 	}
 
