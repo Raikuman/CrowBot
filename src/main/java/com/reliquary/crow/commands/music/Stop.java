@@ -59,8 +59,9 @@ public class Stop implements CommandInterface {
 		musicManager.scheduler.player.stopTrack();
 		musicManager.scheduler.queue.clear();
 
-		// Send stop embed
-		// TODO: Complete stop embed
+		// Send stop reaction
+		ctx.getEvent().getMessage()
+			.addReaction("U+1F6D1").queue();
 	}
 
 	@Override
