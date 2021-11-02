@@ -4,7 +4,10 @@ import com.reliquary.crow.commands.manager.CommandContext;
 import com.reliquary.crow.commands.manager.CommandInterface;
 import com.reliquary.crow.commands.music.manager.GuildMusicManager;
 import com.reliquary.crow.commands.music.manager.PlayerManager;
+import com.reliquary.crow.resources.RandomClasses.RandomColor;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
+import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.entities.Member;
@@ -69,7 +72,18 @@ public class Skip implements CommandInterface {
 		// Skip track
 		musicManager.scheduler.nextTrack();
 
-		// TODO: Complete skip embed
+		// Get current track
+		AudioTrack track = musicManager.scheduler.player.getPlayingTrack();
+
+		// Send info embed
+		EmbedBuilder builder = new EmbedBuilder()
+			.setAuthor("Skipped current track, now playing:", track.getInfo().uri, member.getUser().getAvatarUrl())
+			.setTitle(track.getInfo().title, track.getInfo().uri)
+			.setColor(RandomColor.getRandomColor());
+
+		// Send message
+		channel.sendMessageEmbeds(builder.build())
+			.queue();
 	}
 
 	@Override
