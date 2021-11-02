@@ -119,8 +119,6 @@ public class CommandManager {
 
 		// Check if invoke has a command
 		if (cmd != null) {
-			event.getChannel().sendTyping().queue();
-
 			// Remove invoke string, add args to list
 			List<String> args = Arrays.asList(split)
 				.subList(1, split.length);
