@@ -31,7 +31,7 @@ public class YamBoard {
 	 */
 	public static boolean checkReaction(MessageReaction reaction) {
 		return reaction.getReactionEmote().toString().split(":")[1].toLowerCase()
-			.equals(ConfigHandler.loadConfigSetting("yamboardSettings", "yamEmoji"));
+			.equals(ConfigHandler.loadConfigSetting("emojiSettings", "yamEmoji"));
 	}
 
 	/*
