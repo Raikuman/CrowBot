@@ -8,7 +8,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.security.SecureRandom;
 
-public class SlashDiceTest implements SlashInterface {
+public class Dice implements SlashInterface {
 	@Override
 	public void handle(SlashContext ctx) {
 

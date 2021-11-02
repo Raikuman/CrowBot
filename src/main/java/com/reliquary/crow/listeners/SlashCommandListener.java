@@ -6,6 +6,9 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,6 +27,15 @@ public class SlashCommandListener extends ListenerAdapter {
 		Guild guild = event.getJDA().getGuildById("685394913281441855");
 		assert guild != null;
 		guild.upsertCommand("dice", "Rolls a d20").queue();
+
+		// Seems like this is better to implement than upsert?
+			// Takes up to an hour
+		//CommandListUpdateAction slashCmd = event.getJDA().updateCommands();
+		// slashCmd.addCommands( new CommandData());
+
+		guild.upsertCommand(new CommandData("dicetest", "Rolls a dice")
+			.addOptions(new OptionData(OptionType.INTEGER, "amount", "cheese"))
+		).queue();
 	}
 
 	@Override
