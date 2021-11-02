@@ -83,6 +83,9 @@ public class Play implements CommandInterface {
 
 		PlayerManager.getInstance()
 			.loadAndPlay(channel, link, ctx.getAuthor());
+
+		// Delete original play command
+		ctx.getEvent().getMessage().delete().queue();
 	}
 
 	@Override
