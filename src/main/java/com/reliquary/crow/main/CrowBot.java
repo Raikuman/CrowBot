@@ -1,5 +1,6 @@
 package com.reliquary.crow.main;
 
+import com.reliquary.crow.listeners.ButtonClickListener;
 import com.reliquary.crow.listeners.ReactionChannelListener;
 import com.reliquary.crow.listeners.SlashCommandListener;
 import com.reliquary.crow.listeners.TextChannelListener;
@@ -41,7 +42,8 @@ public class CrowBot {
 			.addEventListeners(
 				new TextChannelListener(),
 				new ReactionChannelListener(),
-				new SlashCommandListener())
+				new SlashCommandListener(),
+				new ButtonClickListener())
 			.build();
 
 		// Block jda until connected
