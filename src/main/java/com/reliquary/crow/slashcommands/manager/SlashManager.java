@@ -1,6 +1,6 @@
 package com.reliquary.crow.slashcommands.manager;
 
-import com.reliquary.crow.slashcommands.dnd.SlashDiceTest;
+import com.reliquary.crow.slashcommands.dnd.Dice;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 
 import javax.annotation.Nullable;
@@ -14,7 +14,7 @@ public class SlashManager {
 	// Constructor to add slash commands
 	public SlashManager() {
 		// DnD Commands
-		addCommand(new SlashDiceTest());
+		addCommand(new Dice());
 	}
 
 	/*
