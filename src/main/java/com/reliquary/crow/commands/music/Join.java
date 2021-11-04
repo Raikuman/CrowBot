@@ -2,12 +2,16 @@ package com.reliquary.crow.commands.music;
 
 import com.reliquary.crow.commands.manager.CommandContext;
 import com.reliquary.crow.commands.manager.CommandInterface;
+import com.reliquary.crow.resources.MessageMaker;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.managers.AudioManager;
 
-import java.time.Duration;
-
+/**
+ * This class handles the bot joining a voice channel of a user
+ *
+ * @version 1.0
+ * @since 2021-04-11
+ */
 @SuppressWarnings("ConstantConditions")
 public class Join implements CommandInterface {
 
@@ -18,42 +22,40 @@ public class Join implements CommandInterface {
 		final Member self = ctx.getSelfMember();
 		final GuildVoiceState selfVoiceState = self.getVoiceState();
 
-		// Check if the bot is in a voice channel
-		if (selfVoiceState.inVoiceChannel()) {
-			channel.sendMessage("I'm already in a voice channel: `" + selfVoiceState.getChannel() + "`")
-				.delay(Duration.ofSeconds(10))
-				.flatMap(Message::delete)
-				.queue();
-			return;
-		}
-
-		// Check if a user is in a voice channel
-		final Member member = ctx.getMember();
-		final GuildVoiceState memberVoiceState = member.getVoiceState();
+		// Check if the user is in a voice channel
+		final GuildVoiceState memberVoiceState = ctx.getMember().getVoiceState();
 
 		if (!memberVoiceState.inVoiceChannel()) {
-			channel.sendMessage("You must be in a voice channel to use this command")
-				.delay(Duration.ofSeconds(10))
-				.flatMap(Message::delete)
-				.queue();
+			MessageMaker.timedMessage(
+				"You must be in a voice channel to use this command",
+				channel,
+				10
+			);
 			return;
 		}
 
-		// Check if the bot has permission to join the voice channel
+		// Check if the bot is in another voice channel
+		if (selfVoiceState.inVoiceChannel() &&(selfVoiceState.getChannel() != memberVoiceState.getChannel())) {
+			MessageMaker.timedMessage(
+				"I'm already in a voice channel: `" + selfVoiceState.getChannel().getName() + "`",
+				channel,
+				10
+			);
+			return;
+		}
+
+		// Check if the bot has permissions to join user's voice channel
 		if (!self.hasPermission(Permission.VOICE_CONNECT)) {
-			channel.sendMessage("I don't have permission to join `" + memberVoiceState.getChannel().toString() + "`")
-				.delay(Duration.ofSeconds(10))
-				.flatMap(Message::delete)
-				.queue();
+			MessageMaker.timedMessage(
+				"I don't have permission to join `" + memberVoiceState.getChannel().toString() + "`",
+				channel,
+				10
+			);
 			return;
 		}
 
-		// Get audio manager for guild
-		final AudioManager audioManager = ctx.getGuild().getAudioManager();
-		final VoiceChannel memberChannel = memberVoiceState.getChannel();
-
-		// Join audio channel
-		audioManager.openAudioConnection(memberChannel);
+		// Join user's voice channel
+		ctx.getGuild().getAudioManager().openAudioConnection(memberVoiceState.getChannel());
 	}
 
 	@Override
