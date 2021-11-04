@@ -5,6 +5,7 @@ import com.reliquary.crow.commands.admin.Shutdown;
 import com.reliquary.crow.commands.basic.Ping;
 import com.reliquary.crow.commands.dnd.Dice;
 import com.reliquary.crow.commands.music.*;
+import com.reliquary.crow.commands.music.Queue.Queue;
 import com.reliquary.crow.commands.settings.ChangePrefix;
 import com.reliquary.crow.resources.configs.ConfigHandler;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
