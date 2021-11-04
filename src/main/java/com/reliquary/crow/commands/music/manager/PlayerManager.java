@@ -20,13 +20,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This class provides methods to getting the music manager from the guild and handling playing tracks
+ *
+ * @version 1.0
+ * @since 2021-04-11
+ */
 public class PlayerManager {
 
 	private static PlayerManager INSTANCE;
 	private final Map<Long, GuildMusicManager> musicManagers;
 	private final AudioPlayerManager audioPlayerManager;
 
-	// Constructor
 	public PlayerManager() {
 		this.musicManagers = new HashMap<>();
 		this.audioPlayerManager = new DefaultAudioPlayerManager();
@@ -36,9 +41,11 @@ public class PlayerManager {
 		AudioSourceManagers.registerLocalSource(this.audioPlayerManager);
 	}
 
-	/*
-	getMusicManager
-	Gets the music manager for the specific guild
+	/**
+	 * This method gets the player manager from the guild and provides the general music manager for
+	 * manipulation
+	 * @param guild Provides the guild to get the audio manager
+	 * @return Returns the music manager for the guild
 	 */
 	public GuildMusicManager getMusicManager(Guild guild) {
 
@@ -51,15 +58,21 @@ public class PlayerManager {
 		});
 	}
 
-	/*
-	loadAndPlay
-
+	/**
+	 * This method overrides results from loading tracks onto the music manager to work with searching, url
+	 * loading, and error handling
+	 * @param channel Provides the guild text channel to send messages
+	 * @param trackUrl Provides the argument of the play command, whether it is a url or a string
+	 * @param user Provides the user object to get information in the embed
 	 */
 	public void loadAndPlay(TextChannel channel, String trackUrl, User user) {
 
 		GuildMusicManager musicManager = this.getMusicManager(channel.getGuild());
+
+		// Set at a constant 50% volume, as full volume was too loud when the bot hasn't been adjusted
 		musicManager.audioPlayer.setVolume(50);
 
+		// Override load result handler
 		this.audioPlayerManager.loadItemOrdered(musicManager, trackUrl, new AudioLoadResultHandler() {
 
 			@Override
@@ -70,8 +83,11 @@ public class PlayerManager {
 
 				// Send message
 				channel.sendMessageEmbeds(
-					trackEmbed(musicManager.scheduler.queue.size(), audioTrack, user, channel.getGuild()).build()
-					).queue();
+						trackEmbed(
+							musicManager.scheduler.queue.size(),
+							audioTrack,
+							user).build())
+					.queue();
 			}
 
 			@Override
@@ -80,10 +96,13 @@ public class PlayerManager {
 				AudioTrack firstTrack = audioPlaylist.getSelectedTrack();
 				List<AudioTrack> tracks = audioPlaylist.getTracks();
 
-				// Check for a searched track
+				// Check if the url is a searched track
 				if (trackUrl.equalsIgnoreCase("ytsearch:")) {
-					// Check if there is a track already playing
+
+					// Check if the result of the search is empty
 					if (firstTrack != null) {
+
+						// Get the first track of the playlist
 						firstTrack = audioPlaylist.getTracks().remove(0);
 
 						// Queues the first track from the search playlist
@@ -91,8 +110,11 @@ public class PlayerManager {
 
 						// Send message
 						channel.sendMessageEmbeds(
-							trackEmbed(musicManager.scheduler.queue.size(), firstTrack, user, channel.getGuild()).build()
-							).queue();
+							trackEmbed(
+								musicManager.scheduler.queue.size(),
+								firstTrack,
+								user).build())
+							.queue();
 
 						return;
 					}
@@ -135,9 +157,9 @@ public class PlayerManager {
 		});
 	}
 
-	/*
-	getInstance
-	Provides instance of this class
+	/**
+	 * Method provides the player manager
+	 * @return Returns the player manager instance
 	 */
 	public static PlayerManager getInstance() {
 
@@ -148,13 +170,14 @@ public class PlayerManager {
 		return INSTANCE;
 	}
 
-	/*
-	trackEmbed
-	Creates an EmbedBuilder for playing tracks
+	/**
+	 * This method creates an embed builder using information on a track and the user
+	 * @param queueSize Gets the queue size of the current queue
+	 * @param audioTrack Gets the current track being played
+	 * @param user Get user information for the embed
+	 * @return Return the embed builder after editing
 	 */
-	private EmbedBuilder trackEmbed(int queueSize, AudioTrack audioTrack, User user, Guild guild) {
-
-		GuildMusicManager musicManager = this.getMusicManager(guild);
+	private EmbedBuilder trackEmbed(int queueSize, AudioTrack audioTrack, User user) {
 
 		// Set title based on queue size
 		String title;
@@ -170,7 +193,7 @@ public class PlayerManager {
 			.setColor(RandomColor.getRandomColor());
 		builder.addField("Channel", audioTrack.getInfo().author, true);
 		builder.addField("Song Duration", DateAndTime.formatTime(audioTrack.getDuration()), true);
-		builder.addField("Position in queue", String.valueOf(musicManager.scheduler.queue.size() + 1), true);
+		builder.addField("Position in queue", String.valueOf(queueSize), true);
 
 		return builder;
 	}

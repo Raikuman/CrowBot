@@ -8,13 +8,18 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+/**
+ * This class provides overrides methods from AudioEventAdapter to control how tracks are queued and played
+ *
+ * @version 1.0
+ * @since 2021-04-11
+ */
 public class TrackScheduler extends AudioEventAdapter {
 
 	public final AudioPlayer player;
 	public final BlockingQueue<AudioTrack> queue;
 	public boolean repeating = false;
 
-	// Constructor
 	public TrackScheduler(AudioPlayer player) {
 		this.player = player;
 		this.queue = new LinkedBlockingQueue<>();
@@ -34,9 +39,9 @@ public class TrackScheduler extends AudioEventAdapter {
 		}
 	}
 
-	/*
-	queue
-	Queue next track to player
+	/**
+	 * This method queues a given track
+	 * @param track Provides the track to queue
 	 */
 	public void queue(AudioTrack track) {
 
@@ -46,9 +51,8 @@ public class TrackScheduler extends AudioEventAdapter {
 		}
 	}
 
-	/*
-	nextTrack
-	Get the next track from the top of the stack of tracks
+	/**
+	 * This method gets the track at the start of the queue and plays it
 	 */
 	public void nextTrack() {
 		this.player.startTrack(this.queue.poll(), false);

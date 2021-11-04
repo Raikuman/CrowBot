@@ -6,6 +6,12 @@ import net.dv8tion.jda.api.audio.AudioSendHandler;
 
 import java.nio.ByteBuffer;
 
+/**
+ * This class gets information from the guild's audio handler and provides an object to the guild for audio
+ *
+ * @version 1.0
+ * @since 2021-04-11
+ */
 public class AudioPlayerSendHandler implements AudioSendHandler {
 
 	private final AudioPlayer audioPlayer;
