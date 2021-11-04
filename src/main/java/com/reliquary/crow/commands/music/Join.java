@@ -56,6 +56,10 @@ public class Join implements CommandInterface {
 
 		// Join user's voice channel
 		ctx.getGuild().getAudioManager().openAudioConnection(memberVoiceState.getChannel());
+
+		// Send join reaction
+		ctx.getEvent().getMessage()
+			.addReaction("U+1F197").queue();
 	}
 
 	@Override

@@ -68,6 +68,10 @@ public class Leave implements CommandInterface {
 		final GuildMusicManager musicManager = PlayerManager.getInstance().getMusicManager(ctx.getGuild());
 		musicManager.scheduler.queue.clear();
 		musicManager.scheduler.player.stopTrack();
+
+		// Send leave reaction
+		ctx.getEvent().getMessage()
+			.addReaction("U+1F44B").queue();
 	}
 
 	@Override
