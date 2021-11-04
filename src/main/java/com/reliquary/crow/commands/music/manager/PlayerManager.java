@@ -179,21 +179,31 @@ public class PlayerManager {
 	 */
 	private EmbedBuilder trackEmbed(int queueSize, AudioTrack audioTrack, User user) {
 
-		// Set title based on queue size
-		String title;
-		if (queueSize == 0)
-			title = "▶️ Playing:";
-		else
-			title = "⏭️ Adding to queue:";
-
 		// Playing embed
 		EmbedBuilder builder = new EmbedBuilder()
-			.setAuthor(title, audioTrack.getInfo().uri, user.getAvatarUrl())
+
 			.setTitle(audioTrack.getInfo().title, audioTrack.getInfo().uri)
 			.setColor(RandomColor.getRandomColor());
 		builder.addField("Channel", audioTrack.getInfo().author, true);
 		builder.addField("Song Duration", DateAndTime.formatTime(audioTrack.getDuration()), true);
-		builder.addField("Position in queue", String.valueOf(queueSize), true);
+
+
+		// Set info based on queue size
+		String title;
+		String nowPlaying;
+		if (queueSize == 0) {
+			title = "▶️ Playing:";
+			nowPlaying = "Now playing";
+		}
+		else {
+			title = "⏭️ Adding to queue:";
+			nowPlaying = String.valueOf(queueSize);
+		}
+
+		// Edit embed with given info
+		builder
+			.setAuthor(title, audioTrack.getInfo().uri, user.getAvatarUrl())
+			.addField("Position in queue", nowPlaying, true);
 
 		return builder;
 	}
