@@ -3,14 +3,20 @@ package com.reliquary.crow.commands.music;
 import com.reliquary.crow.commands.manager.CommandContext;
 import com.reliquary.crow.commands.manager.CommandInterface;
 import com.reliquary.crow.commands.music.manager.PlayerManager;
+import com.reliquary.crow.resources.MessageMaker;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.managers.AudioManager;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.time.Duration;
 
+/**
+ * This class handles automatically joining the user's voice channel on command and checking args to play
+ * the found track on the music manager
+ *
+ * @version 1.0
+ * @since 2021-04-11
+ */
 @SuppressWarnings("ConstantConditions")
 public class Play implements CommandInterface {
 
@@ -21,68 +27,60 @@ public class Play implements CommandInterface {
 		final Member self = ctx.getSelfMember();
 		final GuildVoiceState selfVoiceState = self.getVoiceState();
 
-		// Check if a user is in a voice channel
-		final Member member = ctx.getMember();
-		final GuildVoiceState memberVoiceState = member.getVoiceState();
+		// Check if the user is in a voice channel
+		final GuildVoiceState memberVoiceState = ctx.getMember().getVoiceState();
 
 		if (!memberVoiceState.inVoiceChannel()) {
-			channel.sendMessage("You must be in a voice channel to use this command")
-				.delay(Duration.ofSeconds(10))
-				.flatMap(Message::delete)
-				.queue();
+			MessageMaker.timedMessage(
+				"You must be in a voice channel to use this command",
+				channel,
+				10
+			);
 			return;
 		}
 
-		// Check if the bot is in a voice channel
-		if (!selfVoiceState.inVoiceChannel()) {
-			// Get audio manager for guild
-			final AudioManager audioManager = ctx.getGuild().getAudioManager();
-			final VoiceChannel memberChannel = memberVoiceState.getChannel();
-
-			// Join audio channel
-			audioManager.openAudioConnection(memberChannel);
-		} else if (selfVoiceState.getChannel() != memberVoiceState.getChannel()) {
-			channel.sendMessage("I'm already in a voice channel: `" + selfVoiceState.getChannel() + "`")
-				.delay(Duration.ofSeconds(10))
-				.flatMap(Message::delete)
-				.queue();
+		// Check if the bot is in another voice channel
+		if (selfVoiceState.inVoiceChannel() &&(selfVoiceState.getChannel() != memberVoiceState.getChannel())) {
+			MessageMaker.timedMessage(
+				"I'm already in a voice channel: `" + selfVoiceState.getChannel().getName() + "`",
+				channel,
+				10
+			);
 			return;
 		}
 
-		// Check if the bot has permission to join the voice channel
+		// Check if the bot has permissions to join user's voice channel
 		if (!self.hasPermission(Permission.VOICE_CONNECT)) {
-			channel.sendMessage("I don't have permission to join `" + memberVoiceState.getChannel().toString() + "`")
-				.delay(Duration.ofSeconds(10))
-				.flatMap(Message::delete)
-				.queue();
+			MessageMaker.timedMessage(
+				"I don't have permission to join `" + memberVoiceState.getChannel().toString() + "`",
+				channel,
+				10
+			);
 			return;
 		}
 
 		// Check if args are empty
 		if (ctx.getArgs().isEmpty()) {
-			channel.sendMessage("You must enter a valid link or search for a video")
-				.delay(Duration.ofSeconds(10))
-				.flatMap(Message::delete)
-				.queue();
+			MessageMaker.timedMessage(
+				"You must enter a valid link or search for a video",
+				channel,
+				10
+			);
 			return;
 		}
 
-		// Youtube Search
+		// Join user's voice channel
+		ctx.getGuild().getAudioManager().openAudioConnection(memberVoiceState.getChannel());
+
+		// Check if args is a link
 		String link = String.join(" ", ctx.getArgs());
 
-		if (!isUrl(link)) {
+		// Add ytsearch if args is not a link
+		if (!isUrl(link))
 			link = "ytsearch:" + link;
-		}
 
-		// Get audio manager for guild
-		final AudioManager audioManager = ctx.getGuild().getAudioManager();
-		final VoiceChannel memberChannel = memberVoiceState.getChannel();
-
-		// Join audio channel
-		audioManager.openAudioConnection(memberChannel);
-
-		PlayerManager.getInstance()
-			.loadAndPlay(channel, link, ctx.getAuthor());
+		// Load player with link
+		PlayerManager.getInstance().loadAndPlay(channel, link, ctx.getAuthor());
 
 		// Delete original play command
 		ctx.getEvent().getMessage().delete().queue();
@@ -108,9 +106,10 @@ public class Play implements CommandInterface {
 		return "music";
 	}
 
-	/*
-	isUrl
-	Check if the string is a url
+	/**
+	 * This method checks a given string and returns a boolean of whether the string is an url or not
+	 * @param url Takes in a string to check if it's an url
+	 * @return Return boolean after string check
 	 */
 	private boolean isUrl(String url) {
 
