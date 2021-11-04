@@ -32,6 +32,8 @@ public class SlashCommandListener extends ListenerAdapter {
 
 		guild.upsertCommand(new CommandData("dice", "Rolls a d20"))
 			.queue();
+		guild.upsertCommand(new CommandData("isdnd", "a"))
+			.queue();
 	}
 
 	@Override
