@@ -15,10 +15,51 @@ public class Dice implements CommandInterface {
 	@Override
 	public void handle(CommandContext ctx) {
 
+		if (ctx.getArgs().isEmpty()) {
+			generateDiceEmbed(ctx, 1, 20);
+		}
+
+		// Input validation & overflow protection
+		try {
+			if ((ctx.getArgs().size() == 2) &&
+				(Integer.parseInt(ctx.getArgs().get(0)) <= 100) &&
+				(Integer.parseInt(ctx.getArgs().get(1)) <= 100)) {
+
+				generateDiceEmbed(
+					ctx,
+					Integer.parseInt(ctx.getArgs().get(0)),
+					Integer.parseInt(ctx.getArgs().get(1)));
+			}
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String getInvoke() {
+		return "dice";
+	}
+
+	@Override
+	public String getHelp() {
+		return "Rolls a dice (up to 100 dice at once)";
+	}
+
+	@Override
+	public String getUsage() {
+		return "null";
+	}
+
+	@Override
+	public String getCategory() {
+		return "dnd";
+	}
+
+	public void generateDiceEmbed(CommandContext ctx, int numDice, int diceRange) {
 		EmbedBuilder builder = new EmbedBuilder()
-			.setTitle(ctx.getEvent().getAuthor().getName() + " rolled 1d20")
+			.setTitle(ctx.getAuthor().getName() + " rolled " + numDice + "d" + diceRange)
 			.setColor(RandomColor.getRandomColor())
-			.setFooter(DateAndTime.getDate() + " " + DateAndTime.getTime(), ctx.getEvent().getAuthor().getAvatarUrl());
+			.setFooter(DateAndTime.getDate() + " " + DateAndTime.getTime(), ctx.getAuthor().getAvatarUrl());
 		StringBuilder descriptionBuilder = builder.getDescriptionBuilder();
 
 		// Gets random numbers
@@ -26,8 +67,8 @@ public class Dice implements CommandInterface {
 		int diceTotal = 0, currentNum;
 		SecureRandom rand = new SecureRandom();
 
-		for (int i = 0; i < 1; i++) {
-			currentNum = rand.nextInt(20) + 1;
+		for (int i = 0; i < numDice; i++) {
+			currentNum = rand.nextInt(diceRange) + 1;
 			diceTotal += currentNum;
 			diceRolls
 				.append(currentNum)
@@ -51,26 +92,5 @@ public class Dice implements CommandInterface {
 
 		// Delete command message
 		ctx.getMessage().delete().queue();
-
-	}
-
-	@Override
-	public String getInvoke() {
-		return "dice";
-	}
-
-	@Override
-	public String getHelp() {
-		return "Rolls a dice (up to 100 dice at once)";
-	}
-
-	@Override
-	public String getUsage() {
-		return "null";
-	}
-
-	@Override
-	public String getCategory() {
-		return "dnd";
 	}
 }
