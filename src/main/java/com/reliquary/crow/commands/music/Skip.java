@@ -87,7 +87,7 @@ public class Skip implements CommandInterface {
 		if (musicManager.scheduler.queue.isEmpty()) {
 			title = "Skipped current track";
 			builder
-				.setAuthor(title, ctx.getMember().getUser().getAvatarUrl());
+				.setAuthor(title, null, ctx.getMember().getUser().getAvatarUrl());
 		} else {
 			title = "Skipped current track, now playing: ";
 
