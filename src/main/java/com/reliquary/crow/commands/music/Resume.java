@@ -8,11 +8,14 @@ import com.reliquary.crow.resources.MessageMaker;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-import java.time.Duration;
-
+/**
+ * This class handles resuming the paused track on the music manager
+ *
+ * @version 1.0
+ * @since 2021-04-11
+ */
 @SuppressWarnings("ConstantConditions")
 public class Resume implements CommandInterface {
 
