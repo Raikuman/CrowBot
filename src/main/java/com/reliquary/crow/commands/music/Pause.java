@@ -72,12 +72,22 @@ public class Pause implements CommandInterface {
 			return;
 		}
 
-		// Pause track
-		audioPlayer.setPaused(true);
+		// Check if track is already paused
+		if (!audioPlayer.isPaused()) {
 
-		// Send pause reaction
-		ctx.getEvent().getMessage()
-			.addReaction("U+23F8").queue();
+			// Pause track
+			audioPlayer.setPaused(true);
+
+			// Send pause reaction
+			ctx.getEvent().getMessage()
+				.addReaction("U+23F8").queue();
+		} else {
+			MessageMaker.timedMessage(
+				"The track is already paused",
+				channel,
+				10
+			);
+		}
 	}
 
 	@Override
