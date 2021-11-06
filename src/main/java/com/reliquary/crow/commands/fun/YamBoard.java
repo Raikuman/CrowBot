@@ -6,7 +6,6 @@ import com.reliquary.crow.resources.TextLineLoader;
 import com.reliquary.crow.resources.configs.ConfigHandler;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageReaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,7 +14,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class YamBoard {
@@ -24,30 +22,6 @@ public class YamBoard {
 	private static final String DEFAULT_YAMBOARD_LOCATION =
 		ConfigHandler.loadConfigSetting("botSettings", "commandresourcedirectory") +
 			"/yamboard.txt";
-
-	/*
-	checkReaction
-	Check the reaction if its a yam reaction
-	 */
-	public static boolean checkReaction(MessageReaction reaction) {
-		return reaction.getReactionEmote().toString().split(":")[1].toLowerCase()
-			.equals(ConfigHandler.loadConfigSetting("emojiSettings", "yamEmoji"));
-	}
-
-	/*
-	countNumberOfReactions
-	Count the number of appearances yam has on a message
-	 */
-	public static int countNumberOfReactions(List<MessageReaction> reactions) {
-
-		int count = 0;
-		for (MessageReaction reaction : reactions) {
-			if (checkReaction(reaction))
-				count++;
-		}
-
-		return count;
-	}
 
 	/*
 	getPostMessageId
@@ -162,10 +136,27 @@ public class YamBoard {
 		EmbedBuilder builder = new EmbedBuilder()
 			.setAuthor(message.getAuthor().getName(), null, message.getAuthor().getAvatarUrl())
 			.setColor(RandomColor.getRandomColor())
-			.setDescription(message.getContentRaw())
 			.setFooter("#" + channelName + " | " + DateAndTime.getDate() + " " + DateAndTime.getTime());
 
-		// Check for attachments
+		String messageContent = message.getContentRaw();
+		String checkGif;
+		boolean isGif = false;
+
+		if (messageContent.length() > 4) {
+			checkGif = messageContent.substring(messageContent.length() - 4);
+			isGif = checkGif.equalsIgnoreCase("gif");
+
+		}
+
+		if (!isGif) {
+			builder
+				.setDescription(message.getContentRaw());
+		} else {
+			builder
+				.setImage(messageContent);
+
+		}
+
 		if (message.getAttachments().size() > 0)
 			builder.setImage(message.getAttachments().get(0).getUrl());
 
