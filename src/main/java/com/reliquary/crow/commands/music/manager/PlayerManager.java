@@ -93,42 +93,39 @@ public class PlayerManager {
 			@Override
 			public void playlistLoaded(AudioPlaylist audioPlaylist) {
 
-				AudioTrack firstTrack = audioPlaylist.getSelectedTrack();
 				List<AudioTrack> tracks = audioPlaylist.getTracks();
 
 				// Check if the url is a searched track
-				if (trackUrl.equalsIgnoreCase("ytsearch:")) {
+				if (trackUrl.contains("ytsearch:")) {
 
-					// Check if the result of the search is empty
-					if (firstTrack != null) {
+					// Get the first track of the playlist
+					AudioTrack firstTrack = audioPlaylist.getTracks().remove(0);
 
-						// Get the first track of the playlist
-						firstTrack = audioPlaylist.getTracks().remove(0);
-
-						// Queues the first track from the search playlist
-						musicManager.scheduler.queue(firstTrack);
-
-						// Send message
-						channel.sendMessageEmbeds(
-							trackEmbed(
-								musicManager.scheduler.queue.size(),
-								firstTrack,
-								user).build())
-							.queue();
-
+					if (firstTrack == null)
 						return;
-					}
+
+					// Queues the first track from the search playlist
+					musicManager.scheduler.queue(firstTrack);
+
+					// Send message
+					channel.sendMessageEmbeds(
+						trackEmbed(
+							musicManager.scheduler.queue.size(),
+							firstTrack,
+							user).build())
+						.queue();
+					return;
 				}
 
 				// Queue a playlist if provided a link
-				for (final AudioTrack track : tracks) {
+				for (AudioTrack track : tracks) {
 					musicManager.scheduler.queue(track);
 				}
 
 				// Playlist embed
 				EmbedBuilder builder = new EmbedBuilder()
 					.setAuthor("Adding playlist to queue:", null, user.getAvatarUrl())
-					.setTitle(audioPlaylist.getName(), trackUrl)
+					.setTitle(audioPlaylist.getName(), tracks.get(0).getInfo().uri)
 					.setColor(RandomColor.getRandomColor());
 				builder.addField("Songs in Playlist",
 					"`" + audioPlaylist.getTracks().size() + "` songs",
