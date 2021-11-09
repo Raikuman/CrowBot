@@ -11,21 +11,25 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * This class handles writing all the needed default configs for the functionality of the bot
+ *
+ * @version 1.0
+ * @since 2021-09-11
+ */
 public class DefaultConfigWriter {
 
 	private final Logger logger = LoggerFactory.getLogger(DefaultConfigWriter.class);
 
-	/*
-	botSettingsConfig
-	Writes default config for bot settings
+	/**
+	 * Writes the default config for bot settings
 	 */
 	public void writeBotSettingsConfigFile() {
 
 		List<String> configSettings = new ArrayList<>(Arrays.asList(
 			"prefix=!",
 			"presencedirectory=presence",
-			"commandresourcedirectory=commandresources",
-			"quotedirectory=quotes"
+			"commandresourcedirectory=commandresources"
 		));
 
 		String directory = "config";
@@ -33,67 +37,46 @@ public class DefaultConfigWriter {
 
 		File file = new File(directory + "/" + fileName + ".cfg");
 
-		if (!file.exists()) {
-			// Create config
-			writeConfigFile(configSettings, createConfigFile(directory + "/" + fileName));
-		} else
-			logger.info("Config " + file.getName() + " already created. Continuing...");
+		// Check if file exists
+		if (checkConfigExists(file))
+			return;
+
+		// Write config file
+		writeConfigFile(configSettings, createConfigFile(directory + "/" + fileName));
 	}
 
-	/*
-	writeEmojiConfigFile
-	Writes default config for yam boards settings
+	/**
+	 * Writes the default config for the YamBoard
 	 */
-	public void writeEmojiConfigFile() {
-
+	public void writeYamBoardConfigFile() {
 		List<String> configSettings = new ArrayList<>(Arrays.asList(
-			"yamEmoji=U+1f360",
-			"checkmarkEmoji=U+2705"
-		));
-
-		String directory = "config";
-		String fileName = "emojiSettings";
-
-		File file = new File(directory + "/" + fileName + ".cfg");
-
-		if (!file.exists()) {
-			// Create config
-			writeConfigFile(configSettings, createConfigFile(directory + "/" + fileName));
-		} else
-			logger.info("Config " + file.getName() + " already created. Continuing...");
-	}
-
-	/*
-	writeEmojiConfigFile
-	Writes default config for yam boards settings
-	 */
-	public void writeChannelIdConfigFile() {
-
-		List<String> configSettings = new ArrayList<>(Arrays.asList(
-			"mainTextChannel=",
+			"yamboardEmoji=U+1f360",
+			"chatTextChannel=",
 			"yamPostChannel="
 		));
 
 		String directory = "config";
-		String fileName = "channelIds";
+		String fileName = "yamboardSettings";
 
 		File file = new File(directory + "/" + fileName + ".cfg");
 
-		if (!file.exists()) {
-			// Create config
-			writeConfigFile(configSettings, createConfigFile(directory + "/" + fileName));
-		} else
-			logger.info("Config " + file.getName() + " already created. Continuing...");
+		// Check if file exists
+		if (checkConfigExists(file))
+			return;
+
+		// Write config file
+		writeConfigFile(configSettings, createConfigFile(directory + "/" + fileName));
+
 	}
 
-	/*
-	writeConfigFile
-	Write config to given file
+	/**
+	 * This method writes into the given config file all the default config names
+	 * @param config Config names to write in the config file
+	 * @param file File to write config names into
 	 */
 	private void writeConfigFile(List<String> config, File file) {
 
 		try {
-		// Write to file with BufferedWriter
 		BufferedWriter writer = new BufferedWriter(new FileWriter(file));
 
 		for (String configSetting : config) {
@@ -107,13 +90,13 @@ public class DefaultConfigWriter {
 		}
 	}
 
-	/*
-	createConfigFile
-	Create config file
-	*/
+	/**
+	 * This method creates a file and provides some checks and logging
+	 * @param fileName Provides the name of the file when creating a new file
+	 * @return Returns the newly created file
+	 */
 	private File createConfigFile(String fileName) {
 
-		// Create file
 		File configFile = new File(fileName + ".cfg");
 
 		try {
@@ -124,5 +107,19 @@ public class DefaultConfigWriter {
 		}
 
 		return configFile;
+	}
+
+	/**
+	 * This method checks if a file exists and provides logging
+	 * @param file The file to check if it exists
+	 * @return Returns a boolean value whether the file exists
+	 */
+	private boolean checkConfigExists(File file) {
+		if (!file.exists())
+			return false;
+		else {
+			logger.info("Config " + file.getName() + " already created. Continuing...");
+			return true;
+		}
 	}
 }
