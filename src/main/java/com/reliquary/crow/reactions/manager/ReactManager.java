@@ -8,6 +8,13 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class provides the manager for all reaction events from the guild. It handles building the react
+ * list while checking and handling the invocation for reactions
+ *
+ * @version 1.0
+ * @since 2021-09-11
+ */
 public class ReactManager {
 
 	private final List<ReactInterface> reactions = new ArrayList<>();
