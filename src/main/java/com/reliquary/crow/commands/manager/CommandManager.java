@@ -16,12 +16,18 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
+/**
+ * This class provides the manager for all message commands from the guild. It will handle building the
+ * command list while checking and handling the invocation of each command
+ *
+ * @version 1.0
+ * @since 2021-08-11
+ */
 @SuppressWarnings("ConstantConditions")
 public class CommandManager {
 
 	private final List<CommandInterface> commands = new ArrayList<>();
 
-	// Constructor to add commands
 	public CommandManager() {
 
 		// Basic Commands
@@ -52,83 +58,73 @@ public class CommandManager {
 		addCommand(new Help(this));
 	}
 
-	/*
-	addCommand
-	Adds a new command from a command interface into the array of valid commands
+	/**
+	 * This method handles checking and adding a command to the list from the constructor
+	 * @param cmd Gets the command object for the list
 	 */
 	private void addCommand(CommandInterface cmd) {
 
-		// Check if the command already exists in the array
-		boolean nameFound = this.commands.stream().anyMatch(
-			(it) -> it.getInvoke().equalsIgnoreCase(cmd.getInvoke())
+		// Check if the command already exists in the list
+		boolean commandFound = this.commands.stream().anyMatch(
+			(found) -> found.getInvoke().equalsIgnoreCase(cmd.getInvoke())
 		);
 
-		if (nameFound)
-			throw new IllegalArgumentException(
-				"A command with this name already exists"
-			);
+		if (commandFound)
+			throw new IllegalArgumentException("A command with this name already exists");
 
-		// Add the command to the array
+		// Add the command to the list
 		commands.add(cmd);
 	}
 
-	/*
-	getCommands
-	Returns a list of all command interfaces
+	/**
+	 * This method returns a list of all the commands under the command manager
+	 * @return Returns a list of all commands
 	 */
 	public List<CommandInterface> getCommands() {
 		return commands;
 	}
 
-	/*
-	getCommand
-	Return a single command interface
+	/**
+	 * This method gets a command using the search string to look for the command in the list
+	 * @param search The search string to find a command
+	 * @return Returns a command based on the search string, or null
 	 */
 	@Nullable
 	public CommandInterface getCommand(String search) {
 
-		// Ensure search string is in same case as array
-		String searchLower = search.toLowerCase();
-
-		// Search for command in array, return if found
+		// Search for the command in the array, return if found
 		for (CommandInterface cmd : this.commands)
-			if (cmd.getInvoke().equals(searchLower) || cmd.getAliases().contains(searchLower))
+			if (cmd.getInvoke().equalsIgnoreCase(search) || cmd.getAliases().contains(search))
 				return cmd;
 
 		// Return null, command not found
 		return null;
 	}
 
-	/*
-	handle
-	Handles invocation of commands from message event
+	/**
+	 * This method handles breaking down the message received event in order to check if the message is a
+	 * command, then builds the context of the event for command handling
+	 * @param event The message received event to build the context for the command
 	 */
 	public void handle(GuildMessageReceivedEvent event) {
 
-		// Remove prefix, split input into string array
+		// Remove the prefix from the message, split into a string array
 		String[] split = event.getMessage().getContentRaw()
 			.replaceFirst("(?i)" +
-				Pattern.quote(
-					ConfigHandler.loadConfigSetting("botSettings", "prefix")),
-					""
-				)
+				Pattern.quote(ConfigHandler.loadConfigSetting("botSettings", "prefix")), "")
 			.split("\\s+");
 
-		// Get invoke string for command
-		String invoke = split[0].toLowerCase();
-		CommandInterface cmd = this.getCommand(invoke);
+		// Find the command using the invoke string
+		CommandInterface cmd = this.getCommand(split[0].toLowerCase());
 
-		// Check if invoke has a command
+		// Check if the command exists
 		if (cmd != null) {
-			// Remove invoke string, add args to list
-			List<String> args = Arrays.asList(split)
-				.subList(1, split.length);
 
-			// Build CommandContext
-			CommandContext ctx = new CommandContext(event, args);
+			// Remove the invoke string and create a list of args
+			List<String> args = Arrays.asList(split).subList(1, split.length);
 
-			// Send to handler
-			cmd.handle(ctx);
+			// Create CommandContext and handle the command
+			cmd.handle(new CommandContext(event, args));
 		}
 	}
 }

@@ -7,9 +7,14 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 import java.util.List;
 
+/**
+ * This class provides needed information for commands in a single object without all the bloat from the
+ * message event
+ *
+ * @version 1.0
+ * @since 2021-08-11
+ */
 public class CommandContext implements ICommandContext {
-
-	// Context manager for commands
 
 	private final GuildMessageReceivedEvent event;
 	private final List<String> args;
