@@ -1,6 +1,7 @@
 package com.reliquary.crow.reactions.manager;
 
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageReaction;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.guild.react.GenericGuildMessageReactionEvent;
@@ -45,10 +46,18 @@ public class ReactContext {
 	}
 
 	/**
-	 * This method returns the reaction emote of the event
+	 * This method returns the message reaction of the event
 	 * @return Returns the reaction emote of the event
 	 */
-	public MessageReaction.ReactionEmote getReactionEmote() {
-		return event.getReactionEmote();
+	public MessageReaction getMessageReaction() {
+		return event.getReaction();
+	}
+
+	/**
+	 * This method returns the message object the event came from
+	 * @return Returns the message of the event
+	 */
+	public Message getMessage() {
+		return event.getChannel().retrieveMessageById(event.getMessageId()).complete();
 	}
 }
