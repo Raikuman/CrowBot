@@ -3,7 +3,7 @@ package com.reliquary.crow.commands.music;
 import com.reliquary.crow.commands.manager.CommandContext;
 import com.reliquary.crow.commands.manager.CommandInterface;
 import com.reliquary.crow.commands.music.manager.PlayerManager;
-import com.reliquary.crow.resources.MessageMaker;
+import com.reliquary.crow.resources.jda.MessageResources;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 
@@ -31,7 +31,7 @@ public class Play implements CommandInterface {
 		final GuildVoiceState memberVoiceState = ctx.getMember().getVoiceState();
 
 		if (!memberVoiceState.inVoiceChannel()) {
-			MessageMaker.timedMessage(
+			MessageResources.timedMessage(
 				"You must be in a voice channel to use this command",
 				channel,
 				10
@@ -41,7 +41,7 @@ public class Play implements CommandInterface {
 
 		// Check if the bot is in another voice channel
 		if (selfVoiceState.inVoiceChannel() &&(selfVoiceState.getChannel() != memberVoiceState.getChannel())) {
-			MessageMaker.timedMessage(
+			MessageResources.timedMessage(
 				"I'm already in a voice channel: `" + selfVoiceState.getChannel().getName() + "`",
 				channel,
 				10
@@ -51,7 +51,7 @@ public class Play implements CommandInterface {
 
 		// Check if the bot has permissions to join user's voice channel
 		if (!self.hasPermission(Permission.VOICE_CONNECT)) {
-			MessageMaker.timedMessage(
+			MessageResources.timedMessage(
 				"I don't have permission to join `" + memberVoiceState.getChannel().toString() + "`",
 				channel,
 				10
@@ -61,7 +61,7 @@ public class Play implements CommandInterface {
 
 		// Check if args are empty
 		if (ctx.getArgs().isEmpty()) {
-			MessageMaker.timedMessage(
+			MessageResources.timedMessage(
 				"You must enter a valid link or search for a video",
 				channel,
 				10

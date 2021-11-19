@@ -10,7 +10,7 @@ import net.dv8tion.jda.api.events.message.guild.react.GenericGuildMessageReactio
  * This class provides needed information for reacts in a single object without all the bloat from the
  * reaction event
  *
- * @version 1.0
+ * @version 1.0.1
  * @since 2021-09-11
  */
 public class ReactContext {

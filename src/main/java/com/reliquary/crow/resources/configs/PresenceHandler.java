@@ -1,6 +1,6 @@
 package com.reliquary.crow.resources.configs;
 
-import com.reliquary.crow.resources.TextLineLoader;
+import com.reliquary.crow.resources.other.FileLoader;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
@@ -11,6 +11,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
+/**
+ * This class handles updating the presence activity of the bot
+ *
+ * @version 1.0.1
+ * @since 2021-19-11
+ */
 public class PresenceHandler {
 
 	private static final Logger logger = LoggerFactory.getLogger(PresenceHandler.class);
@@ -21,14 +27,16 @@ public class PresenceHandler {
 	 */
 	public static void writePresenceFiles() {
 
-		// Check for presence files
+		// Get directory
 		String presenceDirectory = envConfig.get("configdirectory") +
 			"/" + ConfigHandler.loadConfigSetting("botSettings", "presencedirectory") + "/";
 
+		// Get files
 		File playingFile = new File(presenceDirectory + "playing.txt");
 		File watchingFile = new File(presenceDirectory + "watching.txt");
 		File listeningFile = new File(presenceDirectory + "listening.txt");
 
+		// Create files
 		try {
 			if (!playingFile.exists() && playingFile.createNewFile())
 				logger.info("Created presence file " + playingFile.getName() + " successfully");
@@ -49,68 +57,51 @@ public class PresenceHandler {
 	 */
 	public static void updatePresence(JDA jda) {
 
-		// Load presence array from files
+		// Get directory
 		String presenceDirectory = envConfig.get("configdirectory") +
 			"/" + ConfigHandler.loadConfigSetting("botSettings", "presencedirectory") + "/";
 
+		// Get files
 		File playingFile = new File(presenceDirectory + "playing.txt");
 		File watchingFile = new File(presenceDirectory + "watching.txt");
 		File listeningFile = new File(presenceDirectory + "listening.txt");
-		List<List<String>> presenceArray = loadFromPresence(playingFile, watchingFile, listeningFile);
 
 		// Select a random presence
 		Random rand = new Random();
 		int initialNum = rand.nextInt(3);
 
-		// Check if the specific presence array is empty
-		String presence = "";
-		if (!presenceArray.get(initialNum).isEmpty()) {
-			presence = presenceArray
-				.get(initialNum)
-				.get(rand.nextInt(presenceArray.get(initialNum).size()));
-		}
+		switch(initialNum) {
 
-		// Set presence
-		switch (initialNum) {
 			case 0:
-				if (!presenceArray.get(0).isEmpty())
-					jda.getPresence().setPresence(
-						OnlineStatus.ONLINE,
-						Activity.playing(presence)
-					);
+				jda.getPresence().setPresence(
+					OnlineStatus.ONLINE,
+					Activity.playing(getPresence(playingFile, rand))
+				);
 				break;
 
 			case 1:
-				if (!presenceArray.get(1).isEmpty())
-					jda.getPresence().setPresence(
-						OnlineStatus.ONLINE,
-						Activity.watching(presence)
-					);
+				jda.getPresence().setPresence(
+					OnlineStatus.ONLINE,
+					Activity.watching(getPresence(watchingFile, rand))
+				);
 				break;
 
 			case 2:
-				if (!presenceArray.get(2).isEmpty())
-					jda.getPresence().setPresence(
-						OnlineStatus.ONLINE,
-						Activity.listening(presence)
-					);
+				jda.getPresence().setPresence(
+					OnlineStatus.ONLINE,
+					Activity.listening(getPresence(listeningFile, rand))
+				);
 				break;
 		}
 	}
 
-	/*
-	loadFromPresence
-	Load a 2D array with arrays of presence strings
-	 */
-	private static List<List<String>> loadFromPresence(File file1, File file2, File file3) {
+	private static String getPresence(File file, Random rand) {
 
-		// Load presence text from files
-		List<List<String>> presenceArray = new ArrayList<>(3);
+		List<String> presenceArray = FileLoader.readFileToArray(file);
 
-		presenceArray.add(TextLineLoader.readFileToArray(file1));
-		presenceArray.add(TextLineLoader.readFileToArray(file2));
-		presenceArray.add(TextLineLoader.readFileToArray(file3));
-
-		return presenceArray;
+		if (!presenceArray.isEmpty())
+			return presenceArray.get(rand.nextInt(presenceArray.size()));
+		else
+			return "No presence found!";
 	}
 }

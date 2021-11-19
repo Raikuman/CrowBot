@@ -2,9 +2,8 @@ package com.reliquary.crow.reactions.YamBoard;
 
 import com.reliquary.crow.reactions.manager.ReactContext;
 import com.reliquary.crow.reactions.manager.ReactInterface;
-import com.reliquary.crow.resources.ReactionHandler;
+import com.reliquary.crow.resources.jda.ReactionResources;
 import com.reliquary.crow.resources.configs.ConfigHandler;
-import com.reliquary.crow.resources.configs.DefaultConfigWriter;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
@@ -19,12 +18,12 @@ import java.util.Objects;
  * 1. When reaction is added, a yamboard must be sent to the target channel and ids saved to a file
  * 2. When reaction is removed, the yamboard tied to the message id must be removed and ids removed from file
  *
- * @version 1.0
+ * @version 1.0.1
  * @since 2021-19-11
  */
 public class YamBoard implements ReactInterface {
 
-	private final Logger logger = LoggerFactory.getLogger(DefaultConfigWriter.class);
+	private final Logger logger = LoggerFactory.getLogger(YamBoard.class);
 
 	@Override
 	public void handleAdd(ReactContext ctx) {
@@ -39,7 +38,7 @@ public class YamBoard implements ReactInterface {
 			return;
 
 		// Run react only if number of invokes is only 1
-		if (ReactionHandler.countReactions(message.getReactions(), getInvoke()) != 1)
+		if (ReactionResources.countReactions(message.getReactions(), getInvoke()) != 1)
 			return;
 
 		// Make sure the board file exists
@@ -79,7 +78,7 @@ public class YamBoard implements ReactInterface {
 			return;
 
 		// Run react only if number of invokes is only 0
-		if (ReactionHandler.countReactions(message.getReactions(), getInvoke()) != 0)
+		if (ReactionResources.countReactions(message.getReactions(), getInvoke()) != 0)
 			return;
 
 		// Make sure the board file exists

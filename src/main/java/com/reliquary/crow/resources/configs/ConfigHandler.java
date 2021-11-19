@@ -1,6 +1,6 @@
 package com.reliquary.crow.resources.configs;
 
-import com.reliquary.crow.resources.TextLineLoader;
+import com.reliquary.crow.resources.other.FileLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * This class handles loading and editing config files and settings
  *
- * @version 1.0
+ * @version 1.0.1
  * @since 2021-09-11
  */
 public class ConfigHandler {
@@ -39,7 +39,7 @@ public class ConfigHandler {
 
 		// Get config from file
 		String readConfig = null;
-		for (String arrayString : TextLineLoader.readFileToArray(file))
+		for (String arrayString : FileLoader.readFileToArray(file))
 			if (arrayString.toLowerCase().contains(config.toLowerCase())) {
 				readConfig = arrayString;
 				break;
@@ -73,7 +73,7 @@ public class ConfigHandler {
 		}
 
 		// Read file and save settings into an array
-		List<String> originalConfig = TextLineLoader.readFileToArray(file);
+		List<String> originalConfig = FileLoader.readFileToArray(file);
 		List<String> outputConfig = new ArrayList<>(originalConfig);
 
 		// Search for config setting to change

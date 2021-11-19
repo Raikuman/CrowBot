@@ -1,9 +1,8 @@
 package com.reliquary.crow.reactions.YamBoard;
 
-import com.reliquary.crow.resources.RandomClasses.DateAndTime;
-import com.reliquary.crow.resources.RandomClasses.RandomColor;
-import com.reliquary.crow.resources.TextLineLoader;
-import com.reliquary.crow.resources.configs.DefaultConfigWriter;
+import com.reliquary.crow.resources.other.DateAndTime;
+import com.reliquary.crow.resources.other.RandomColor;
+import com.reliquary.crow.resources.other.FileLoader;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -26,12 +25,12 @@ import java.util.Map;
  * 3. Get the embed when creating a yamboard
  * Other methods found in this class are mostly used to serve these 3 main methods
  *
- * @version 1.0
+ * @version 1.0.1
  * @since 2021-19-11
  */
 public class YamBoardResources {
 
-	private final Logger logger = LoggerFactory.getLogger(DefaultConfigWriter.class);
+	private final Logger logger = LoggerFactory.getLogger(YamBoardResources.class);
 
 	private static final int MAX_BOARD_IDS = 10;
 
@@ -44,7 +43,7 @@ public class YamBoardResources {
 
 		HashMap<String, String> idMap = new HashMap<>();
 
-		List<String> boardIds = TextLineLoader.readFileToArray(boardFile);
+		List<String> boardIds = FileLoader.readFileToArray(boardFile);
 
 		for (String board : boardIds)
 			idMap.put(board.split(":")[0], board.split(":")[1]);

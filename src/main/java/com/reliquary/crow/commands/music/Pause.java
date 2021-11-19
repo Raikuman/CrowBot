@@ -4,7 +4,7 @@ import com.reliquary.crow.commands.manager.CommandContext;
 import com.reliquary.crow.commands.manager.CommandInterface;
 import com.reliquary.crow.commands.music.manager.GuildMusicManager;
 import com.reliquary.crow.commands.music.manager.PlayerManager;
-import com.reliquary.crow.resources.MessageMaker;
+import com.reliquary.crow.resources.jda.MessageResources;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.entities.Member;
@@ -30,7 +30,7 @@ public class Pause implements CommandInterface {
 		final GuildVoiceState memberVoiceState = ctx.getMember().getVoiceState();
 
 		if (!memberVoiceState.inVoiceChannel()) {
-			MessageMaker.timedMessage(
+			MessageResources.timedMessage(
 				"You must be in a voice channel to use this command",
 				channel,
 				10
@@ -40,7 +40,7 @@ public class Pause implements CommandInterface {
 
 		// Check if the bot is in a voice channel
 		if (!selfVoiceState.inVoiceChannel()) {
-			MessageMaker.timedMessage(
+			MessageResources.timedMessage(
 				"I must be in a voice channel to use this command",
 				channel,
 				10
@@ -49,7 +49,7 @@ public class Pause implements CommandInterface {
 
 		// Check if the bot is in another voice channel
 		if (selfVoiceState.getChannel() != memberVoiceState.getChannel()) {
-			MessageMaker.timedMessage(
+			MessageResources.timedMessage(
 				"You must be in the same voice channel to use this command: `" +
 					selfVoiceState.getChannel().getName() + "`",
 				channel,
@@ -64,7 +64,7 @@ public class Pause implements CommandInterface {
 
 		// Check if track is playing
 		if (audioPlayer.getPlayingTrack() == null) {
-			MessageMaker.timedMessage(
+			MessageResources.timedMessage(
 				"There's currently no track playing",
 				channel,
 				10
@@ -74,7 +74,7 @@ public class Pause implements CommandInterface {
 
 		// Check if track is paused
 		if (audioPlayer.isPaused()) {
-			MessageMaker.timedMessage(
+			MessageResources.timedMessage(
 				"A track is already paused",
 				channel,
 				10

@@ -1,7 +1,7 @@
 package com.reliquary.crow.commands.music.manager;
 
-import com.reliquary.crow.resources.RandomClasses.DateAndTime;
-import com.reliquary.crow.resources.RandomClasses.RandomColor;
+import com.reliquary.crow.resources.other.DateAndTime;
+import com.reliquary.crow.resources.other.RandomColor;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;

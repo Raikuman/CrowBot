@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * This class handles writing all the needed default configs for the functionality of the bot
  *
- * @version 1.0
+ * @version 1.0.1
  * @since 2021-09-11
  */
 public class DefaultConfigWriter {

@@ -4,7 +4,7 @@ import com.reliquary.crow.commands.manager.CommandContext;
 import com.reliquary.crow.commands.manager.CommandInterface;
 import com.reliquary.crow.commands.music.manager.GuildMusicManager;
 import com.reliquary.crow.commands.music.manager.PlayerManager;
-import com.reliquary.crow.resources.MessageMaker;
+import com.reliquary.crow.resources.jda.MessageResources;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -33,7 +33,7 @@ public class Leave implements CommandInterface {
 		final GuildVoiceState memberVoiceState = ctx.getMember().getVoiceState();
 
 		if (!memberVoiceState.inVoiceChannel()) {
-			MessageMaker.timedMessage(
+			MessageResources.timedMessage(
 				"You must be in a voice channel to use this command",
 				channel,
 				10
@@ -43,7 +43,7 @@ public class Leave implements CommandInterface {
 
 		// Check if the bot is in a voice channel
 		if (!selfVoiceState.inVoiceChannel()) {
-			MessageMaker.timedMessage(
+			MessageResources.timedMessage(
 				"I must be in a voice channel to use this command",
 				channel,
 				10
@@ -52,7 +52,7 @@ public class Leave implements CommandInterface {
 
 		// Check if the bot is in another voice channel
 		if (selfVoiceState.getChannel() != memberVoiceState.getChannel()) {
-			MessageMaker.timedMessage(
+			MessageResources.timedMessage(
 				"You must be in the same voice channel to use this command: `" +
 					selfVoiceState.getChannel().getName() + "`",
 				channel,

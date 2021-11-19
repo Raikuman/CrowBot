@@ -1,4 +1,4 @@
-package com.reliquary.crow.resources;
+package com.reliquary.crow.resources.jda;
 
 import net.dv8tion.jda.api.entities.MessageReaction;
 
@@ -7,10 +7,10 @@ import java.util.List;
 /**
  * This class handles all methods to aid with react-type classes
  *
- * @version 1.0
+ * @version 1.0.1
  * @since 2021-09-11
  */
-public class ReactionHandler {
+public class ReactionResources {
 
 	/**
 	 * This method counts how many of a specific reaction there are in a given list and returns that amount

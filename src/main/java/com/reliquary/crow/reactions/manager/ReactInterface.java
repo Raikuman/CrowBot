@@ -3,7 +3,7 @@ package com.reliquary.crow.reactions.manager;
 /**
  * This class provides an interface for creating commands
  *
- * @version 1.0
+ * @version 1.0.1
  * @since 2021-09-11
  */
 public interface ReactInterface {

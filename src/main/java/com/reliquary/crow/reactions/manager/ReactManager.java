@@ -12,7 +12,7 @@ import java.util.List;
  * This class provides the manager for all reaction events from the guild. It handles building the react
  * list while checking and handling the invocation for reactions
  *
- * @version 1.0
+ * @version 1.0.1
  * @since 2021-14-11
  */
 public class ReactManager {
