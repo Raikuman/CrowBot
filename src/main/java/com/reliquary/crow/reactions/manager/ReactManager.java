@@ -1,6 +1,6 @@
 package com.reliquary.crow.reactions.manager;
 
-import com.reliquary.crow.reactions.YamBoard;
+import com.reliquary.crow.reactions.YamBoard.YamBoard;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemoveEvent;
 
