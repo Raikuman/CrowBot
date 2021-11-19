@@ -3,7 +3,7 @@ package com.reliquary.crow.commands;
 import com.reliquary.crow.commands.manager.CommandContext;
 import com.reliquary.crow.commands.manager.CommandInterface;
 import com.reliquary.crow.commands.manager.CommandManager;
-import com.reliquary.crow.resources.RandomClasses.RandomColor;
+import com.reliquary.crow.resources.other.RandomColor;
 import com.reliquary.crow.resources.configs.ConfigHandler;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
@@ -129,7 +129,7 @@ public class Help implements CommandInterface {
 		}
 
 		// Send message
-		channel.sendMessage(builder.build())
+		channel.sendMessageEmbeds(builder.build())
 			.queue();
 	}
 
@@ -168,7 +168,7 @@ public class Help implements CommandInterface {
 			}
 
 		// Send message
-		channel.sendMessage(builder.build())
+		channel.sendMessageEmbeds(builder.build())
 			.queue();
 	}
 
@@ -203,7 +203,7 @@ public class Help implements CommandInterface {
 			.append("```\n");
 
 		// Send message
-		channel.sendMessage(builder.build())
+		channel.sendMessageEmbeds(builder.build())
 			.queue();
 	}
 
@@ -228,7 +228,7 @@ public class Help implements CommandInterface {
 			.append("` for a list of commands");
 
 		// Send message
-		channel.sendMessage(builder.build())
+		channel.sendMessageEmbeds(builder.build())
 			.delay(Duration.ofSeconds(10))
 			.flatMap(Message::delete)
 			.queue();
