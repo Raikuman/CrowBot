@@ -11,6 +11,8 @@ import com.reliquary.crow.resources.configs.envConfig;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.utils.ChunkingFilter;
+import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,16 +36,16 @@ public class CrowBot {
 				GatewayIntent.GUILD_MEMBERS,
 				GatewayIntent.GUILD_MESSAGES,
 				GatewayIntent.GUILD_VOICE_STATES,
-				GatewayIntent.GUILD_MESSAGE_REACTIONS
-			)
+				GatewayIntent.GUILD_MESSAGE_REACTIONS)
+			.setChunkingFilter(ChunkingFilter.ALL)
 			.enableCache(
-				CacheFlag.VOICE_STATE
-			)
+				CacheFlag.VOICE_STATE)
 			.addEventListeners(
 				new TextChannelListener(),
 				new ReactionChannelListener(),
 				new SlashCommandListener(),
 				new ButtonClickListener())
+			.setMemberCachePolicy(MemberCachePolicy.ALL)
 			.build();
 
 		// Block jda until connected
@@ -63,14 +65,11 @@ public class CrowBot {
 			envConfig.get("configdirectory"),
 			envConfig.get("configdirectory") + "/" +
 				ConfigHandler.loadConfigSetting("botSettings", "presencedirectory"),
-			ConfigHandler.loadConfigSetting("botSettings", "commandresourcedirectory"),
-			ConfigHandler.loadConfigSetting("botSettings", "commandresourcedirectory") + "/" +
-				ConfigHandler.loadConfigSetting("botSettings", "quotes")
+			ConfigHandler.loadConfigSetting("botSettings", "commandresourcedirectory")
 		));
 
 		// Generate other configs
-		defaultConfigWriter.writeChannelIdConfigFile();
-		defaultConfigWriter.writeEmojiConfigFile();
+		defaultConfigWriter.writeYamBoardConfigFile();
 
 		// Directories
 		for (String folderName : folders) {
