@@ -2,21 +2,46 @@ package com.reliquary.crow.commands.dnd;
 
 import com.reliquary.crow.commands.manager.CommandContext;
 import com.reliquary.crow.commands.manager.CommandInterface;
-import com.reliquary.crow.resources.RandomClasses.DateAndTime;
-import com.reliquary.crow.resources.RandomClasses.RandomColor;
+import com.reliquary.crow.resources.other.DateAndTime;
+import com.reliquary.crow.resources.other.RandomColor;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.security.SecureRandom;
-import java.util.List;
 
 public class Dice implements CommandInterface {
 
 	@Override
 	public void handle(CommandContext ctx) {
 
+		// Delete command message
+		ctx.getMessage().delete().queue();
+
 		if (ctx.getArgs().isEmpty()) {
 			generateDiceEmbed(ctx, 1, 20);
+		}
+
+		if (ctx.getArgs().get(0).equals("..")) {
+			EmbedBuilder builder = new EmbedBuilder()
+				.setTitle(ctx.getAuthor().getName() + " rolled " + 1 + "d" + 20)
+				.setColor(RandomColor.getRandomColor())
+				.setFooter(DateAndTime.getDate() + " " + DateAndTime.getTime(), ctx.getAuthor().getAvatarUrl());
+			StringBuilder descriptionBuilder = builder.getDescriptionBuilder();
+
+			// Appends the rolls to the roll embed
+			descriptionBuilder
+				.append("```md\n")
+				.append("<Total: ")
+				.append(1)
+				.append("> < Rolls: ")
+				.append(1)
+				.append(">")
+				.append("```");
+
+			// Send message
+			ctx.getChannel().sendMessageEmbeds(builder.build())
+				.queue();
+
+
 		}
 
 		// Input validation & overflow protection
