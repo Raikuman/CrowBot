@@ -1,6 +1,6 @@
 package com.reliquary.crow.slashcommands.dnd;
 
-import com.reliquary.crow.resources.RandomClasses.RandomColor;
+import com.reliquary.crow.resources.other.RandomColor;
 import com.reliquary.crow.slashcommands.manager.SlashContext;
 import com.reliquary.crow.slashcommands.manager.SlashInterface;
 import net.dv8tion.jda.api.EmbedBuilder;
