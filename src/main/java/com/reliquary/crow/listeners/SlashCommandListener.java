@@ -14,7 +14,7 @@ import javax.annotation.Nonnull;
 
 public class SlashCommandListener extends ListenerAdapter {
 
-	private static final Logger logger = LoggerFactory.getLogger(TextChannelListener.class);
+	private static final Logger logger = LoggerFactory.getLogger(SlashCommandListener.class);
 	private final SlashManager manager = new SlashManager();
 
 	@Override
@@ -23,16 +23,18 @@ public class SlashCommandListener extends ListenerAdapter {
 
 		// Create slash command on guild
 		Guild guild = event.getJDA().getGuildById("685394913281441855");
-		assert guild != null;
 
 		// Seems like this is better to implement than upsert?
 			// Takes up to an hour
 		//CommandListUpdateAction slashCmd = event.getJDA().updateCommands();
 		// slashCmd.addCommands( new CommandData());
 
+		assert guild != null;
 		guild.upsertCommand(new CommandData("dice", "Rolls a d20"))
 			.queue();
 		guild.upsertCommand(new CommandData("isdnd", "a"))
+			.queue();
+		guild.upsertCommand(new CommandData("help", "Get some help!"))
 			.queue();
 	}
 

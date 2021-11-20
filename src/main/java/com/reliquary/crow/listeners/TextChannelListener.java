@@ -38,6 +38,7 @@ public class TextChannelListener extends ListenerAdapter {
 		);
 		String raw = event.getMessage().getContentRaw();
 
+		assert prefix != null;
 		if (raw.startsWith(prefix))
 			manager.handle(event);
 	}
