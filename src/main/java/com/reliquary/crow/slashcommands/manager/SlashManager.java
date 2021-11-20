@@ -1,5 +1,6 @@
 package com.reliquary.crow.slashcommands.manager;
 
+import com.reliquary.crow.slashcommands.Help;
 import com.reliquary.crow.slashcommands.dnd.Dice;
 import com.reliquary.crow.slashcommands.dnd.IsDnD;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
@@ -15,15 +16,16 @@ public class SlashManager {
 	// Constructor to add slash commands
 	public SlashManager() {
 		// DnD Commands
-		addCommand(new Dice());
-		addCommand(new IsDnD());
+		addReact(new Dice());
+		addReact(new IsDnD());
+		addReact(new Help());
 	}
 
 	/*
-	addCommand
+	addReact
 	Adds a new slash command from a slash command interface into the array of valid commands
 	 */
-	private void addCommand(SlashInterface slcmd) {
+	private void addReact(SlashInterface slcmd) {
 
 		// Check if the command already exists in the array
 		boolean nameFound = this.slashcommands.stream().anyMatch(
@@ -40,19 +42,19 @@ public class SlashManager {
 	}
 
 	/*
-	getCommands
+	getReacts
 	Returns a list of all slash command interfaces
 	 */
-	public List<SlashInterface> getCommands() {
+	public List<SlashInterface> getReacts() {
 		return slashcommands;
 	}
 
 	/*
-	getCommand
+	getReact
 	Return a single slash command interface
 	 */
 	@Nullable
-	public SlashInterface getCommand(String search) {
+	public SlashInterface getReact(String search) {
 
 		// Ensure search string is in same case as array
 		String searchLower = search.toLowerCase();
@@ -73,7 +75,7 @@ public class SlashManager {
 	public void handle(SlashCommandEvent event) {
 
 		// Get slash command
-		SlashInterface cmd = this.getCommand(event.getName());
+		SlashInterface cmd = this.getReact(event.getName());
 
 		// Check if the slash command exists
 		if (cmd != null) {
