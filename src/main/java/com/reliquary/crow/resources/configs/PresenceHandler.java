@@ -14,16 +14,15 @@ import java.util.*;
 /**
  * This class handles updating the presence activity of the bot
  *
- * @version 1.0.1
- * @since 2021-19-11
+ * @version 1.1 2021-19-11
+ * @since 1.0
  */
 public class PresenceHandler {
 
 	private static final Logger logger = LoggerFactory.getLogger(PresenceHandler.class);
 
-	/*
-	writePresenceFiles
-	Creates files for presence
+	/**
+	 * This method creates the presence file and directory if they are not present
 	 */
 	public static void writePresenceFiles() {
 
@@ -54,6 +53,11 @@ public class PresenceHandler {
 	/*
 	updatePresence
 	Update JDA object with a new presence
+	 */
+
+	/**
+	 * This method updates the JDA object with a new presence
+	 * @param jda Provides the JDA object for updating
 	 */
 	public static void updatePresence(JDA jda) {
 
@@ -95,6 +99,12 @@ public class PresenceHandler {
 		}
 	}
 
+	/**
+	 * This method gets the presence string from a file
+	 * @param file Provides the file to get the presence from
+	 * @param rand Provides the Random object to randomly select a presence from the file
+	 * @return Returns the presence string
+	 */
 	private static String getPresence(File file, Random rand) {
 
 		List<String> presenceArray = FileLoader.readFileToArray(file);
