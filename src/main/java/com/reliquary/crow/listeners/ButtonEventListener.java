@@ -9,9 +9,9 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 
-public class ButtonClickListener extends ListenerAdapter {
+public class ButtonEventListener extends ListenerAdapter {
 
-	private static final Logger logger = LoggerFactory.getLogger(ButtonClickListener.class);
+	private static final Logger logger = LoggerFactory.getLogger(ButtonEventListener.class);
 
 	@Override
 	public void onReady(@Nonnull ReadyEvent event) {

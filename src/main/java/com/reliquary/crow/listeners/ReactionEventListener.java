@@ -15,9 +15,9 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.Nonnull;
 
 @SuppressWarnings("ConstantConditions")
-public class ReactionChannelListener extends ListenerAdapter {
+public class ReactionEventListener extends ListenerAdapter {
 
-	private static final Logger logger = LoggerFactory.getLogger(ReactionChannelListener.class);
+	private static final Logger logger = LoggerFactory.getLogger(ReactionEventListener.class);
 	private final ReactManager manager = new ReactManager();
 
 	@Override

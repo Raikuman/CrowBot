@@ -14,9 +14,9 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 
-public class SlashCommandListener extends ListenerAdapter {
+public class SlashEventListener extends ListenerAdapter {
 
-	private static final Logger logger = LoggerFactory.getLogger(SlashCommandListener.class);
+	private static final Logger logger = LoggerFactory.getLogger(SlashEventListener.class);
 	private final SlashManager manager = new SlashManager();
 
 	@Override

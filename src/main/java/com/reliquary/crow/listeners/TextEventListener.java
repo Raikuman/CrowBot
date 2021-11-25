@@ -12,9 +12,9 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 
-public class TextChannelListener extends ListenerAdapter {
+public class TextEventListener extends ListenerAdapter {
 
-	private static final Logger logger = LoggerFactory.getLogger(TextChannelListener.class);
+	private static final Logger logger = LoggerFactory.getLogger(TextEventListener.class);
 	private final CommandManager manager = new CommandManager();
 
 	@Override
