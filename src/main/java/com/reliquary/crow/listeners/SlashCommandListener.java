@@ -1,6 +1,8 @@
 package com.reliquary.crow.listeners;
 
+import com.reliquary.crow.slashcommands.manager.SlashInterface;
 import com.reliquary.crow.slashcommands.manager.SlashManager;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.ReadyEvent;
@@ -19,23 +21,9 @@ public class SlashCommandListener extends ListenerAdapter {
 
 	@Override
 	public void onReady(@Nonnull ReadyEvent event) {
-		logger.info("{} SlashListener is initialized", event.getJDA().getSelfUser().getAsTag());
+		logger.info("{} SlashCommandListener is initialized", event.getJDA().getSelfUser().getAsTag());
 
-		// Create slash command on guild
-		Guild guild = event.getJDA().getGuildById("685394913281441855");
-
-		// Seems like this is better to implement than upsert?
-			// Takes up to an hour
-		//CommandListUpdateAction slashCmd = event.getJDA().updateCommands();
-		// slashCmd.addCommands( new CommandData());
-
-		assert guild != null;
-		guild.upsertCommand(new CommandData("dice", "Rolls a d20"))
-			.queue();
-		guild.upsertCommand(new CommandData("isdnd", "a"))
-			.queue();
-		guild.upsertCommand(new CommandData("help", "Get some help!"))
-			.queue();
+		slashCommandUpserter(event.getJDA());
 	}
 
 	@Override
@@ -48,5 +36,17 @@ public class SlashCommandListener extends ListenerAdapter {
 
 		// Check for the command name
 		manager.handle(event);
+	}
+
+	private void slashCommandUpserter(JDA jda) {
+
+		// Seems like this is better to implement than upsert?
+		// Takes up to an hour
+		//CommandListUpdateAction slashCmd = event.getJDA().updateCommands();
+		// slashCmd.addCommands( new CommandData());
+
+		for (Guild guild : jda.getGuilds())
+			for (SlashInterface slcmd : manager.getSlashCommands())
+				guild.upsertCommand(new CommandData(slcmd.getInvoke(), slcmd.getHelp())).queue();
 	}
 }
