@@ -20,8 +20,8 @@ import java.util.regex.Pattern;
  * This class provides the manager for all message commands from the guild. It will handle building the
  * command list while checking and handling the invocation of each command
  *
- * @version 1.0
- * @since 2021-08-11
+ * @version 2.0 2021-08-11
+ * @since 1.0
  */
 @SuppressWarnings("ConstantConditions")
 public class CommandManager {

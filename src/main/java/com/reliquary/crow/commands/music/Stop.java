@@ -12,8 +12,8 @@ import net.dv8tion.jda.api.entities.TextChannel;
 /**
  * This class handles stopping the playing track and clearing the queue
  *
- * @version 1.0
- * @since 2021-04-11
+ * @version 2.0 2021-04-11
+ * @since 1.0
  */
 @SuppressWarnings("ConstantConditions")
 public class Stop implements CommandInterface {

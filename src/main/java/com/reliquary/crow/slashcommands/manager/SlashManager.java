@@ -13,7 +13,7 @@ import java.util.List;
  * This class provides the manager for all slash commands from the guild. It will handle building the slash
  * command list while checking and handling the invocation of each slash command
  *
- * @version 1.0
+ * @version 1.0 2021-25-11
  * @since 1.0
  */
 public class SlashManager {

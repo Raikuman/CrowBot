@@ -8,8 +8,8 @@ import java.util.concurrent.TimeUnit;
 /**
  * This class handles getting the current formatted date and time and can format a given time in milliseconds
  *
- * @version 1.0.1
- * @since 2021-19-11
+ * @version 1.0 2021-19-11
+ * @since 1.0
  */
 public class DateAndTime {
 

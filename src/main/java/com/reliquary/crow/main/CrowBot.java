@@ -1,9 +1,9 @@
 package com.reliquary.crow.main;
 
-import com.reliquary.crow.listeners.ButtonClickListener;
-import com.reliquary.crow.listeners.ReactionChannelListener;
-import com.reliquary.crow.listeners.SlashCommandListener;
-import com.reliquary.crow.listeners.TextChannelListener;
+import com.reliquary.crow.listeners.ButtonEventListener;
+import com.reliquary.crow.listeners.ReactionEventListener;
+import com.reliquary.crow.listeners.SlashEventListener;
+import com.reliquary.crow.listeners.TextEventListener;
 import com.reliquary.crow.resources.configs.ConfigHandler;
 import com.reliquary.crow.resources.configs.DefaultConfigWriter;
 import com.reliquary.crow.resources.configs.PresenceHandler;
@@ -41,10 +41,10 @@ public class CrowBot {
 			.enableCache(
 				CacheFlag.VOICE_STATE)
 			.addEventListeners(
-				new TextChannelListener(),
-				new ReactionChannelListener(),
-				new SlashCommandListener(),
-				new ButtonClickListener())
+				new TextEventListener(),
+				new ReactionEventListener(),
+				new SlashEventListener(),
+				new ButtonEventListener())
 			.setMemberCachePolicy(MemberCachePolicy.ALL)
 			.build();
 

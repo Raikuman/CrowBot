@@ -17,8 +17,8 @@ import java.util.Objects;
  * This class helps the queue command by editing the queue command from a button click event. Methods
  * control whether the left or right button are clicked
  *
- * @version 1.0
- * @since 2021-04-11
+ * @version 2.0 2021-04-11
+ * @since 1.0
  */
 public class QueueResources {
 

@@ -5,8 +5,8 @@ import java.util.List;
 /**
  * This class provides an interface for creating commands
  *
- * @version 1.0
- * @since 2021-08-11
+ * @version 2.0 2021-08-11
+ * @since 1.0
  */
 public interface CommandInterface {
 

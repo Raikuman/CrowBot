@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 
-@SuppressWarnings("ConstantConditions")
 public class ReactionEventListener extends ListenerAdapter {
 
 	private static final Logger logger = LoggerFactory.getLogger(ReactionEventListener.class);

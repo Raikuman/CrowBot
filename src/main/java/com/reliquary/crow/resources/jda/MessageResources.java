@@ -8,8 +8,8 @@ import java.time.Duration;
 /**
  * This class handles methods with sending JDA messages
  *
- * @version 1.0.1
- * @since 2021-19-11
+ * @version 1.0 2021-19-11
+ * @since 1.0
  */
 public class MessageResources {
 

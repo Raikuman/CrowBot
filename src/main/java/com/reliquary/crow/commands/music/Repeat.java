@@ -16,8 +16,8 @@ import net.dv8tion.jda.api.entities.TextChannel;
 /**
  * This class handles setting the music manager to repeat the current track
  *
- * @version 1.0
- * @since 2021-04-11
+ * @version 2.0 2021-04-11
+ * @since 1.0
  */
 @SuppressWarnings("ConstantConditions")
 public class Repeat implements CommandInterface {

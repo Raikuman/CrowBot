@@ -7,8 +7,8 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
  * This class creates an object using the audio handler and manager to create a single audio manager for
  * the guild
  *
- * @version 1.0
- * @since 2021-04-11
+ * @version 2.0 2021-04-11
+ * @since 1.0
  */
 public class GuildMusicManager {
 

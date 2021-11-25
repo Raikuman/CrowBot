@@ -13,8 +13,8 @@ import net.dv8tion.jda.api.entities.TextChannel;
 /**
  * This class handles pausing the playing track on the music manager
  *
- * @version 1.0
- * @since 2021-04-11
+ * @version 2.0 2021-04-11
+ * @since 1.0
  */
 @SuppressWarnings("ConstantConditions")
 public class Pause implements CommandInterface {

@@ -16,8 +16,8 @@ import java.util.List;
 /**
  * This class handles the bot leaving a voice channel and making sure the audio track queue is cleared
  *
- * @version 1.0
- * @since 2021-04-11
+ * @version 2.0 2021-04-11
+ * @since 1.0
  */
 @SuppressWarnings("ConstantConditions")
 public class Leave implements CommandInterface {

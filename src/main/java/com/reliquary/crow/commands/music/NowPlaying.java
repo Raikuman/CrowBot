@@ -21,8 +21,8 @@ import java.util.List;
 /**
  * This class handles showing an embed with the currently playing track
  *
- * @version 1.0
- * @since 2021-04-11
+ * @version 2.0 2021-04-11
+ * @since 1.0
  */
 @SuppressWarnings("ConstantConditions")
 public class NowPlaying implements CommandInterface {

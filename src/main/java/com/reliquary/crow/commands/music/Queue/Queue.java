@@ -23,8 +23,8 @@ import java.util.List;
  * 1. Displaying a queue of the currently playing track and all queued tracks
  * 2. Clearing the queue using arguments from the command
  *
- * @version 1.0
- * @since 2021-04-11
+ * @version 2.0 2021-04-11
+ * @since 1.0
  */
 public class Queue implements CommandInterface {
 

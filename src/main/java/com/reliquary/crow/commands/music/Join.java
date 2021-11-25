@@ -9,8 +9,8 @@ import net.dv8tion.jda.api.entities.*;
 /**
  * This class handles the bot joining a voice channel of a user
  *
- * @version 1.0
- * @since 2021-04-11
+ * @version 2.0 2021-04-11
+ * @since 1.0
  */
 @SuppressWarnings("ConstantConditions")
 public class Join implements CommandInterface {

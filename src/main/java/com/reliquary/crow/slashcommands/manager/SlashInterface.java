@@ -3,7 +3,7 @@ package com.reliquary.crow.slashcommands.manager;
 /**
  * This class provides an interface for creating slash commands
  *
- * @version 1.0
+ * @version 1.0 2021-25-11
  * @since 1.0
  */
 public interface SlashInterface {

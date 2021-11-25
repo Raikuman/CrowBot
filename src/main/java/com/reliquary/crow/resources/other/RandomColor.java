@@ -6,8 +6,8 @@ import java.util.Random;
 /**
  * This class handles getting a random color
  *
- * @version 1.0.1
- * @since 2021-19-11
+ * @version 1.0 2021-19-11
+ * @since 1.0
  */
 public class RandomColor {
 

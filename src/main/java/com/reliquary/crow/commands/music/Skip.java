@@ -19,8 +19,8 @@ import java.util.List;
 /**
  * This class handles skipping the currently playing track and sending an embed
  *
- * @version 1.0
- * @since 2021-04-11
+ * @version 2.0 2021-04-11
+ * @since 1.0
  */
 @SuppressWarnings("ConstantConditions")
 public class Skip implements CommandInterface {

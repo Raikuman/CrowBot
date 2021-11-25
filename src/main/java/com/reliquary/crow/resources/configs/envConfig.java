@@ -5,7 +5,7 @@ import io.github.cdimascio.dotenv.Dotenv;
 /**
  * This class loads information from the .env file
  *
- * @version 1.0.1
+ * @version 1.1 2021-19-11
  * @since 2021-19-11
  */
 public class envConfig {

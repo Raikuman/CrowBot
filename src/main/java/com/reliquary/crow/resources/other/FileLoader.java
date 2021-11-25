@@ -10,8 +10,8 @@ import java.util.List;
 /**
  * This class handles loading a file and reading its contents
  *
- * @version 1.0.1
- * @since 2021-19-11
+ * @version 1.0 2021-19-11
+ * @since 1.0
  */
 public class FileLoader {
 

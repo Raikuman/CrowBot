@@ -25,8 +25,8 @@ import java.util.Map;
  * 3. Get the embed when creating a yamboard
  * Other methods found in this class are mostly used to serve these 3 main methods
  *
- * @version 1.0.1
- * @since 2021-19-11
+ * @version 1.0 2021-19-11
+ * @since 1.0
  */
 public class YamBoardResources {
 

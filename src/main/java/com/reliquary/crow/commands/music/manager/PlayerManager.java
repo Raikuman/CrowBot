@@ -23,8 +23,8 @@ import java.util.Map;
 /**
  * This class provides methods to getting the music manager from the guild and handling playing tracks
  *
- * @version 1.0
- * @since 2021-04-11
+ * @version 2.0 2021-04-11
+ * @since 1.0
  */
 public class PlayerManager {
 

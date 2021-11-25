@@ -11,8 +11,8 @@ import java.util.List;
  * This class provides needed information for commands in a single object without all the bloat from the
  * message event
  *
- * @version 1.0
- * @since 2021-08-11
+ * @version 2.0 2021-08-11
+ * @since 1.0
  */
 public class CommandContext implements ICommandContext {
 

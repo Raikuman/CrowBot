@@ -14,8 +14,8 @@ import java.util.List;
 /**
  * This class handles loading and editing config files and settings
  *
- * @version 1.0.1
- * @since 2021-09-11
+ * @version 1.1 2021-09-11
+ * @since 1.0
  */
 public class ConfigHandler {
 

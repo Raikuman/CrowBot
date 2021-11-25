@@ -11,8 +11,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 /**
  * This class provides overrides methods from AudioEventAdapter to control how tracks are queued and played
  *
- * @version 1.0
- * @since 2021-04-11
+ * @version 2.0 2021-04-11
+ * @since 1.0
  */
 public class TrackScheduler extends AudioEventAdapter {
 

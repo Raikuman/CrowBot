@@ -18,8 +18,8 @@ import java.util.Objects;
  * 1. When reaction is added, a yamboard must be sent to the target channel and ids saved to a file
  * 2. When reaction is removed, the yamboard tied to the message id must be removed and ids removed from file
  *
- * @version 1.0.1
- * @since 2021-19-11
+ * @version 1.0 2021-19-11
+ * @since 1.0
  */
 public class YamBoard implements ReactInterface {
 
