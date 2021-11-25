@@ -4,9 +4,14 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 
+/**
+ * This class provides needed information for slash commands in a single object without all the bloat from
+ * the slash event
+ *
+ * @version 1.0
+ * @since 1.0
+ */
 public class SlashContext {
-
-	// Context manager for slash commands
 
 	private final SlashCommandEvent event;
 

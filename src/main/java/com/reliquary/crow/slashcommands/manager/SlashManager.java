@@ -9,26 +9,33 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class provides the manager for all slash commands from the guild. It will handle building the slash
+ * command list while checking and handling the invocation of each slash command
+ *
+ * @version 1.0
+ * @since 1.0
+ */
 public class SlashManager {
 
-	private final List<SlashInterface> slashcommands = new ArrayList<>();
+	private final List<SlashInterface> slashCommands = new ArrayList<>();
 
-	// Constructor to add slash commands
 	public SlashManager() {
+
 		// DnD Commands
-		addReact(new Dice());
-		addReact(new IsDnD());
-		addReact(new Help());
+		addSlash(new Dice());
+		addSlash(new IsDnD());
+		addSlash(new Help());
 	}
 
-	/*
-	addReact
-	Adds a new slash command from a slash command interface into the array of valid commands
+	/**
+	 * This method handles checking and adding a slash command to the list from the constructor
+	 * @param slcmd Gets the slash command object for the list
 	 */
-	private void addReact(SlashInterface slcmd) {
+	private void addSlash(SlashInterface slcmd) {
 
 		// Check if the command already exists in the array
-		boolean nameFound = this.slashcommands.stream().anyMatch(
+		boolean nameFound = this.slashCommands.stream().anyMatch(
 			(it) -> it.getInvoke().equalsIgnoreCase(slcmd.getInvoke())
 		);
 
@@ -38,44 +45,46 @@ public class SlashManager {
 			);
 
 		// Add the slash command to the array
-		slashcommands.add(slcmd);
+		slashCommands.add(slcmd);
 	}
 
-	/*
-	getReacts
-	Returns a list of all slash command interfaces
+	/**
+	 * This method returns a list of all the slash commands under the command manager
+	 * @return Returns a list of all slash commands
 	 */
-	public List<SlashInterface> getReacts() {
-		return slashcommands;
+	public List<SlashInterface> getSlashCommands() {
+		return slashCommands;
 	}
 
-	/*
-	getReact
-	Return a single slash command interface
+	/**
+	 * This method gets a slash command using the search string to look for the slash command in the list
+	 * @param search The search string to find the slash command
+	 * @return Returns a slash command based on the search string, or null
 	 */
 	@Nullable
-	public SlashInterface getReact(String search) {
+	public SlashInterface getSlashCommand(String search) {
 
 		// Ensure search string is in same case as array
 		String searchLower = search.toLowerCase();
 
 		// Search for command in array, return if found
-		for (SlashInterface cmd : this.slashcommands)
-			if (cmd.getInvoke().equals(searchLower) || cmd.getAliases().contains(searchLower))
+		for (SlashInterface cmd : this.slashCommands)
+			if (cmd.getInvoke().equals(searchLower))
 				return cmd;
 
 		// Return null, command not found
 		return null;
 	}
 
-	/*
-	handle
-	Handles invocation of slash commands from message event
+	/**
+	 * This method handles checking the slash command event and check if a slash command can be created
+	 * using the event's name
+	 * @param event The slash command event to build the context for the slash command
 	 */
 	public void handle(SlashCommandEvent event) {
 
 		// Get slash command
-		SlashInterface cmd = this.getReact(event.getName());
+		SlashInterface cmd = this.getSlashCommand(event.getName());
 
 		// Check if the slash command exists
 		if (cmd != null) {
