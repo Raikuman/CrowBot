@@ -1,7 +1,7 @@
 package com.reliquary.crow.slashcommands.manager;
 
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 
 /**
@@ -27,7 +27,7 @@ public class SlashContext {
 		return event;
 	}
 
-	public MessageChannel getChannel() {
-		return event.getChannel();
+	public TextChannel getChannel() {
+		return event.getTextChannel();
 	}
 }
