@@ -3,7 +3,7 @@ package com.reliquary.crow.slashcommands.manager;
 /**
  * This class provides an interface for creating slash commands
  *
- * @version 1.0 2021-25-11
+ * @version 1.1 2021-03-12
  * @since 1.0
  */
 public interface SlashInterface {
@@ -25,4 +25,10 @@ public interface SlashInterface {
 	 * @return Returns the help description string
 	 */
 	String getHelp();
+
+	/**
+	 * This method returns the category of the slash command
+	 * @return Returns the category string
+	 */
+	String getCategory();
 }
