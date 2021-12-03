@@ -25,4 +25,10 @@ public interface ReactInterface {
 	 * @return Returns the invocation reaction
 	 */
 	String getInvoke();
+
+	/**
+	 * This method returns the category of the command
+	 * @return Returns the category string
+	 */
+	String getCategory();
 }

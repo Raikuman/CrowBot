@@ -112,6 +112,11 @@ public class YamBoard implements ReactInterface {
 		return ConfigHandler.loadConfigSetting("yamboardSettings", "yamboardEmoji");
 	}
 
+	@Override
+	public String getCategory() {
+		return "fun";
+	}
+
 	/**
 	 * This method handles creating the yamboard file if it doesn't exist and return a boolean (it should
 	 * return true at all times)
