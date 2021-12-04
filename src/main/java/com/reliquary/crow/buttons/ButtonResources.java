@@ -1,5 +1,6 @@
 package com.reliquary.crow.buttons;
 
+import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.Button;
 import net.dv8tion.jda.api.interactions.components.Component;
 
@@ -10,7 +11,7 @@ import java.util.List;
  * This class provides a method for all classes that need to use buttons to create components to add to a
  * message
  *
- * @version 1.0 2021-03-12
+ * @version 1.1 2021-03-12
  * @since 1.0
  */
 public class ButtonResources {
@@ -42,28 +43,32 @@ public class ButtonResources {
 	}
 
 	/**
-	 * This method disables a single button from a list of components and enables all other buttons
-	 * @param buttonId Provides the buttonId to disable that specific button
-	 * @param components Provides the list of components to change
+	 * This method creates action rows given a list of components
+	 * @param components Provides the list of components
+	 * @return Returns a list of action rows
 	 */
-	public static void setSingleButtonDisable(String buttonId, List<Component> components) {
+	public static List<ActionRow> getActionRows(List<Component> components) {
 
-		int count = 0;
+		List<Component> componentRow = new ArrayList<>();
+		List<ActionRow> actionRows = new ArrayList<>();
+
+		int count = 1;
 		for (Component component : components) {
-			if (!(component instanceof Button))
-				continue;
 
-			if (component.getId() == null)
-				continue;
+			componentRow.add(component);
 
-			if (component.getId().equalsIgnoreCase(buttonId)) {
-				components.set(count, ((Button) component).asDisabled());
-			} else {
-				components.set(count, ((Button) component).asEnabled());
+			if (count == 5) {
+				actionRows.add(ActionRow.of(componentRow));
+				componentRow = new ArrayList<>();
+				count = 1;
 			}
 
 			count++;
 		}
 
+		if (!componentRow.isEmpty())
+			actionRows.add(ActionRow.of(componentRow));
+
+		return actionRows;
 	}
 }
