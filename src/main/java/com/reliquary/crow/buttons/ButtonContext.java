@@ -20,6 +20,14 @@ public class ButtonContext {
 	}
 
 	/**
+	 * This method returns the event of the button click
+	 * @return Returns button click event
+	 */
+	public ButtonClickEvent getEvent() {
+		return this.event;
+	}
+
+	/**
 	 * This method returns the text channel of where the event took place
 	 * @return Returns the text channel of the event
 	 */
