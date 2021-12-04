@@ -40,4 +40,30 @@ public class ButtonResources {
 
 		return components;
 	}
+
+	/**
+	 * This method disables a single button from a list of components and enables all other buttons
+	 * @param buttonId Provides the buttonId to disable that specific button
+	 * @param components Provides the list of components to change
+	 */
+	public static void setSingleButtonDisable(String buttonId, List<Component> components) {
+
+		int count = 0;
+		for (Component component : components) {
+			if (!(component instanceof Button))
+				continue;
+
+			if (component.getId() == null)
+				continue;
+
+			if (component.getId().equalsIgnoreCase(buttonId)) {
+				components.set(count, ((Button) component).asDisabled());
+			} else {
+				components.set(count, ((Button) component).asEnabled());
+			}
+
+			count++;
+		}
+
+	}
 }
