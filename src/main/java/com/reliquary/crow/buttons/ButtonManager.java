@@ -1,7 +1,6 @@
 package com.reliquary.crow.buttons;
 
-import com.reliquary.crow.slashcommands.help.buttons.HelpCategories;
-import com.reliquary.crow.slashcommands.help.buttons.HelpFun;
+import com.reliquary.crow.slashcommands.help.buttons.*;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 
 import javax.annotation.Nullable;
@@ -22,9 +21,15 @@ public class ButtonManager {
 
 	public ButtonManager() {
 		addButtons(Arrays.asList(
-			new HelpCategories(),
-			new HelpFun()
+			new HelpHome(),
+			new HelpBasic(),
+			new HelpFun(),
+			new HelpDnD(),
+			new HelpMusic(),
+			new HelpSettings()
 		));
+
+		//addButtons(ButtonTestResources.getButtonInterfaces());
 	}
 
 	/**
@@ -84,10 +89,10 @@ public class ButtonManager {
 	 * component id
 	 * @param event The button event to build the context for the button
 	 */
-	public void handle(ButtonClickEvent event) {
+	public void handle(ButtonClickEvent event, String buttonId) {
 
 		// Get button command
-		ButtonInterface btn = this.getButtonCommand(event.getComponentId().split(":")[1]);
+		ButtonInterface btn = this.getButtonCommand(buttonId);
 
 		if (btn != null) {
 			// Build ButtonContext
