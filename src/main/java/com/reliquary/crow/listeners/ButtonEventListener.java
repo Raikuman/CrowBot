@@ -1,6 +1,6 @@
 package com.reliquary.crow.listeners;
 
-import com.reliquary.crow.commands.music.Queue.QueueResources;
+import com.reliquary.crow.buttons.ButtonManager;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -12,6 +12,7 @@ import javax.annotation.Nonnull;
 public class ButtonEventListener extends ListenerAdapter {
 
 	private static final Logger logger = LoggerFactory.getLogger(ButtonEventListener.class);
+	private final ButtonManager manager = new ButtonManager();
 
 	@Override
 	public void onReady(@Nonnull ReadyEvent event) {
@@ -30,14 +31,6 @@ public class ButtonEventListener extends ListenerAdapter {
 		if (!authorId.equals(event.getUser().getId()) && event.isFromGuild())
 			return;
 
-		// Queue handler
-		switch (type) {
-			case "queueleft":
-			case "queueright":
-				QueueResources.queueHandler(event, type);
-				break;
-		}
-
-
+		manager.handle(event, type);
 	}
 }
