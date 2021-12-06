@@ -1,4 +1,4 @@
-package com.reliquary.crow.listeners;
+package com.reliquary.crow.listeners.componentlisteners;
 
 import com.reliquary.crow.componentmanagers.buttons.ButtonManager;
 import net.dv8tion.jda.api.events.ReadyEvent;
