@@ -1,6 +1,6 @@
 package com.reliquary.crow.slashcommands.ButtonTest;
 
-import com.reliquary.crow.buttons.ButtonResources;
+import com.reliquary.crow.componentmanagers.buttons.ButtonResources;
 import com.reliquary.crow.resources.other.RandomColor;
 import com.reliquary.crow.slashcommands.manager.SlashContext;
 import com.reliquary.crow.slashcommands.manager.SlashInterface;

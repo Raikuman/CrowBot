@@ -1,8 +1,8 @@
 package com.reliquary.crow.slashcommands.ButtonTest.buttons;
 
-import com.reliquary.crow.buttons.ButtonContext;
-import com.reliquary.crow.buttons.ButtonInterface;
-import com.reliquary.crow.buttons.ButtonResources;
+import com.reliquary.crow.componentmanagers.buttons.ButtonContext;
+import com.reliquary.crow.componentmanagers.buttons.ButtonInterface;
+import com.reliquary.crow.componentmanagers.buttons.ButtonResources;
 import com.reliquary.crow.resources.other.RandomColor;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Emoji;

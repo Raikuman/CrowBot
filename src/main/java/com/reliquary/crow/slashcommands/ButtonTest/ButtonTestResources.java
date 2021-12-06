@@ -1,6 +1,6 @@
 package com.reliquary.crow.slashcommands.ButtonTest;
 
-import com.reliquary.crow.buttons.ButtonInterface;
+import com.reliquary.crow.componentmanagers.buttons.ButtonInterface;
 import com.reliquary.crow.slashcommands.ButtonTest.buttons.ButtonTestA;
 import com.reliquary.crow.slashcommands.ButtonTest.buttons.ButtonTestB;
 import com.reliquary.crow.slashcommands.ButtonTest.buttons.ButtonTestC;

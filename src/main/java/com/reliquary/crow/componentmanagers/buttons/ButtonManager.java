@@ -1,4 +1,4 @@
-package com.reliquary.crow.buttons;
+package com.reliquary.crow.componentmanagers.buttons;
 
 import com.reliquary.crow.slashcommands.help.buttons.*;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
