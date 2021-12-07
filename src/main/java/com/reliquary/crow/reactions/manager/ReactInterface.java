@@ -3,7 +3,7 @@ package com.reliquary.crow.reactions.manager;
 /**
  * This class provides an interface for creating commands
  *
- * @version 1.2 2021-07-12
+ * @version 1.3 2021-07-12
  * @since 1.0
  */
 public interface ReactInterface {
@@ -37,4 +37,16 @@ public interface ReactInterface {
 	 * @return Returns the category string
 	 */
 	String getCategory();
+
+	/**
+	 * This method returns the name of this react
+	 * @return Returns the react name string
+	 */
+	String getReactName();
+
+	/**
+	 * This method returns the help string of the react
+	 * @return Returns the react help string
+	 */
+	String getHelp();
 }
