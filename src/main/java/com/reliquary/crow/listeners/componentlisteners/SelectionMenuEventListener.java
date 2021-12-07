@@ -7,10 +7,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 
-public class SelectionMenuListener extends ListenerAdapter {
+public class SelectionMenuEventListener extends ListenerAdapter {
 
-	private static final Logger logger = LoggerFactory.getLogger(SelectionMenuListener.class);
+	private static final Logger logger = LoggerFactory.getLogger(SelectionMenuEventListener.class);
 
 	@Override
 	public void onReady(@Nonnull ReadyEvent event) {
@@ -19,6 +20,18 @@ public class SelectionMenuListener extends ListenerAdapter {
 
 	@Override
 	public void onSelectionMenu(SelectionMenuEvent event) {
+
+
+
+		System.out.println(getMenuValue(event.getValues()));
+	}
+
+	private String getMenuValue(List<String> values) {
+
+		if (values.size() == 1)
+			return values.get(0);
+		else
+			return null;
 
 	}
 
