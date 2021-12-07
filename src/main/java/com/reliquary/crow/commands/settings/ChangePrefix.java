@@ -53,7 +53,7 @@ public class ChangePrefix implements CommandInterface {
 	@Override
 	public String getHelp() {
 		return "Changes the prefix for commands. Current prefix: '"
-			+ ConfigHandler.loadConfigSetting("botSettings", "prefix");
+			+ ConfigHandler.loadConfigSetting("botSettings", "prefix") + "`";
 	}
 
 	@Override
