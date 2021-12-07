@@ -122,6 +122,16 @@ public class YamBoard implements ReactInterface {
 		return "fun";
 	}
 
+	@Override
+	public String getReactName() {
+		return "YamBoard";
+	}
+
+	@Override
+	public String getHelp() {
+		return "React using " + getEmoji() + " (:sweet_potato:) to pin a message to the YamBoard";
+	}
+
 	/**
 	 * This method handles creating the yamboard file if it doesn't exist and return a boolean (it should
 	 * return true at all times)
