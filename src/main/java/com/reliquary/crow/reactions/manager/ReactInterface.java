@@ -3,7 +3,7 @@ package com.reliquary.crow.reactions.manager;
 /**
  * This class provides an interface for creating commands
  *
- * @version 1.1 2021-03-12
+ * @version 1.2 2021-07-12
  * @since 1.0
  */
 public interface ReactInterface {
@@ -25,6 +25,12 @@ public interface ReactInterface {
 	 * @return Returns the invocation reaction
 	 */
 	String getInvoke();
+
+	/**
+	 * This method returns the emoji of the reaction
+	 * @return Returns reaction emoji
+	 */
+	String getEmoji();
 
 	/**
 	 * This method returns the category of the command
