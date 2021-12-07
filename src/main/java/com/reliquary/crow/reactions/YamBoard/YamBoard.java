@@ -129,7 +129,7 @@ public class YamBoard implements ReactInterface {
 
 	@Override
 	public String getHelp() {
-		return "React using " + getEmoji() + " (:sweet_potato:) to pin a message to the YamBoard";
+		return "React using the sweet potato emoji (" + getEmoji() + ") to pin a message to the YamBoard";
 	}
 
 	/**
