@@ -1,6 +1,5 @@
 package com.reliquary.crow.commands.manager;
 
-import com.reliquary.crow.commands.Help;
 import com.reliquary.crow.commands.admin.Shutdown;
 import com.reliquary.crow.commands.basic.Ping;
 import com.reliquary.crow.commands.dnd.Dice;
@@ -53,9 +52,6 @@ public class CommandManager {
 
 		// Admin Commands
 		addCommand(new Shutdown());
-
-		// Help Command
-		addCommand(new Help(this));
 	}
 
 	/**
