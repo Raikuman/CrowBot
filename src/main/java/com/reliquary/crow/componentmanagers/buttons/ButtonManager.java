@@ -1,11 +1,9 @@
 package com.reliquary.crow.componentmanagers.buttons;
 
-import com.reliquary.crow.slashcommands.help.buttons.*;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -20,14 +18,6 @@ public class ButtonManager {
 	private final List<ButtonInterface> buttons = new ArrayList<>();
 
 	public ButtonManager() {
-		addButtons(Arrays.asList(
-			new HelpHome(),
-			new HelpBasic(),
-			new HelpFun(),
-			new HelpDnD(),
-			new HelpMusic(),
-			new HelpSettings()
-		));
 
 		//addButtons(ButtonTestResources.getButtonInterfaces());
 	}

@@ -1,8 +1,10 @@
 package com.reliquary.crow.componentmanagers.buttons;
 
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
+import net.dv8tion.jda.api.interactions.components.Button;
+import net.dv8tion.jda.api.requests.restaction.interactions.UpdateInteractionAction;
+
+import java.util.List;
 
 /**
  * This class provides needed information for buttons in a single object without all the bloat from the
@@ -27,19 +29,11 @@ public class ButtonContext {
 		return this.event;
 	}
 
-	/**
-	 * This method returns the text channel of where the event took place
-	 * @return Returns the text channel of the event
-	 */
-	public TextChannel getChannel() {
-		return this.event.getTextChannel();
+	public UpdateInteractionAction getUpdateInteraction() {
+		return this.event.deferEdit();
 	}
 
-	/**
-	 * This method returns the guild of where the event took place
-	 * @return Returns the guild
-	 */
-	public Guild getGuild() {
-		return this.event.getGuild();
+	public List<Button> getButtons() {
+		return this.event.getMessage().getButtons();
 	}
 }

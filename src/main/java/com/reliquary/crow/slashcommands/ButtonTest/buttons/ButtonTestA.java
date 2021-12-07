@@ -27,12 +27,12 @@ public class ButtonTestA implements ButtonInterface {
 		descriptionBuilder
 			.append("Only a test for buttons");
 
-		UpdateInteractionAction updateAction = ctx.getEvent().deferEdit();
+		UpdateInteractionAction updateAction = ctx.getUpdateInteraction();
 		updateAction = updateAction.setEmbeds(builder.build());
 
 		updateAction = updateAction.setActionRows(ButtonResources.getActionRows(
 			new ArrayList<>(ButtonResources.setCurrentButtonDisabled(
-				ctx.getEvent().getMessage().getButtons(), getButtonId()
+				ctx.getButtons(), getButtonId()
 			))
 		));
 
