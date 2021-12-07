@@ -78,6 +78,7 @@ public class ButtonManager {
 	 * This method handles checking the button event and check if a button can be created using the event's
 	 * component id
 	 * @param event The button event to build the context for the button
+	 * @param buttonId The id to create the button
 	 */
 	public void handle(ButtonClickEvent event, String buttonId) {
 
