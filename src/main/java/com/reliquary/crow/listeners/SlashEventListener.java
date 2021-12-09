@@ -1,7 +1,7 @@
 package com.reliquary.crow.listeners;
 
-import com.reliquary.crow.slashcommands.manager.SlashInterface;
-import com.reliquary.crow.slashcommands.manager.SlashManager;
+import com.reliquary.crow.managers.slashcommands.SlashInterface;
+import com.reliquary.crow.managers.slashcommands.SlashManager;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.User;

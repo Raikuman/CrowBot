@@ -1,6 +1,6 @@
 package com.reliquary.crow.listeners;
 
-import com.reliquary.crow.commands.manager.CommandManager;
+import com.reliquary.crow.managers.commands.CommandManager;
 import com.reliquary.crow.resources.configs.ConfigHandler;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.ReadyEvent;

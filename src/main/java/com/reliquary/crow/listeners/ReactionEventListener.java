@@ -1,7 +1,7 @@
 package com.reliquary.crow.listeners;
 
-import com.reliquary.crow.reactions.manager.ReactInterface;
-import com.reliquary.crow.reactions.manager.ReactManager;
+import com.reliquary.crow.managers.reacts.ReactInterface;
+import com.reliquary.crow.managers.reacts.ReactManager;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GenericGuildMessageReactionEvent;

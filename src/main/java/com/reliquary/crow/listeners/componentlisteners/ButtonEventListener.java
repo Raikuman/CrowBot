@@ -1,6 +1,6 @@
 package com.reliquary.crow.listeners.componentlisteners;
 
-import com.reliquary.crow.componentmanagers.buttons.ButtonManager;
+import com.reliquary.crow.managers.componentmanagers.buttons.ButtonManager;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
