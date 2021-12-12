@@ -1,5 +1,6 @@
 package com.reliquary.crow.main;
 
+import com.reliquary.crow.listeners.VoiceEventListener;
 import com.reliquary.crow.listeners.componentlisteners.ButtonEventListener;
 import com.reliquary.crow.listeners.ReactionEventListener;
 import com.reliquary.crow.listeners.SlashEventListener;
@@ -46,7 +47,8 @@ public class CrowBot {
 				new ReactionEventListener(),
 				new SlashEventListener(),
 				new ButtonEventListener(),
-				new SelectionMenuEventListener())
+				new SelectionMenuEventListener(),
+				new VoiceEventListener())
 			.setMemberCachePolicy(MemberCachePolicy.ALL)
 			.build();
 
