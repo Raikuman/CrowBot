@@ -1,5 +1,6 @@
 package com.reliquary.crow.managers.slashcommands;
 
+import com.reliquary.crow.invokes.slashcommands.Changelog;
 import com.reliquary.crow.invokes.slashcommands.dnd.Dice;
 import com.reliquary.crow.invokes.slashcommands.dnd.IsDnD;
 import com.reliquary.crow.invokes.slashcommands.help.Help;
@@ -21,6 +22,9 @@ public class SlashManager {
 	private final List<SlashInterface> slashCommands = new ArrayList<>();
 
 	public SlashManager() {
+
+		// Basic Commands
+		addSlash(new Changelog());
 
 		// DnD Commands
 		addSlash(new Dice());
