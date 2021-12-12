@@ -3,7 +3,6 @@ package com.reliquary.crow.invokes.slashcommands.help.resources;
 import com.reliquary.crow.managers.componentmanagers.selectionmenus.SelectInterface;
 import com.reliquary.crow.invokes.slashcommands.help.selectionmenus.*;
 import com.reliquary.crow.resources.other.RandomColor;
-import com.reliquary.crow.slashcommands.help.selectionmenus.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.util.Arrays;
