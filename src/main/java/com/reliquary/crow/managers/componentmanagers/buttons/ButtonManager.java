@@ -1,5 +1,6 @@
 package com.reliquary.crow.managers.componentmanagers.buttons;
 
+import com.reliquary.crow.invokes.commands.music.Queue.QueuePagination;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 
 import javax.annotation.Nullable;
@@ -20,6 +21,7 @@ public class ButtonManager {
 	public ButtonManager() {
 
 		//addButtons(ButtonTestResources.getButtonInterfaces());
+		addButtons(QueuePagination.provideButtons());
 	}
 
 	/**
