@@ -6,7 +6,6 @@ import com.reliquary.crow.managers.commands.CommandContext;
 import com.reliquary.crow.managers.commands.CommandInterface;
 import com.reliquary.crow.resources.jda.MessageResources;
 import com.reliquary.crow.resources.pagination.Pagination;
-import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.util.List;
 
@@ -68,15 +67,22 @@ public class Queue implements CommandInterface {
 		return "music";
 	}
 
+	/**
+	 * This method clears the music manager queue
+	 * @param musicManager Provides the music manager to check queue
+	 * @param ctx Provides command context to reply to
+	 */
 	private void clearQueue(GuildMusicManager musicManager, CommandContext ctx) {
 
 		if (musicManager.scheduler.queue.size() == 0) {
+
 			MessageResources.timedMessage(
 				"There are currently no tracks in the queue",
 				ctx.getChannel(),
 				10
 			);
 		} else {
+
 			musicManager.scheduler.queue.clear();
 			ctx.getEvent().getMessage()
 				.addReaction("U+1F5D1").queue();
