@@ -92,6 +92,10 @@ public class CrowBot {
 		}
 	}
 
+	/**
+	 * Updates the presence of the bot on a timer
+	 * @param jda Provides the jda object to change presence
+	 */
 	private static void handlePresence(JDA jda) {
 
 		PresenceHandler.writePresenceFiles();
