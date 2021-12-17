@@ -58,6 +58,9 @@ public class Queue implements CommandInterface {
 			// Repeat the queue
 			QueueArgs.repeatQueue(musicManager, ctx);
 		}
+
+		// Delete sent message
+		ctx.getEvent().getMessage().delete().queue();
 	}
 
 	@Override

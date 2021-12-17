@@ -96,6 +96,9 @@ public class NowPlaying implements CommandInterface {
 		// Send message
 		channel.sendMessageEmbeds(builder.build())
 			.queue();
+
+		// Delete sent message
+		ctx.getEvent().getMessage().delete().queue();
 	}
 
 	@Override
