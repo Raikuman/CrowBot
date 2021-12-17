@@ -85,6 +85,19 @@ public class QueuePagination {
 			return stringList;
 		}
 
+		// Handle checking if the track/queue is on repeat
+		List<String> repeatStrings = new ArrayList<>();
+		if (musicManager.scheduler.repeating)
+			repeatStrings.add("\uD83D\uDD01 Repeating current track");
+
+		if (musicManager.scheduler.repeatingQueue)
+			repeatStrings.add("\uD83D\uDD03 Repeating queue");
+
+		if (repeatStrings.size() > 1)
+			stringList.add(repeatStrings.get(0) + "\n" + repeatStrings.get(1));
+		else
+			stringList.add(repeatStrings.get(0));
+
 		// Handle the current track
 		String playerState;
 		if (musicManager.audioPlayer.isPaused()) {
