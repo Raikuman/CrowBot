@@ -1,6 +1,5 @@
 package com.reliquary.crow.managers.commands;
 
-import com.reliquary.crow.invokes.commands.admin.Shutdown;
 import com.reliquary.crow.invokes.commands.basic.Ping;
 import com.reliquary.crow.invokes.commands.dnd.Dice;
 import com.reliquary.crow.invokes.commands.music.*;
@@ -49,9 +48,6 @@ public class CommandManager {
 
 		// Setting Commands
 		addCommand(new ChangePrefix());
-
-		// Admin Commands
-		addCommand(new Shutdown());
 	}
 
 	/**
