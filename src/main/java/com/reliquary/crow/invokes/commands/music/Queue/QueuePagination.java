@@ -85,17 +85,17 @@ public class QueuePagination {
 			return stringList;
 		}
 
-		String repeatString = "";
+		List<String> repeatStrings = new ArrayList<>();
 		if (musicManager.scheduler.repeating)
-			repeatString += "\uD83D\uDD01 Repeating current track";
-
-		if (!repeatString.isEmpty())
-			repeatString += "\n";
+			repeatStrings.add("\uD83D\uDD01 Repeating current track");
 
 		if (musicManager.scheduler.repeatingQueue)
-			repeatString += "\uD83D\uDD03 Repeating queue";
+			repeatStrings.add("\uD83D\uDD03 Repeating queue");
 
-		stringList.add(repeatString);
+		if (repeatStrings.size() == 2)
+			stringList.add(repeatStrings.get(0) + "\n" + repeatStrings.get(1));
+		else if (repeatStrings.size() == 1)
+			stringList.add(repeatStrings.get(0));
 
 		// Handle the current track
 		String playerState;
