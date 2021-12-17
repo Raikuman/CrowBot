@@ -11,13 +11,14 @@ import java.util.List;
 /**
  * This class handles all logic to manipulate the queue of the guild's music manager.
  *
- * There are four goals that queue achieves:
+ * There are five goals that queue achieves:
  * 1. Displaying a queue of the currently playing track and all queued tracks
  * 2. Clearing the queue using arguments from the command
  * 3. Deleting a track in the queue
  * 4. Jumping to a track in the queue and playing it
+ * 5. Repeating the queue by adding the ending track to the end of the queue
  *
- * @version 3.3 2021-16-12
+ * @version 3.4 2021-16-12
  * @since 1.0
  */
 public class Queue implements CommandInterface {
@@ -52,6 +53,10 @@ public class Queue implements CommandInterface {
 
 			// Jump to a track
 			QueueArgs.jumpToTrack(args, musicManager, ctx);
+		} else if (args.get(0).equalsIgnoreCase("repeat")) {
+
+			// Repeat the queue
+			QueueArgs.repeatQueue(musicManager, ctx);
 		}
 	}
 
@@ -67,7 +72,7 @@ public class Queue implements CommandInterface {
 
 	@Override
 	public String getUsage() {
-		return "<clear>, <remove #>, <jump #>";
+		return "<clear>, <repeat>, <remove #>, <jump #>";
 	}
 
 	@Override

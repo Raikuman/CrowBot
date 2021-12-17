@@ -3,7 +3,10 @@ package com.reliquary.crow.invokes.commands.music.Queue;
 import com.reliquary.crow.invokes.commands.music.manager.GuildMusicManager;
 import com.reliquary.crow.managers.commands.CommandContext;
 import com.reliquary.crow.resources.jda.MessageResources;
+import com.reliquary.crow.resources.other.DateAndTime;
+import com.reliquary.crow.resources.other.RandomColor;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.util.ArrayList;
@@ -128,6 +131,38 @@ public class QueueArgs {
 
 		ctx.getEvent().getMessage()
 			.addReaction("U+23ED").queue();
+	}
+
+	/**
+	 * This method repeats the current queue by adding the ending track to the end of the queue
+	 * @param musicManager Provides the music manager
+	 * @param ctx Provides command context to reply to
+	 */
+	protected static void repeatQueue(GuildMusicManager musicManager, CommandContext ctx) {
+
+		// Negate repeat boolean
+		musicManager.scheduler.repeatingQueue = !musicManager.scheduler.repeatingQueue;
+
+		// Get queue length
+		long queueLength = 0;
+		for (AudioTrack audioTrack : musicManager.scheduler.queue) {
+			queueLength += audioTrack.getDuration();
+		}
+		queueLength += musicManager.audioPlayer.getPlayingTrack().getDuration();
+
+		// Handle embed title whether queue is repeating or not
+		String ifRepeat;
+		if (musicManager.scheduler.repeatingQueue)
+			ifRepeat = "\uD83D\uDD03 Now repeating queue";
+		else
+			ifRepeat = "\uD83D\uDEAB Stopped repeating queue";
+
+		EmbedBuilder builder = new EmbedBuilder()
+			.setAuthor(ifRepeat, null, ctx.getMember().getUser().getAvatarUrl())
+			.setColor(RandomColor.getRandomColor())
+			.addField("Queue Duration", DateAndTime.formatTime(queueLength), false);
+
+		ctx.getChannel().sendMessageEmbeds(builder.build()).queue();
 	}
 
 	/**
