@@ -7,23 +7,24 @@ import net.dv8tion.jda.api.entities.Emoji;
 import net.dv8tion.jda.api.interactions.components.Button;
 import net.dv8tion.jda.api.requests.restaction.interactions.UpdateInteractionAction;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 /**
  * This class is part of the pagination implementation that handles the right button
  *
- * @version 1.0 2021-16-12
+ * @version 1.1 2021-16-12
  * @since 1.0
  */
 public class PageRight implements ButtonInterface {
 
 	private final String invoke;
-	private final List<EmbedBuilder> embedBuilderList;
+	private List<EmbedBuilder> embedBuilderList;
 
-	public PageRight(String invoke, List<EmbedBuilder> embedBuilderList) {
+	public PageRight(String invoke) {
 		this.invoke = invoke;
-		this.embedBuilderList = embedBuilderList;
+		this.embedBuilderList = new ArrayList<>();
 	}
 
 	@Override
@@ -62,6 +63,8 @@ public class PageRight implements ButtonInterface {
 
 		}
 
+		embedBuilderList = setEmbedBuilderList(ctx);
+
 		UpdateInteractionAction updateAction = ctx.getUpdateInteraction();
 		updateAction = updateAction.setActionRow(buttonList);
 		updateAction = updateAction.setEmbeds(embedBuilderList.get(newPage - 1).build());
@@ -80,6 +83,15 @@ public class PageRight implements ButtonInterface {
 
 	@Override
 	public String getLabel() {
+		return null;
+	}
+
+	/**
+	 * This method provides a way to dynamically set the embed list when the invoke is called
+	 * @param ctx Provides the button context
+	 * @return Returns the list of embeds
+	 */
+	public List<EmbedBuilder> setEmbedBuilderList(ButtonContext ctx) {
 		return null;
 	}
 }
