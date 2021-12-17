@@ -50,11 +50,6 @@ public class PresenceHandler {
 		}
 	}
 
-	/*
-	updatePresence
-	Update JDA object with a new presence
-	 */
-
 	/**
 	 * This method updates the JDA object with a new presence
 	 * @param jda Provides the JDA object for updating

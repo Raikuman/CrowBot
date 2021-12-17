@@ -7,6 +7,12 @@ import net.dv8tion.jda.api.entities.Message;
 
 import java.time.Duration;
 
+/**
+ * This class shows the gateway ping of the bot
+ *
+ * @version 1.0 2021-16-12
+ * @since 1.0
+ */
 public class Ping implements CommandInterface {
 
 	@Override
@@ -31,7 +37,7 @@ public class Ping implements CommandInterface {
 
 	@Override
 	public String getHelp() {
-		return "A simple ping command (from Discord gateway to server)";
+		return "A simple ping command (from Discord to bot)";
 	}
 
 	@Override

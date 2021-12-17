@@ -9,6 +9,12 @@ import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.util.List;
 
+/**
+ * This class handles changing the prefix of the bot
+ *
+ * @version 1.0 2021-16-12
+ * @since 1.0
+ */
 public class ChangePrefix implements CommandInterface {
 
 	@Override
