@@ -29,7 +29,6 @@ public class CrowBot {
 
 	public static void main(String[] args) throws LoginException, InterruptedException {
 
-		// Create JDA object without initialization
 		JDA jda;
 
 		// Initialize JDA using configuration
@@ -54,6 +53,15 @@ public class CrowBot {
 
 		// Block jda until connected
 		jda.awaitStatus(JDA.Status.CONNECTED);
+
+		generateDefault();
+		handlePresence(jda);
+	}
+
+	/**
+	 * Generates the default configs and directories for the bot
+	 */
+	private static void generateDefault() {
 
 		// Generate config folder first
 		File directory = new File(envConfig.get("configdirectory"));
@@ -82,8 +90,10 @@ public class CrowBot {
 			if (directory.mkdir())
 				logger.info("Created directory " + folderName + " successfully");
 		}
+	}
 
-		// Bot Presence
+	private static void handlePresence(JDA jda) {
+
 		PresenceHandler.writePresenceFiles();
 
 		Timer timer = new Timer();
