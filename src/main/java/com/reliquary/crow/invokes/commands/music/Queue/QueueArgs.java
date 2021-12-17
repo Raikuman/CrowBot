@@ -6,12 +6,13 @@ import com.reliquary.crow.resources.jda.MessageResources;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.entities.TextChannel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * This class handles the logic for the arguments of the queue command
  *
- * @version 1.1 2021-16-12
+ * @version 1.2 2021-16-12
  * @since 1.0
  */
 public class QueueArgs {
@@ -72,6 +73,61 @@ public class QueueArgs {
 
 			count++;
 		}
+	}
+
+	/**
+	 * This method jumps to a track in the queue and plays it
+	 * @param args Provides the arguments to check what track to jump to
+	 * @param musicManager Provides the music manager to get queue
+	 * @param ctx Provides command context to reply to
+	 */
+	protected static void jumpToTrack(List<String> args, GuildMusicManager musicManager, CommandContext ctx) {
+
+		int trackNum = getTrackFromArgs(args, ctx.getChannel(), musicManager.scheduler.queue.size());
+
+		if (trackNum == -1) {
+			MessageResources.timedMessage(
+				"You must provide a valid track number to delete",
+				ctx.getChannel(),
+				10
+			);
+			return;
+		}
+
+		List<AudioTrack> audioTracks = new ArrayList<>();
+		AudioTrack playTrack = null;
+		musicManager.scheduler.queue.drainTo(audioTracks);
+
+		// Get track from trackNum and remove track from list
+		int count = 1;
+		for (AudioTrack audioTrack : audioTracks) {
+
+			if (trackNum == count) {
+				playTrack = audioTrack;
+				audioTracks.remove(audioTrack);
+				break;
+			}
+
+			count++;
+		}
+
+		if (playTrack == null) {
+			MessageResources.timedMessage(
+				"Could not jump to track",
+				ctx.getChannel(),
+				10
+			);
+			return;
+		}
+
+		// Set the track to the beginning of the list
+		audioTracks.set(0, playTrack);
+
+		musicManager.scheduler.queue.addAll(audioTracks);
+		musicManager.scheduler.nextTrack();
+
+		ctx.getEvent().getMessage()
+			.addReaction("U+23ED").queue();
 	}
 
 	/**
