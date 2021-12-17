@@ -6,6 +6,7 @@ import com.reliquary.crow.managers.commands.CommandContext;
 import com.reliquary.crow.managers.commands.CommandInterface;
 import com.reliquary.crow.resources.jda.MessageResources;
 import com.reliquary.crow.resources.pagination.Pagination;
+import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 
 import java.util.List;
 
@@ -15,8 +16,9 @@ import java.util.List;
  * There are two goals that queue achieves:
  * 1. Displaying a queue of the currently playing track and all queued tracks
  * 2. Clearing the queue using arguments from the command
+ * 3. Deleting a track in the queue
  *
- * @version 3.0 2021-16-12
+ * @version 3.1 2021-16-12
  * @since 1.0
  */
 public class Queue implements CommandInterface {
@@ -39,10 +41,14 @@ public class Queue implements CommandInterface {
 					10
 				).get(0).build()
 			).setActionRow(Pagination.provideButtons(getInvoke(), ctx.getMember().getId())).queue();
-		} else if (args.contains("clear")) {
+		} else if (args.get(0).contains("clear")) {
 
 			// Clear the queue
 			clearQueue(musicManager, ctx);
+		} else if (args.get(0).contains("remove")) {
+
+			// Remove a track
+			removeTrack(args, musicManager, ctx);
 		}
 
 	}
@@ -59,7 +65,7 @@ public class Queue implements CommandInterface {
 
 	@Override
 	public String getUsage() {
-		return "<clear>";
+		return "<clear>, <remove>";
 	}
 
 	@Override
@@ -87,5 +93,67 @@ public class Queue implements CommandInterface {
 			ctx.getEvent().getMessage()
 				.addReaction("U+1F5D1").queue();
 		}
+	}
+
+	/**
+	 * This method removes a track given the argument
+	 * @param args Provides the arguments to check what track to remove
+	 * @param musicManager Provides the music manager to get queue
+	 * @param ctx Provides command context to reply to
+	 */
+	private void removeTrack(List<String> args, GuildMusicManager musicManager, CommandContext ctx) {
+
+		if (args.get(1) == null) {
+
+			MessageResources.timedMessage(
+				"You must provide a valid track number to delete",
+				ctx.getChannel(),
+				10
+			);
+		} else {
+
+			int trackNum;
+
+			// Check if arg is an integer
+			try {
+				trackNum = Integer.parseInt(args.get(1));
+			} catch (NumberFormatException e) {
+				MessageResources.timedMessage(
+					"You must provide a valid track number to delete",
+					ctx.getChannel(),
+					10
+				);
+				return;
+			}
+
+			// Check if arg is greater than current queue
+			if (trackNum > musicManager.scheduler.queue.size()) {
+				MessageResources.timedMessage(
+					"You must provide a valid track number to delete",
+					ctx.getChannel(),
+					10
+				);
+				return;
+			}
+
+			// Find and remove track
+			int count = 1;
+			for (AudioTrack audioTrack : musicManager.scheduler.queue) {
+
+				if (trackNum == count) {
+					if (musicManager.scheduler.queue.remove(audioTrack)) {
+						ctx.getEvent().getMessage()
+							.addReaction("U+1F5D1").queue();
+					}
+
+					break;
+				}
+
+				count++;
+			}
+
+		}
+
+
 	}
 }
