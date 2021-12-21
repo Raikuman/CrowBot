@@ -27,9 +27,15 @@ public class ButtonEventListener extends ListenerAdapter {
 		String authorId = id[0];
 		String type = id[1];
 
-		// Return if the author is not pressing the buttons and that the event is from a guild
-		if (!authorId.equals(event.getUser().getId()) && !event.isFromGuild())
+		// Return if the event isn't from a guild
+		if (!event.isFromGuild())
 			return;
+
+		// Return if the author is not pressing the buttons
+		if (!authorId.equals(event.getUser().getId())) {
+			event.deferEdit().queue();
+			return;
+		}
 
 		manager.handle(event, type);
 	}
