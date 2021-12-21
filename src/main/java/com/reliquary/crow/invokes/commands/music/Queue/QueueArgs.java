@@ -150,17 +150,18 @@ public class QueueArgs {
 		}
 		queueLength += musicManager.audioPlayer.getPlayingTrack().getDuration();
 
-		// Handle embed title whether queue is repeating or not
-		String ifRepeat;
-		if (musicManager.scheduler.repeatingQueue)
-			ifRepeat = "\uD83D\uDD03 Now repeating queue";
-		else
-			ifRepeat = "\uD83D\uDEAB Stopped repeating queue";
+		EmbedBuilder builder = new EmbedBuilder().setColor(RandomColor.getRandomColor());
 
-		EmbedBuilder builder = new EmbedBuilder()
-			.setAuthor(ifRepeat, null, ctx.getMember().getUser().getAvatarUrl())
-			.setColor(RandomColor.getRandomColor())
-			.addField("Queue Duration", DateAndTime.formatTime(queueLength), false);
+		// Handle embed title and field whether queue is repeating or not
+		String ifRepeat;
+		if (musicManager.scheduler.repeatingQueue) {
+			ifRepeat = "\uD83D\uDD03 Now repeating queue";
+			builder.addField("Queue Duration", DateAndTime.formatTime(queueLength), false);
+		} else {
+			ifRepeat = "\uD83D\uDEAB Stopped repeating queue";
+		}
+
+		builder.setAuthor(ifRepeat, null, ctx.getMember().getUser().getAvatarUrl());
 
 		ctx.getChannel().sendMessageEmbeds(builder.build()).queue();
 	}
