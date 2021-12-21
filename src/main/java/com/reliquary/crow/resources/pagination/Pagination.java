@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * This class provides buttons and embeds for pagination
  *
- * @version 1.0 2021-16-12
+ * @version 1.1 2021-20-12
  * @since 1.0
  */
 public class Pagination {
@@ -40,7 +40,7 @@ public class Pagination {
 	 * @return Returns the list of embed builders
 	 */
 	public static List<EmbedBuilder> buildEmbedList(String invoke, List<String> stringList,
-		int itemsPerPage) {
+		int itemsPerPage, String avatarUrl) {
 
 		int numPages = (int) Math.ceil(stringList.size() / (double) itemsPerPage);
 
@@ -53,7 +53,7 @@ public class Pagination {
 		for (int i = 0; i < numPages; i++) {
 
 			builder
-				.setAuthor(invoke.substring(0, 1).toUpperCase() + invoke.substring(1))
+				.setAuthor(invoke.substring(0, 1).toUpperCase() + invoke.substring(1), null, avatarUrl)
 				.setTitle("Page " + (i + 1) + "/" + numPages)
 				.setColor(RandomColor.getRandomColor());
 

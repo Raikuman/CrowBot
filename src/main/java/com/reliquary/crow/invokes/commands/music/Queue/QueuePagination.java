@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * This class provide the pagination resources for the queue command
  *
- * @version 1.0 2021-16-12
+ * @version 1.1 2021-20-12
  * @since 1.0
  */
 public class QueuePagination {
@@ -46,7 +46,8 @@ public class QueuePagination {
 					return Pagination.buildEmbedList(
 						invoke,
 						buildStrings(PlayerManager.getInstance().getMusicManager(ctx.getEvent().getGuild())),
-						itemsPerPage
+						itemsPerPage,
+						ctx.getEvent().getUser().getAvatarUrl()
 					);
 				}
 			},
@@ -62,7 +63,8 @@ public class QueuePagination {
 					return Pagination.buildEmbedList(
 						invoke,
 						buildStrings(PlayerManager.getInstance().getMusicManager(ctx.getEvent().getGuild())),
-						itemsPerPage
+						itemsPerPage,
+						ctx.getEvent().getUser().getAvatarUrl()
 					);
 				}
 			}
