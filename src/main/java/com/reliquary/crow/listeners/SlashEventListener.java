@@ -13,6 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SlashEventListener extends ListenerAdapter {
 
@@ -40,13 +42,18 @@ public class SlashEventListener extends ListenerAdapter {
 
 	private void slashCommandUpserter(JDA jda) {
 
-		// Seems like this is better to implement than upsert?
-		// Takes up to an hour
-		//CommandListUpdateAction slashCmd = event.getJDA().updateCommands();
-		// slashCmd.addCommands( new CommandData());
+		List<CommandData> commandDataList = new ArrayList<>();
 
+		for (SlashInterface slashInterface : manager.getSlashCommands())
+			commandDataList.add(new CommandData(slashInterface.getInvoke(), slashInterface.getHelp()));
+
+		jda.updateCommands().addCommands(commandDataList).queue();
+
+		// For fast testing of slash commands
+		/*
 		for (Guild guild : jda.getGuilds())
 			for (SlashInterface slcmd : manager.getSlashCommands())
 				guild.upsertCommand(new CommandData(slcmd.getInvoke(), slcmd.getHelp())).queue();
+		 */
 	}
 }
