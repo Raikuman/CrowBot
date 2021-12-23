@@ -18,7 +18,7 @@ import java.util.List;
  * 4. Jumping to a track in the queue and playing it
  * 5. Repeating the queue by adding the ending track to the end of the queue
  *
- * @version 3.5 2021-20-12
+ * @version 3.5 2021-22-12
  * @since 1.0
  */
 public class Queue implements CommandInterface {
@@ -41,7 +41,7 @@ public class Queue implements CommandInterface {
 					10,
 					ctx.getMember().getUser().getAvatarUrl()
 				).get(0).build()
-			).setActionRow(Pagination.provideButtons(getInvoke(), ctx.getMember().getId())).queue();
+			).setActionRow(Pagination.provideButtons(getInvoke(), ctx.getMember().getId(), false)).queue();
 		} else if (args.get(0).equalsIgnoreCase("clear")) {
 
 			// Clear the queue
