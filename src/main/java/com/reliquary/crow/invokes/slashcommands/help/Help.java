@@ -9,7 +9,7 @@ import net.dv8tion.jda.api.interactions.components.selections.SelectionMenu;
 /**
  * This class handles getting a list of commands and their description to provide a help menu
  *
- * @version 1.0 2021-09-12
+ * @version 1.1 2021-23-12
  * @since 1.0
  */
 public class Help implements SlashInterface {
@@ -19,7 +19,7 @@ public class Help implements SlashInterface {
 
 		final String userId = ctx.getEvent().getUser().getId();
 
-		SelectionMenu menu = SelectionMenu.create("menu:class")
+		SelectionMenu menu = SelectionMenu.create("menu:help")
 			.setPlaceholder("View commands in category")
 			.setRequiredRange(1, 1)
 			.addOptions(SelectResources.createSelectOptions(userId, HelpResources.getSelectionMenuInterfaces()))
