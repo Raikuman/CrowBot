@@ -1,5 +1,6 @@
 package com.reliquary.crow.invokes.slashcommands.ButtonTest.buttons;
 
+import com.reliquary.crow.managers.componentmanagers.ComponentResources;
 import com.reliquary.crow.managers.componentmanagers.buttons.ButtonContext;
 import com.reliquary.crow.managers.componentmanagers.buttons.ButtonInterface;
 import com.reliquary.crow.managers.componentmanagers.buttons.ButtonResources;
@@ -30,7 +31,7 @@ public class ButtonTestB implements ButtonInterface {
 		UpdateInteractionAction updateAction = ctx.getUpdateInteraction();
 		updateAction = updateAction.setEmbeds(builder.build());
 
-		updateAction = updateAction.setActionRows(ButtonResources.getActionRows(
+		updateAction = updateAction.setActionRows(ComponentResources.getActionRows(
 			new ArrayList<>(ButtonResources.setCurrentButtonDisabled(
 				ctx.getButtons(), getButtonId()
 			))
