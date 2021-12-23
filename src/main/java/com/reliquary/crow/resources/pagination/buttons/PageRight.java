@@ -14,17 +14,15 @@ import java.util.Objects;
 /**
  * This class is part of the pagination implementation that handles the right button
  *
- * @version 1.1 2021-16-12
+ * @version 1.2 2021-23-12
  * @since 1.0
  */
 public class PageRight implements ButtonInterface {
 
 	private final String invoke;
-	private List<EmbedBuilder> embedBuilderList;
 
 	public PageRight(String invoke) {
 		this.invoke = invoke;
-		this.embedBuilderList = new ArrayList<>();
 	}
 
 	@Override
@@ -63,11 +61,9 @@ public class PageRight implements ButtonInterface {
 
 		}
 
-		embedBuilderList = setEmbedBuilderList(ctx);
-
 		UpdateInteractionAction updateAction = ctx.getUpdateInteraction();
 		updateAction = updateAction.setActionRow(buttonList);
-		updateAction = updateAction.setEmbeds(embedBuilderList.get(newPage - 1).build());
+		updateAction = updateAction.setEmbeds(setEmbedBuilderList(ctx).get(newPage - 1).build());
 		updateAction.queue();
 	}
 
