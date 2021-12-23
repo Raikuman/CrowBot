@@ -1,5 +1,6 @@
 package com.reliquary.crow.invokes.slashcommands.ButtonTest;
 
+import com.reliquary.crow.managers.componentmanagers.ComponentResources;
 import com.reliquary.crow.managers.componentmanagers.buttons.ButtonResources;
 import com.reliquary.crow.resources.other.RandomColor;
 import com.reliquary.crow.managers.slashcommands.SlashContext;
@@ -24,7 +25,7 @@ public class ButtonTest implements SlashInterface {
 
 		ctx.getEvent().replyEmbeds(builder.build())
 			.addActionRows(
-				ButtonResources.getActionRows(
+				ComponentResources.getActionRows(
 					ButtonResources.createButtons(userId, ButtonTestResources.getButtonInterfaces(), true)
 			)).queue();
 	}
