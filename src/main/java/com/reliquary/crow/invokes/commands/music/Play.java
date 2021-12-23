@@ -14,7 +14,7 @@ import java.net.URISyntaxException;
  * This class handles automatically joining the user's voice channel on command and checking args to play
  * the found track on the music manager
  *
- * @version 2.0 2021-04-11
+ * @version 2.1 2021-22-12
  * @since 1.0
  */
 @SuppressWarnings("ConstantConditions")
@@ -71,6 +71,9 @@ public class Play implements CommandInterface {
 
 		// Join user's voice channel
 		ctx.getGuild().getAudioManager().openAudioConnection(memberVoiceState.getChannel());
+
+		// Deafen the bot
+		ctx.getGuild().getSelfMember().deafen(true).queue();
 
 		// Check if args is a link
 		String link = String.join(" ", ctx.getArgs());

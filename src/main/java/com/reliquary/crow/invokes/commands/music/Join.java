@@ -9,7 +9,7 @@ import net.dv8tion.jda.api.entities.*;
 /**
  * This class handles the bot joining a voice channel of a user
  *
- * @version 2.0 2021-04-11
+ * @version 2.1 2021-22-12
  * @since 1.0
  */
 @SuppressWarnings("ConstantConditions")
@@ -56,6 +56,9 @@ public class Join implements CommandInterface {
 
 		// Join user's voice channel
 		ctx.getGuild().getAudioManager().openAudioConnection(memberVoiceState.getChannel());
+
+		// Deafen the bot
+		ctx.getGuild().getSelfMember().deafen(true).queue();
 
 		// Send join reaction
 		ctx.getEvent().getMessage()
