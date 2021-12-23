@@ -73,7 +73,7 @@ public class Play implements CommandInterface {
 		ctx.getGuild().getAudioManager().openAudioConnection(memberVoiceState.getChannel());
 
 		// Deafen the bot
-		ctx.getGuild().getSelfMember().deafen(true).queue();
+		ctx.getGuild().getAudioManager().setSelfDeafened(true);
 
 		// Check if args is a link
 		String link = String.join(" ", ctx.getArgs());
