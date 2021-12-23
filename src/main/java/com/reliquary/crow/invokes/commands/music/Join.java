@@ -6,6 +6,8 @@ import com.reliquary.crow.resources.jda.MessageResources;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 
+import java.time.Duration;
+
 /**
  * This class handles the bot joining a voice channel of a user
  *
@@ -58,7 +60,7 @@ public class Join implements CommandInterface {
 		ctx.getGuild().getAudioManager().openAudioConnection(memberVoiceState.getChannel());
 
 		// Deafen the bot
-		ctx.getGuild().getSelfMember().deafen(true).queue();
+		ctx.getGuild().getAudioManager().setSelfDeafened(true);
 
 		// Send join reaction
 		ctx.getEvent().getMessage()
