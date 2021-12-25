@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * This class handles all methods to aid with react-type classes
  *
- * @version 1.0 2021-09-11
+ * @version 1.1 2021-25-12
  * @since 1.0
  */
 public class ReactionResources {
@@ -20,11 +20,10 @@ public class ReactionResources {
 	 */
 	public static int countReactions(List<MessageReaction> reactionList, String compareReaction) {
 
-		int count = 0;
 		for (MessageReaction reaction : reactionList)
 			if (reaction.getReactionEmote().getAsCodepoints().equalsIgnoreCase(compareReaction))
-				count++;
+				return reaction.getCount();
 
-		return count;
+		return 0;
 	}
 }
