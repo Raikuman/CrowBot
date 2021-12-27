@@ -41,7 +41,7 @@ public class Queue implements CommandInterface {
 					10,
 					ctx.getMember().getUser().getAvatarUrl()
 				).get(0).build()
-			).setActionRow(Pagination.provideButtons(getInvoke(), ctx.getMember().getId(), false)).queue();
+			).setActionRow(Pagination.provideButtons(getInvoke(), ctx.getMember().getId())).queue();
 		} else if (args.get(0).equalsIgnoreCase("clear")) {
 
 			// Clear the queue

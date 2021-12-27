@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * This class provides buttons and embeds for pagination
  *
- * @version 1.2 2021-23-12
+ * @version 1.3 2021-23-12
  * @since 1.0
  */
 public class Pagination {
@@ -22,18 +22,11 @@ public class Pagination {
 	 * This method provides a list of button components for pagination
 	 * @param invoke Provides invoke string for pagination command
 	 * @param userId Provides invoke author's id to identify button
-	 * @param homeButton Boolean to check if there should be a home button or not
 	 * @return Returns a list of button components
 	 */
-	public static List<Component> provideButtons(String invoke, String userId, boolean homeButton) {
+	public static List<Component> provideButtons(String invoke, String userId) {
 
 		List<Component> componentList = new ArrayList<>();
-
-		if (homeButton) {
-			componentList.add(
-				Button.secondary(userId + ":" + invoke + "home", Emoji.fromMarkdown("\uD83C\uDFE0"))
-			);
-		}
 
 		componentList.add(
 			Button.secondary(userId + ":" + invoke + "left",  Emoji.fromMarkdown("⬅️")).asDisabled()
@@ -44,6 +37,10 @@ public class Pagination {
 		);
 
 		return componentList;
+	}
+
+	public static Component provideHomeButton(String invoke, String userId) {
+		return Button.secondary(userId + ":" + invoke + "home", Emoji.fromMarkdown("\uD83C\uDFE0"));
 	}
 
 	/**
