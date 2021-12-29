@@ -10,6 +10,8 @@ import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.SheetsScopes;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -18,18 +20,28 @@ import java.io.InputStreamReader;
 import java.security.GeneralSecurityException;
 import java.util.List;
 
+/**
+ * This class provides authentication to use the Google Sheets API and provides the Sheets object to get
+ * data from spreadsheets
+ *
+ * @version 1.1 2021-28-12
+ * @since 1.1
+ */
 public class SheetService {
 
+	private static final Logger logger = LoggerFactory.getLogger(SheetService.class);
 	private static final String APPLICATION_NAME = "Crow Bot";
 	private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
 
-	/*
-	authorize
-	OAuth exchange to grant access to Google Sheets
+	/**
+	 * This method prompts OAuth2 authorization on initial run and returns a Credential object when authorized
+	 * @return Returns the credential object
+	 * @throws IOException Throws exception when credentials file is not found
+	 * @throws GeneralSecurityException Throws exception when Google authorization fails
 	 */
 	private static Credential authorize() throws IOException, GeneralSecurityException {
 
-		// Load client secrets
+		// Get credentials
 		InputStream in = SheetService.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
 		if (in == null) {
 			throw new FileNotFoundException("Resource not found: " + CREDENTIALS_FILE_PATH);
@@ -40,7 +52,9 @@ public class SheetService {
 		);
 
 		// Scopes to access spreadsheets
-		List<String> scopes = List.of(SheetsScopes.SPREADSHEETS);
+		List<String> scopes = List.of(
+			SheetsScopes.SPREADSHEETS
+		);
 
 		// Authorize and store token in file
 		GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
@@ -59,21 +73,26 @@ public class SheetService {
 		).authorize("user");
 	}
 
-	/*
-	getSheetsService
-	Obtains Sheets object by authorizing with API
+	/**
+	 * This method gets the Sheets object using credentials in authorize()
+	 * @return Returns Sheets object
 	 */
-	public static Sheets getSheetsService() throws IOException, GeneralSecurityException {
+	public static Sheets getSheetsService() {
 
-		// Get credential
-		Credential credential = authorize();
+		try {
+			Credential credential = authorize();
 
-		// Create new Sheets object and return
-		return new Sheets.Builder(
-			GoogleNetHttpTransport.newTrustedTransport(),
-			GsonFactory.getDefaultInstance(),
-			credential)
-			.setApplicationName(APPLICATION_NAME)
-			.build();
+			return new Sheets.Builder(
+				GoogleNetHttpTransport.newTrustedTransport(),
+				GsonFactory.getDefaultInstance(),
+				credential)
+				.setApplicationName(APPLICATION_NAME)
+				.build();
+		} catch (IOException | GeneralSecurityException e) {
+			logger.info(e.getMessage());
+		}
+
+		// Service could not be created
+		return null;
 	}
 }
