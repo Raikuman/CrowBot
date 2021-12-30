@@ -33,3 +33,5 @@ test/
 
 #Sheets API
 credentials.json
+/tokens/StoredCredential
+/src/main/resources/META-INF/MANIFEST.MF
