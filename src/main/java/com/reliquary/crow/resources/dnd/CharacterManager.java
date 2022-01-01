@@ -18,7 +18,7 @@ import java.util.List;
  * This class manages creating, deleting, and adding characters to the user's profile under the
  * commandresourcedirectory to provide the Google Sheet link associated with that character
  *
- * @version 1.0 2021-31-12
+ * @version 1.1 2021-31-12
  * @since 1.1
  */
 public class CharacterManager {
@@ -205,6 +205,40 @@ public class CharacterManager {
 		}
 
 		return false;
+	}
+
+	/**
+	 * This method switches the user's selected character with their new selected character
+	 * @param userId Provides the user's id
+	 * @param characterNum Provides the user's selected character number to delete
+	 * @return Returns a boolean if the character was switched
+	 */
+	public static boolean switchCharacter(String userId, int characterNum) {
+
+		File newFileCurrent, oldFileCurrent, newFileSelected, oldFileSelected;
+
+		oldFileCurrent = new File(CHARACTER_DIRECTORY + userId + "/0=" + getSheetId(userId, 1));
+		oldFileSelected =
+			new File(CHARACTER_DIRECTORY + userId + "/" + (characterNum - 1) + "=" + getSheetId(userId,
+				characterNum));
+
+		int selectedNum;
+
+		try {
+			selectedNum = Integer.parseInt(oldFileSelected.getName().substring(0, 1));
+		} catch (NumberFormatException e) {
+			return false;
+		}
+
+		newFileCurrent =
+			new File(CHARACTER_DIRECTORY + userId + "/" + selectedNum + "=" + oldFileCurrent.getName().substring(2));
+		newFileSelected =
+			new File(CHARACTER_DIRECTORY + userId + "/0=" + oldFileSelected.getName().substring(2));
+
+		if (!oldFileCurrent.renameTo(newFileCurrent))
+			return false;
+
+		return oldFileSelected.renameTo(newFileSelected);
 	}
 
 	/**
