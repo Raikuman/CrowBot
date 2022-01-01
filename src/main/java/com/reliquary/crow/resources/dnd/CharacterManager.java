@@ -14,12 +14,26 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * This class manages creating, deleting, and adding characters to the user's profile under the
+ * commandresourcedirectory to provide the Google Sheet link associated with that character
+ *
+ * @version 1.0 2021-31-12
+ * @since 1.1
+ */
 public class CharacterManager {
 
 	private static final Logger logger = LoggerFactory.getLogger(CharacterManager.class);
 	private static final String CHARACTER_DIRECTORY = ConfigHandler.loadConfigSetting("botSettings",
 		"commandresourcedirectory") + "/dnd/";
 
+	/**
+	 * This method adds a character using a user's provided Google Sheet link of their character sheet to
+	 * their profile directory
+	 * @param userId Provides the user's id
+	 * @param sheetsLink Provides the Google Sheet link
+	 * @return Returns a boolean whether the character was added or not
+	 */
 	public static boolean addCharacter(String userId, String sheetsLink) {
 
 		File userFolder = new File(CHARACTER_DIRECTORY + userId);
@@ -52,6 +66,13 @@ public class CharacterManager {
 		return false;
 	}
 
+	/**
+	 * This method deletes a character using the user's provided character number of their character from
+	 * their profile directory
+	 * @param userId Provides the user's id
+	 * @param characterNum Provides the user's selected character number to delete
+	 * @return Returns a boolean whether the character was deleted or not
+	 */
 	public static boolean deleteCharacter(String userId, int characterNum) {
 
 		String target = null;
@@ -78,6 +99,11 @@ public class CharacterManager {
 		return false;
 	}
 
+	/**
+	 * This method returns a list of all characteres under a user's profile directory
+	 * @param userId Provides the user's id
+	 * @return Returns the list of the user's character
+	 */
 	public static List<String> getCharacterList(String userId) {
 
 		File userFolder = new File(CHARACTER_DIRECTORY + userId);
@@ -92,10 +118,21 @@ public class CharacterManager {
 		return new ArrayList<>(Arrays.asList(list));
 	}
 
+	/**
+	 * This method checks if the user has a profile directory
+	 * @param userId Provides the user's id
+	 * @return Returns a boolean if the user has a profile
+	 */
 	public static boolean hasProfile(String userId) {
 		return !getCharacterList(userId).isEmpty();
 	}
 
+	/**
+	 * This method returns the sheetId of the selected character from the user's profile directory
+	 * @param userId Provides the user's id
+	 * @param characterNum Provides the user's selected character number to delete
+	 * @return Returns the sheet id string
+	 */
 	public static String getSheetId(String userId, int characterNum) {
 
 		try {
@@ -105,6 +142,12 @@ public class CharacterManager {
 		}
 	}
 
+	/**
+	 * This method checks the Google Sheet link for the copyright to see if it is the correct character
+	 * sheet to search for
+	 * @param sheetsLink Provides the Google Sheet link
+	 * @return Returns a boolean whether the sheet link is valid or not
+	 */
 	public static boolean validateCharacterLink(String sheetsLink) {
 
 		final String copyright = "v2.1 sheet by I F Evans based on v1.3 sheet by DM David Lester based " +
@@ -125,6 +168,13 @@ public class CharacterManager {
 		}
 	}
 
+	/**
+	 * This method checks if the user's input sheet link is already a character that exists in the user's
+	 * profile directory
+	 * @param userId Provides the user's id
+	 * @param sheetsLink Provides the Google Sheet link
+	 * @return Returns a boolean if there is a duplicate character
+	 */
 	public static boolean checkDuplicateCharacter(String userId, String sheetsLink) {
 
 		for (String s : getCharacterList(userId))
@@ -134,6 +184,11 @@ public class CharacterManager {
 		return false;
 	}
 
+	/**
+	 * This method deletes the user's profile directory
+	 * @param userId Provides the user's id
+	 * @return Returns a boolean if the user's profile directory was deleted or not
+	 */
 	public static boolean deleteProfile(String userId) {
 
 		File userFolder = new File(CHARACTER_DIRECTORY + userId);
@@ -152,6 +207,11 @@ public class CharacterManager {
 		return false;
 	}
 
+	/**
+	 * This method sets the selected character for the user
+	 * @param userId Provides the user's id
+	 * @return Returns a boolean if a new character was set
+	 */
 	private static boolean setNewCharacter(String userId) {
 
 		File newFile, oldFile;
