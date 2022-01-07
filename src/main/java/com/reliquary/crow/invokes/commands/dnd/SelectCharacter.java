@@ -85,11 +85,11 @@ public class SelectCharacter implements CommandInterface {
 			new CharacterFetchInfo(CharacterManager.getSheetId(userId, 1));
 
 		EmbedBuilder builder = new EmbedBuilder()
-			.setAuthor(fetchInfo.characterName() + " has been selected as your current character!", null,
+			.setAuthor(fetchInfo.name() + " has been selected as your current character!", null,
 				ctx.getMember().getUser().getAvatarUrl())
 			.setColor(RandomColor.getRandomColor());
 
-		String characterPortrait = fetchInfo.characterPortrait();
+		String characterPortrait = fetchInfo.portrait();
 		if (!characterPortrait.isEmpty())
 			builder.setImage(characterPortrait);
 

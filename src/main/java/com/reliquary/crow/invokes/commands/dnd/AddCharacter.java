@@ -63,7 +63,7 @@ public class AddCharacter implements CommandInterface {
 		if (CharacterManager.checkDuplicateCharacter(userId, sheetsLink)) {
 			MessageResources.timedMessage(
 				"You already have a character with this Google Sheet! (" +
-					fetchInfo.characterName() + ")",
+					fetchInfo.name() + ")",
 				textChannel,
 				10
 			);
@@ -79,7 +79,7 @@ public class AddCharacter implements CommandInterface {
 			return;
 		}
 
-		String characterName = fetchInfo.characterName();
+		String characterName = fetchInfo.name();
 
 		EmbedBuilder builder = new EmbedBuilder()
 			.setAuthor(characterName + " has been added to your profile!", null,
@@ -87,7 +87,7 @@ public class AddCharacter implements CommandInterface {
 			.setColor(RandomColor.getRandomColor());
 		StringBuilder descriptionBuilder = builder.getDescriptionBuilder();
 
-		String characterPortrait = fetchInfo.characterPortrait();
+		String characterPortrait = fetchInfo.portrait();
 		if (!characterPortrait.isEmpty())
 			builder.setImage(characterPortrait);
 

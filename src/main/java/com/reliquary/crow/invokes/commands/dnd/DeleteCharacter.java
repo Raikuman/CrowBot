@@ -67,7 +67,7 @@ public class DeleteCharacter implements CommandInterface {
 		CharacterFetchInfo fetchInfo = new CharacterFetchInfo(CharacterManager.getSheetId(userId,
 			characterNum));
 
-		String characterName = fetchInfo.characterName();
+		String characterName = fetchInfo.name();
 
 		if (!CharacterManager.deleteCharacter(ctx.getMember().getId(), characterNum)) {
 			MessageResources.timedMessage(
@@ -114,9 +114,9 @@ public class DeleteCharacter implements CommandInterface {
 
 				descriptionBuilder
 					.append("\n\nYour new selected character is ")
-					.append(fetchInfo.characterName());
+					.append(fetchInfo.name());
 
-				String characterPortrait = fetchInfo.characterPortrait();
+				String characterPortrait = fetchInfo.portrait();
 
 				if (!characterPortrait.isEmpty()) {
 					builder
