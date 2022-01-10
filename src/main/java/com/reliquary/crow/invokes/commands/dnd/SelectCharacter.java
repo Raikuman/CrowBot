@@ -34,6 +34,7 @@ public class SelectCharacter implements CommandInterface {
 				textChannel,
 				10
 			);
+			ctx.getMessage().delete().queue();
 			return;
 		}
 
@@ -43,6 +44,7 @@ public class SelectCharacter implements CommandInterface {
 				textChannel,
 				10
 			);
+			ctx.getMessage().delete().queue();
 			return;
 		}
 
@@ -61,6 +63,7 @@ public class SelectCharacter implements CommandInterface {
 				textChannel,
 				10
 			);
+			ctx.getMessage().delete().queue();
 			return;
 		}
 
@@ -70,6 +73,7 @@ public class SelectCharacter implements CommandInterface {
 				textChannel,
 				10
 			);
+			ctx.getMessage().delete().queue();
 			return;
 		}
 
@@ -79,6 +83,7 @@ public class SelectCharacter implements CommandInterface {
 				textChannel,
 				10
 			);
+			ctx.getMessage().delete().queue();
 			return;
 		}
 

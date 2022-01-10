@@ -35,6 +35,7 @@ public class AddCharacter implements CommandInterface {
 				textChannel,
 				10
 			);
+			ctx.getMessage().delete().queue();
 			return;
 		}
 
@@ -47,6 +48,7 @@ public class AddCharacter implements CommandInterface {
 				textChannel,
 				10
 			);
+			ctx.getMessage().delete().queue();
 			return;
 		}
 
@@ -57,6 +59,7 @@ public class AddCharacter implements CommandInterface {
 				textChannel,
 				10
 			);
+			ctx.getMessage().delete().queue();
 			return;
 		}
 
@@ -73,6 +76,7 @@ public class AddCharacter implements CommandInterface {
 				textChannel,
 				10
 			);
+			ctx.getMessage().delete().queue();
 			return;
 		}
 
@@ -82,6 +86,7 @@ public class AddCharacter implements CommandInterface {
 				textChannel,
 				10
 			);
+			ctx.getMessage().delete().queue();
 			return;
 		}
 

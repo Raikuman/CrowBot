@@ -34,6 +34,7 @@ public class DeleteCharacter implements CommandInterface {
 				textChannel,
 				10
 			);
+			ctx.getMessage().delete().queue();
 			return;
 		}
 
@@ -43,6 +44,7 @@ public class DeleteCharacter implements CommandInterface {
 				textChannel,
 				10
 			);
+			ctx.getMessage().delete().queue();
 			return;
 		}
 
@@ -62,6 +64,7 @@ public class DeleteCharacter implements CommandInterface {
 				textChannel,
 				10
 			);
+			ctx.getMessage().delete().queue();
 			return;
 		}
 
@@ -76,6 +79,7 @@ public class DeleteCharacter implements CommandInterface {
 				textChannel,
 				10
 			);
+			ctx.getMessage().delete().queue();
 			return;
 		}
 
@@ -107,6 +111,7 @@ public class DeleteCharacter implements CommandInterface {
 					textChannel,
 					10
 				);
+				ctx.getMessage().delete().queue();
 				return;
 			}
 		} else {
