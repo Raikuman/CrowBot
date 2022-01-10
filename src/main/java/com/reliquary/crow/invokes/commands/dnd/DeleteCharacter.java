@@ -11,12 +11,13 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 /**
  * This class lets the user delete a character from their user profile directory
  *
- * @version 1.1 2021-31-12
+ * @version 1.2 2022-10-01
  * @since 1.1
  */
 public class DeleteCharacter implements CommandInterface {
@@ -64,10 +65,10 @@ public class DeleteCharacter implements CommandInterface {
 			return;
 		}
 
-		CharacterFetchInfo fetchInfo = new CharacterFetchInfo(CharacterManager.getSheetId(userId,
-			characterNum));
-
-		String characterName = fetchInfo.name();
+		CharacterFetchInfo fetchInfo = new CharacterFetchInfo(CharacterManager.getSheetId(userId, characterNum));
+		HashMap<String, String> characterInfo = fetchInfo.batchFetchInfo(List.of(
+			"name"
+		));
 
 		if (!CharacterManager.deleteCharacter(ctx.getMember().getId(), characterNum)) {
 			MessageResources.timedMessage(
@@ -79,7 +80,7 @@ public class DeleteCharacter implements CommandInterface {
 		}
 
 		EmbedBuilder builder = new EmbedBuilder()
-			.setAuthor(characterName + " has been removed from your profile!", null,
+			.setAuthor(characterInfo.get("name") + " has been removed from your profile!", null,
 				ctx.getMember().getUser().getAvatarUrl())
 			.setColor(RandomColor.getRandomColor());
 		StringBuilder descriptionBuilder = builder.getDescriptionBuilder();
@@ -111,12 +112,16 @@ public class DeleteCharacter implements CommandInterface {
 		} else {
 			if (characterNum == 1) {
 				fetchInfo = new CharacterFetchInfo(CharacterManager.getSheetId(userId, 1));
+				characterInfo = fetchInfo.batchFetchInfo(List.of(
+					"name",
+					"portrait"
+				));
 
 				descriptionBuilder
 					.append("\n\nYour new selected character is ")
-					.append(fetchInfo.name());
+					.append(characterInfo.get("name"));
 
-				String characterPortrait = fetchInfo.portrait();
+				String characterPortrait = characterInfo.get("portrait");
 
 				if (!characterPortrait.isEmpty()) {
 					builder

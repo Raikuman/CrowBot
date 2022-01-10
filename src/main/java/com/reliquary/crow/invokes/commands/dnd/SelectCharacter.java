@@ -11,12 +11,13 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 /**
  * This class lets the user select a character from their user profile directory
  *
- * @version 1.1 2021-31-12
+ * @version 1.2 2022-10-01
  * @since 1.1
  */
 public class SelectCharacter implements CommandInterface {
@@ -81,15 +82,18 @@ public class SelectCharacter implements CommandInterface {
 			return;
 		}
 
-		CharacterFetchInfo fetchInfo =
-			new CharacterFetchInfo(CharacterManager.getSheetId(userId, 1));
+		CharacterFetchInfo fetchInfo = new CharacterFetchInfo(CharacterManager.getSheetId(userId, 1));
+		HashMap<String, String> characterInfo = fetchInfo.batchFetchInfo(Arrays.asList(
+			"name",
+			"portrait"
+		));
 
 		EmbedBuilder builder = new EmbedBuilder()
-			.setAuthor(fetchInfo.name() + " has been selected as your current character!", null,
+			.setAuthor(characterInfo.get("name") + " has been selected as your current character!", null,
 				ctx.getMember().getUser().getAvatarUrl())
 			.setColor(RandomColor.getRandomColor());
 
-		String characterPortrait = fetchInfo.portrait();
+		String characterPortrait = characterInfo.get("portrait");
 		if (!characterPortrait.isEmpty())
 			builder.setImage(characterPortrait);
 

@@ -11,12 +11,14 @@ import com.reliquary.crow.resources.other.RandomColor;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 /**
  * This class lets the user add a character to their user profile directory using a Google Sheets link
  *
- * @version 1.1 2021-31-12
+ * @version 1.2 2022-10-01
  * @since 1.1
  */
 public class AddCharacter implements CommandInterface {
@@ -59,11 +61,15 @@ public class AddCharacter implements CommandInterface {
 		}
 
 		CharacterFetchInfo fetchInfo = new CharacterFetchInfo(SheetResources.convertToId(sheetsLink));
+		HashMap<String, String> characterInfo = fetchInfo.batchFetchInfo(Arrays.asList(
+			"name",
+			"portrait"
+		));
 
 		if (CharacterManager.checkDuplicateCharacter(userId, sheetsLink)) {
 			MessageResources.timedMessage(
 				"You already have a character with this Google Sheet! (" +
-					fetchInfo.name() + ")",
+					characterInfo.get("name") + ")",
 				textChannel,
 				10
 			);
@@ -79,15 +85,13 @@ public class AddCharacter implements CommandInterface {
 			return;
 		}
 
-		String characterName = fetchInfo.name();
-
 		EmbedBuilder builder = new EmbedBuilder()
-			.setAuthor(characterName + " has been added to your profile!", null,
+			.setAuthor(characterInfo.get("name") + " has been added to your profile!", null,
 				ctx.getMember().getUser().getAvatarUrl())
 			.setColor(RandomColor.getRandomColor());
 		StringBuilder descriptionBuilder = builder.getDescriptionBuilder();
 
-		String characterPortrait = fetchInfo.portrait();
+		String characterPortrait = characterInfo.get("portrait");
 		if (!characterPortrait.isEmpty())
 			builder.setImage(characterPortrait);
 
