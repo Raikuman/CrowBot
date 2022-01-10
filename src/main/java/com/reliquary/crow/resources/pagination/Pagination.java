@@ -86,4 +86,11 @@ public class Pagination {
 
 		return embedBuilderList;
 	}
+
+	public static void enableButtons(List<Button> buttonList) {
+
+		for (Button button : buttonList)
+			if (button.isDisabled())
+				buttonList.set(buttonList.indexOf(button), button.asEnabled());
+	}
 }

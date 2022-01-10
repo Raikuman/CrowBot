@@ -2,19 +2,19 @@ package com.reliquary.crow.resources.pagination.buttons;
 
 import com.reliquary.crow.managers.componentmanagers.buttons.ButtonContext;
 import com.reliquary.crow.managers.componentmanagers.buttons.ButtonInterface;
+import com.reliquary.crow.resources.pagination.Pagination;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Emoji;
 import net.dv8tion.jda.api.interactions.components.Button;
 import net.dv8tion.jda.api.requests.restaction.interactions.UpdateInteractionAction;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 /**
  * This class is part of the pagination implementation that handles the left button
  *
- * @version 1.2 2021-23-12
+ * @version 1.3 2022-10-01
  * @since 1.0
  */
 public class PageLeft implements ButtonInterface {
@@ -43,19 +43,11 @@ public class PageLeft implements ButtonInterface {
 			return;
 		}
 
-		// Set buttons
 		List<Button> buttonList = ctx.getButtons();
+		Pagination.enableButtons(buttonList);
 		if (newPage == 1) {
-
-			buttonList.set(buttonList.indexOf(ctx.getEvent().getButton()), Objects.requireNonNull(
-				ctx.getEvent().getButton()).asDisabled());
-		} else {
-
-			for (Button button : buttonList) {
-				if (button.isDisabled()) {
-					buttonList.set(buttonList.indexOf(button), button.asEnabled());
-				}
-			}
+			buttonList.set(buttonList.indexOf(ctx.getEvent().getButton()),
+				Objects.requireNonNull(ctx.getEvent().getButton()).asDisabled());
 		}
 
 		UpdateInteractionAction updateAction = ctx.getUpdateInteraction();
