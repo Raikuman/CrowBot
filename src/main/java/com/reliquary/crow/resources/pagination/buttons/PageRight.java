@@ -5,16 +5,19 @@ import com.reliquary.crow.managers.componentmanagers.buttons.ButtonInterface;
 import com.reliquary.crow.resources.pagination.Pagination;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Emoji;
+import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.Button;
+import net.dv8tion.jda.api.interactions.components.selections.SelectionMenu;
 import net.dv8tion.jda.api.requests.restaction.interactions.UpdateInteractionAction;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 /**
  * This class is part of the pagination implementation that handles the right button
  *
- * @version 1.3 2022-10-01
+ * @version 1.4 2022-10-01
  * @since 1.0
  */
 public class PageRight implements ButtonInterface {
@@ -51,8 +54,15 @@ public class PageRight implements ButtonInterface {
 				Objects.requireNonNull(ctx.getEvent().getButton()).asDisabled());
 		}
 
+		List<ActionRow> actionRows = new ArrayList<>();
+		actionRows.add(ActionRow.of(buttonList));
+
+		SelectionMenu selectionMenu = setSelectionMenu(ctx);
+		if (selectionMenu != null)
+			actionRows.add(ActionRow.of(selectionMenu));
+
 		UpdateInteractionAction updateAction = ctx.getUpdateInteraction();
-		updateAction = updateAction.setActionRow(buttonList);
+		updateAction = updateAction.setActionRows(actionRows);
 		updateAction = updateAction.setEmbeds(setEmbedBuilderList(ctx).get(newPage - 1).build());
 		updateAction.queue();
 	}
@@ -78,6 +88,15 @@ public class PageRight implements ButtonInterface {
 	 * @return Returns the list of embeds
 	 */
 	public List<EmbedBuilder> setEmbedBuilderList(ButtonContext ctx) {
+		return null;
+	}
+
+	/**
+	 * This method provides a way to set a selection menu to the pagination
+	 * @param ctx Provides the button context
+	 * @return Returns the selection menu
+	 */
+	public SelectionMenu setSelectionMenu(ButtonContext ctx) {
 		return null;
 	}
 }
