@@ -17,28 +17,28 @@ import java.util.List;
  */
 public class HelpResources {
 
-	private static final List<HelpCategory> categories = Arrays.asList(
-		new HelpCategory("basic", ":egg:"),
-		new HelpCategory("fun", ":joystick:"),
-		new HelpCategory("dnd", ":mage:"),
-		new HelpCategory("music", ":notes:"),
-		new HelpCategory("settings", ":gear:")
+	private static final List<Category> categories = Arrays.asList(
+		new Category("basic", ":egg:"),
+		new Category("fun", ":joystick:"),
+		new Category("dnd", ":mage:"),
+		new Category("music", ":notes:"),
+		new Category("settings", ":gear:")
 	);
 
 	private static final List<SelectInterface> selectionMenuInterfaces = Arrays.asList(
-		new HelpHome(),
-		new HelpBasic(),
-		new HelpFun(),
-		new HelpDnD(),
-		new HelpMusic(),
-		new HelpSettings()
+		new Home(),
+		new Basic(),
+		new Fun(),
+		new DnD(),
+		new Music(),
+		new Settings()
 	);
 
 	/**
 	 * This method returns the list of HelpCategories
 	 * @return Return HelpCategory list
 	 */
-	public static List<HelpCategory> getCategories() {
+	public static List<Category> getCategories() {
 		return categories;
 	}
 
@@ -65,7 +65,7 @@ public class HelpResources {
 	 * @return Returns the number of invokes in a category
 	 */
 	public static int getNumCategoryInvokes(String category) {
-		return new HelpCategoryProvider().getNumCategoryInvokes(category);
+		return new CategoryProvider().getNumCategoryInvokes(category);
 	}
 
 	/**
@@ -109,7 +109,7 @@ public class HelpResources {
 		descriptionBuilder
 			.append("Use the buttons to see commands under a category!\n\n ");
 
-		for (HelpCategory category : getCategories()) {
+		for (Category category : getCategories()) {
 
 			descriptionBuilder
 				.append(category.getEmoji())

@@ -13,12 +13,12 @@ import java.util.List;
  * @version 1.0 2021-09-12
  * @since 1.0
  */
-public class HelpCategoryProvider {
+public class CategoryProvider {
 
-	final private HelpManagerProvider managerProvider;
+	final private ManagerProvider managerProvider;
 
-	public HelpCategoryProvider() {
-		managerProvider = new HelpManagerProvider();
+	public CategoryProvider() {
+		managerProvider = new ManagerProvider();
 	}
 
 	/**

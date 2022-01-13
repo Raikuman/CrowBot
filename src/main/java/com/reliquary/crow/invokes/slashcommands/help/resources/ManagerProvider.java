@@ -10,13 +10,13 @@ import com.reliquary.crow.managers.slashcommands.SlashManager;
  * @version 1.0 2021-09-12
  * @since 1.0
  */
-public class HelpManagerProvider {
+public class ManagerProvider {
 
 	final private CommandManager commandManager;
 	final private SlashManager slashManager;
 	final private ReactManager reactManager;
 
-	public HelpManagerProvider() {
+	public ManagerProvider() {
 		commandManager = new CommandManager();
 		slashManager = new SlashManager();
 		reactManager = new ReactManager();

@@ -42,7 +42,7 @@ public class HelpStringBuilder {
 		List<String> commandStrings = new ArrayList<>();
 		String commandString;
 
-		for (CommandInterface command : new HelpCategoryProvider().getCategoryCommands(category)) {
+		for (CommandInterface command : new CategoryProvider().getCategoryCommands(category)) {
 			commandString = ConfigHandler.loadConfigSetting("botSettings", "prefix") +
 				command.getInvoke();
 
@@ -67,7 +67,7 @@ public class HelpStringBuilder {
 		List<String> slashStrings = new ArrayList<>();
 		String slashString;
 
-		for (SlashInterface slash : new HelpCategoryProvider().getCategorySlashes(category)) {
+		for (SlashInterface slash : new CategoryProvider().getCategorySlashes(category)) {
 			slashString = "/" + slash.getInvoke() + " :: " + slash.getHelp();
 
 			slashStrings.add(slashString);
@@ -86,7 +86,7 @@ public class HelpStringBuilder {
 		List<String> reactStrings = new ArrayList<>();
 		String reactString;
 
-		for (ReactInterface react : new HelpCategoryProvider().getCategoryReacts(category)) {
+		for (ReactInterface react : new CategoryProvider().getCategoryReacts(category)) {
 			reactString = react.getEmoji() + " " + react.getReactName() + " :: " + react.getHelp();
 
 			reactStrings.add(reactString);

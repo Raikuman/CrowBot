@@ -6,11 +6,11 @@ package com.reliquary.crow.invokes.slashcommands.help.resources;
  * @version 1.0 2021-09-12
  * @since 1.0
  */
-public class HelpCategory {
+public class Category {
 
 	private final String name, emoji;
 
-	public HelpCategory(String name, String emoji) {
+	public Category(String name, String emoji) {
 		this.name = name;
 		this.emoji = emoji;
 	}

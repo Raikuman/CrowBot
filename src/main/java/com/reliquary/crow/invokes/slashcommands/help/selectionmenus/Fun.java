@@ -5,12 +5,12 @@ import com.reliquary.crow.managers.componentmanagers.selectionmenus.SelectInterf
 import com.reliquary.crow.invokes.slashcommands.help.resources.HelpResources;
 
 /**
- * This class provides the SelectInterface for dnd commands in the help command
+ * This class provides the SelectInterface for fun commands in the help command
  *
  * @version 1.0 2021-09-12
  * @since 1.0
  */
-public class HelpDnD implements SelectInterface {
+public class Fun implements SelectInterface {
 
 	@Override
 	public void handle(SelectContext ctx) {
@@ -22,11 +22,11 @@ public class HelpDnD implements SelectInterface {
 
 	@Override
 	public String getMenuValue() {
-		return "helpdnd";
+		return "helpfun";
 	}
 
 	@Override
 	public String getLabel() {
-		return "DnD";
+		return "Fun";
 	}
 }

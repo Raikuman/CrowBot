@@ -5,12 +5,12 @@ import com.reliquary.crow.managers.componentmanagers.selectionmenus.SelectInterf
 import com.reliquary.crow.invokes.slashcommands.help.resources.HelpResources;
 
 /**
- * This class provides the SelectInterface for basic commands in the help command
+ * This class provides the SelectInterface for music commands in the help command
  *
  * @version 1.0 2021-09-12
  * @since 1.0
  */
-public class HelpBasic implements SelectInterface {
+public class Music implements SelectInterface {
 
 	@Override
 	public void handle(SelectContext ctx) {
@@ -22,11 +22,11 @@ public class HelpBasic implements SelectInterface {
 
 	@Override
 	public String getMenuValue() {
-		return "helpbasic";
+		return "helpmusic";
 	}
 
 	@Override
 	public String getLabel() {
-		return "Basic";
+		return "Music";
 	}
 }
