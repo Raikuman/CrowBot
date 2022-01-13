@@ -3,6 +3,7 @@ package com.reliquary.crow.invokes.commands.dnd;
 import com.reliquary.crow.invokes.slashcommands.dnd.DnD.DnD;
 import com.reliquary.crow.managers.commands.CommandContext;
 import com.reliquary.crow.managers.commands.CommandInterface;
+import com.reliquary.crow.resources.apis.googlesheets.SheetDataFetcher;
 import com.reliquary.crow.resources.apis.googlesheets.SheetResources;
 import com.reliquary.crow.resources.dnd.CharacterFetchInfo;
 import com.reliquary.crow.resources.dnd.CharacterManager;
@@ -18,7 +19,7 @@ import java.util.List;
 /**
  * This class lets the user add a character to their user profile directory using a Google Sheets link
  *
- * @version 1.2 2022-10-01
+ * @version 1.3 2022-13-01
  * @since 1.1
  */
 public class AddCharacter implements CommandInterface {
@@ -63,8 +64,9 @@ public class AddCharacter implements CommandInterface {
 			return;
 		}
 
-		CharacterFetchInfo fetchInfo = new CharacterFetchInfo(SheetResources.convertToId(sheetsLink));
-		HashMap<String, String> characterInfo = fetchInfo.batchFetchInfo(Arrays.asList(
+		SheetDataFetcher fetchInfo = new SheetDataFetcher(SheetResources.convertToId(sheetsLink),
+			CharacterFetchInfo.getRangeMap(), CharacterFetchInfo.defaultMap());
+		HashMap<String, String> characterMap = fetchInfo.fetchCells(Arrays.asList(
 			"name",
 			"portrait"
 		));
@@ -72,7 +74,7 @@ public class AddCharacter implements CommandInterface {
 		if (CharacterManager.checkDuplicateCharacter(userId, sheetsLink)) {
 			MessageResources.timedMessage(
 				"You already have a character with this Google Sheet! (" +
-					characterInfo.get("name") + ")",
+					characterMap.get("name") + ")",
 				textChannel,
 				10
 			);
@@ -91,12 +93,12 @@ public class AddCharacter implements CommandInterface {
 		}
 
 		EmbedBuilder builder = new EmbedBuilder()
-			.setAuthor(characterInfo.get("name") + " has been added to your profile!", null,
+			.setAuthor(characterMap.get("name") + " has been added to your profile!", null,
 				ctx.getMember().getUser().getAvatarUrl())
 			.setColor(RandomColor.getRandomColor());
 		StringBuilder descriptionBuilder = builder.getDescriptionBuilder();
 
-		String characterPortrait = characterInfo.get("portrait");
+		String characterPortrait = characterMap.get("portrait");
 		if (!characterPortrait.isEmpty())
 			builder.setImage(characterPortrait);
 

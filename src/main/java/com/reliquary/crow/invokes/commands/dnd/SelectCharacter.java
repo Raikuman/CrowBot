@@ -3,6 +3,7 @@ package com.reliquary.crow.invokes.commands.dnd;
 import com.reliquary.crow.invokes.slashcommands.dnd.DnD.DnD;
 import com.reliquary.crow.managers.commands.CommandContext;
 import com.reliquary.crow.managers.commands.CommandInterface;
+import com.reliquary.crow.resources.apis.googlesheets.SheetDataFetcher;
 import com.reliquary.crow.resources.dnd.CharacterFetchInfo;
 import com.reliquary.crow.resources.dnd.CharacterManager;
 import com.reliquary.crow.resources.jda.MessageResources;
@@ -17,7 +18,7 @@ import java.util.List;
 /**
  * This class lets the user select a character from their user profile directory
  *
- * @version 1.2 2022-10-01
+ * @version 1.3 2022-13-01
  * @since 1.1
  */
 public class SelectCharacter implements CommandInterface {
@@ -87,18 +88,19 @@ public class SelectCharacter implements CommandInterface {
 			return;
 		}
 
-		CharacterFetchInfo fetchInfo = new CharacterFetchInfo(CharacterManager.getSheetId(userId, 1));
-		HashMap<String, String> characterInfo = fetchInfo.batchFetchInfo(Arrays.asList(
+		SheetDataFetcher fetchInfo = new SheetDataFetcher(CharacterManager.getSheetId(userId, 1),
+			CharacterFetchInfo.getRangeMap(), CharacterFetchInfo.defaultMap());
+		HashMap<String, String> characterMap = fetchInfo.fetchCells(Arrays.asList(
 			"name",
 			"portrait"
 		));
 
 		EmbedBuilder builder = new EmbedBuilder()
-			.setAuthor(characterInfo.get("name") + " has been selected as your current character!", null,
+			.setAuthor(characterMap.get("name") + " has been selected as your current character!", null,
 				ctx.getMember().getUser().getAvatarUrl())
 			.setColor(RandomColor.getRandomColor());
 
-		String characterPortrait = characterInfo.get("portrait");
+		String characterPortrait = characterMap.get("portrait");
 		if (!characterPortrait.isEmpty())
 			builder.setImage(characterPortrait);
 
