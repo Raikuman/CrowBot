@@ -7,13 +7,12 @@ import net.dv8tion.jda.api.interactions.components.Button;
 import net.dv8tion.jda.api.interactions.components.Component;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
- * This class provides buttons and embeds for pagination
+ * This class provides buttons, embeds, and other methods that are useful for pagination
  *
- * @version 1.3 2021-23-12
+ * @version 1.4 2022-12-01
  * @since 1.0
  */
 public class Pagination {
@@ -87,10 +86,32 @@ public class Pagination {
 		return embedBuilderList;
 	}
 
+	/**
+	 * This method enables all buttons in a list
+	 * @param buttonList Returns a List of enabled buttons
+	 */
 	public static void enableButtons(List<Button> buttonList) {
 
 		for (Button button : buttonList)
 			if (button.isDisabled())
 				buttonList.set(buttonList.indexOf(button), button.asEnabled());
+	}
+
+	/**
+	 * This method adds page numbers to a list of custom embeds
+	 * @param embedList Provides the embed list
+	 * @return Returns a List of modified embeds
+	 */
+	public static List<EmbedBuilder> addPageNumbers(List<EmbedBuilder> embedList) {
+
+		int index = 0;
+		for (EmbedBuilder builder : embedList) {
+			embedList.set(index, builder.setTitle(
+				"Page " + (index + 1) + "/" + embedList.size()
+			));
+			index++;
+		}
+
+		return embedList;
 	}
 }
