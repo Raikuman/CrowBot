@@ -1,6 +1,6 @@
 package com.reliquary.crow.invokes.commands.dnd;
 
-import com.reliquary.crow.invokes.slashcommands.dnd.DnD.DnD;
+import com.reliquary.crow.invokes.slashcommands.dnd.DnDInfo.DnDInfo;
 import com.reliquary.crow.managers.commands.CommandContext;
 import com.reliquary.crow.managers.commands.CommandInterface;
 import com.reliquary.crow.resources.apis.googlesheets.SheetDataFetcher;
@@ -56,7 +56,7 @@ public class AddCharacter implements CommandInterface {
 		if (!CharacterManager.validateCharacterLink(sheetsLink)) {
 			MessageResources.timedMessage(
 				"This character sheet is invalid! Make sure to use the recommended sheet linked in `/" +
-				new DnD().getInvoke() + "`",
+				new DnDInfo().getInvoke() + "`",
 				textChannel,
 				10
 			);

@@ -1,6 +1,6 @@
 package com.reliquary.crow.invokes.commands.dnd;
 
-import com.reliquary.crow.invokes.slashcommands.dnd.DnD.DnD;
+import com.reliquary.crow.invokes.slashcommands.dnd.DnDInfo.DnDInfo;
 import com.reliquary.crow.managers.commands.CommandContext;
 import com.reliquary.crow.managers.commands.CommandInterface;
 import com.reliquary.crow.resources.apis.googlesheets.SheetDataFetcher;
@@ -31,7 +31,7 @@ public class DeleteCharacter implements CommandInterface {
 
 		if (!CharacterManager.hasProfile(userId)) {
 			MessageResources.timedMessage(
-				"You don't have any characters yet! Refer to `/" + new DnD().getInvoke() + "` for help",
+				"You don't have any characters yet! Refer to `/" + new DnDInfo().getInvoke() + "` for help",
 				textChannel,
 				10
 			);
