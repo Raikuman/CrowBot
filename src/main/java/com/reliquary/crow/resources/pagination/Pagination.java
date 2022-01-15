@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * This class provides buttons, embeds, and other methods that are useful for pagination
  *
- * @version 1.4 2022-12-01
+ * @version 1.5 2022-14-01
  * @since 1.0
  */
 public class Pagination {
@@ -113,5 +113,23 @@ public class Pagination {
 		}
 
 		return embedList;
+	}
+
+	/**
+	 * This method prunes all empty embeds in a list
+	 * @param embedList Provides the embed list to prune
+	 * @return Returns the pruned embed list
+	 */
+	public static List<EmbedBuilder> pruneEmbeds(List<EmbedBuilder> embedList) {
+
+		List<EmbedBuilder> filteredList = new ArrayList<>();
+		for (EmbedBuilder builder : embedList) {
+			if (builder.getDescriptionBuilder().toString().isEmpty() && builder.getFields().isEmpty()) {
+				continue;
+			}
+			filteredList.add(builder);
+		}
+
+		return filteredList;
 	}
 }
