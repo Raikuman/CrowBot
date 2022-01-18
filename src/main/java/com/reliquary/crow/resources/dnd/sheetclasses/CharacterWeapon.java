@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * This class provides an object for organizing data when fetching attack information from Google Sheets
  *
- * @version 1.0 2022-12-01
+ * @version 1.2 2022-18-01
  * @since 1.1
  */
 public class CharacterWeapon {
@@ -48,10 +48,11 @@ public class CharacterWeapon {
 	}
 
 	public int getEnchantment() {
-		if (!enchantment.isEmpty())
-			return Integer.parseInt(enchantment.replace("+", ""));
-		else
+		try {
+			return Integer.parseInt(enchantment);
+		} catch(NumberFormatException e) {
 			return 0;
+		}
 	}
 
 	public String getBonusDamageDie() {
