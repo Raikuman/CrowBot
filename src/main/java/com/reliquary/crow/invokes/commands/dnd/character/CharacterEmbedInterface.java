@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * This class provides an interface for creating character embeds
  *
- * @version 1.0 2022-14-01
+ * @version 1.1 2022-18-01
  * @since 1.1
  */
 public interface CharacterEmbedInterface {
@@ -38,7 +38,10 @@ public interface CharacterEmbedInterface {
 
 	/**
 	 * This method provides a list of range-cell ranges to get data from
+	 *
 	 * @return Returns a list of strings
 	 */
-	List<String> cellRangeInfo();
+	default List<String> cellRangeInfo() {
+		return null;
+	}
 }
