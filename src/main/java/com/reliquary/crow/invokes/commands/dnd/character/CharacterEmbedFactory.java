@@ -1,10 +1,15 @@
 package com.reliquary.crow.invokes.commands.dnd.character;
 
+import com.reliquary.crow.invokes.commands.dnd.character.selectionmenus.equipment.Equipment;
+import com.reliquary.crow.invokes.commands.dnd.character.selectionmenus.equipment.EquipmentEmbeds;
 import com.reliquary.crow.invokes.commands.dnd.character.selectionmenus.home.Home;
 import com.reliquary.crow.invokes.commands.dnd.character.selectionmenus.home.HomeEmbeds;
+import com.reliquary.crow.invokes.commands.dnd.character.selectionmenus.statistics.Statistics;
+import com.reliquary.crow.invokes.commands.dnd.character.selectionmenus.statistics.StatisticsEmbeds;
 import net.dv8tion.jda.api.entities.User;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,7 +17,7 @@ import java.util.stream.Collectors;
 /**
  * This class controls creation of CharacterEmbedInterfaces and handles their instances
  *
- * @version 1.0 2022-14-01
+ * @version 1.1 2022-24-01
  * @since 1.1
  */
 public class CharacterEmbedFactory {
@@ -49,6 +54,7 @@ public class CharacterEmbedFactory {
 
 		// Empty case
 		if (instances.isEmpty()) {
+			System.out.println("EMPTY");
 			newEmbedInterface = getMatchingInterface(embedName, sheetsId, user);
 			if (newEmbedInterface == null)
 				return null;
@@ -61,10 +67,24 @@ public class CharacterEmbedFactory {
 		}
 
 		// Match case
-		if (hasEmbedInstance(embedName, user)) {
+		if (hasEmbedInstance(embedName, sheetsId, user)) {
+			System.out.println("MATCH");
 			return instances.get(embedName).stream().filter(
 				inst -> inst.getUser().equals(user)
 			).collect(Collectors.toList()).get(0);
+		}
+
+		// Empty instance list case
+		if (instances.get(embedName) == null) {
+			newEmbedInterface = getMatchingInterface(embedName, sheetsId, user);
+			if (newEmbedInterface == null)
+				return null;
+
+			List<CharacterEmbedInterface> embedInterfaceList = new ArrayList<>();
+			embedInterfaceList.add(newEmbedInterface);
+
+			instances.put(embedName, embedInterfaceList);
+			return instances.get(embedName).get(0);
 		}
 
 		// No match, add case
@@ -93,12 +113,21 @@ public class CharacterEmbedFactory {
 	 * @param user Provides the user object
 	 * @return Returns true if an instance was found, false if no instances were found
 	 */
-	public boolean hasEmbedInstance(String embedName, User user) {
+	public boolean hasEmbedInstance(String embedName, String sheetsId, User user) {
 
-		if (instances.isEmpty())
-			return false;
+		boolean hasInstance = false;
 
-		return instances.get(embedName).stream().anyMatch(inst -> inst.getUser().equals(user));
+		try {
+			CharacterEmbedInterface embedInterface = instances.get(embedName).stream().filter(
+				inst -> inst.getUser().equals(user) && inst.getSheetsId().equals(sheetsId)
+			).collect(Collectors.toList()).get(0);
+
+			if (embedInterface != null)
+				hasInstance = true;
+
+		} catch (IndexOutOfBoundsException | NullPointerException ignored) {}
+
+		return hasInstance;
 	}
 
 	/**
@@ -111,9 +140,32 @@ public class CharacterEmbedFactory {
 	 */
 	private CharacterEmbedInterface getMatchingInterface(String embedName, String sheetsId, User user) {
 
-		if (new Home().getMenuValue().equals(embedName)) {
-			return new HomeEmbeds(sheetsId, user);
+		List<String> interfaceNames = new ArrayList<>(Arrays.asList(
+			new Home().getMenuValue(),
+			new Equipment().getMenuValue(),
+			new Statistics().getMenuValue()
+		));
+
+		int index = 0;
+		for (String interfaceName : interfaceNames) {
+			if (interfaceName.equals(embedName)) {
+				break;
+			}
+			index++;
 		}
+
+		switch (index) {
+
+			case 0:
+				return new HomeEmbeds(sheetsId, user);
+
+			case 1:
+				return new EquipmentEmbeds(sheetsId, user);
+
+			case 2:
+				return new StatisticsEmbeds(sheetsId, user);
+		}
+
 		return null;
 	}
 }
