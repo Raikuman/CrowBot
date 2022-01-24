@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * This class provides an interface for creating character embeds
  *
- * @version 1.1 2022-18-01
+ * @version 1.2 2022-24-01
  * @since 1.1
  */
 public interface CharacterEmbedInterface {
@@ -18,6 +18,12 @@ public interface CharacterEmbedInterface {
 	 * @return Returns user object
 	 */
 	User getUser();
+
+	/**
+	 * This method returns the current sheet id
+	 * @return Returns the sheet id string
+	 */
+	String getSheetsId();
 
 	/**
 	 * This method reloads the data in the current embed class
