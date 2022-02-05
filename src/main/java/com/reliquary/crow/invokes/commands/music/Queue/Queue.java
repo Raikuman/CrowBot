@@ -18,7 +18,7 @@ import java.util.List;
  * 4. Jumping to a track in the queue and playing it
  * 5. Repeating the queue by adding the ending track to the end of the queue
  *
- * @version 3.5 2021-22-12
+ * @version 3.6 2022-04-02
  * @since 1.0
  */
 public class Queue implements CommandInterface {
@@ -59,9 +59,6 @@ public class Queue implements CommandInterface {
 			// Repeat the queue
 			QueueArgs.repeatQueue(musicManager, ctx);
 		}
-
-		// Delete sent message
-		ctx.getEvent().getMessage().delete().queue();
 	}
 
 	@Override
