@@ -11,7 +11,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 /**
  * This class provides overrides methods from AudioEventAdapter to control how tracks are queued and played
  *
- * @version 2.1 2021-04-11
+ * @version 2.2 2022-07-02
  * @since 1.0
  */
 public class TrackScheduler extends AudioEventAdapter {
@@ -35,7 +35,8 @@ public class TrackScheduler extends AudioEventAdapter {
 				this.player.startTrack(track.makeClone(), false);
 				return;
 			} else if (this.repeatingQueue) {
-				this.queue.offer(track);
+				this.queue.offer(track.makeClone());
+				return;
 			}
 
 			nextTrack();
