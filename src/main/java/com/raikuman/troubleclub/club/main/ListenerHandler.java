@@ -2,6 +2,7 @@ package com.raikuman.troubleclub.club.main;
 
 import com.raikuman.botutilities.listener.ListenerBuilder;
 import com.raikuman.botutilities.listener.ListenerManager;
+import com.raikuman.troubleclub.club.suu.listener.handler.SuuInvokeInterfaceProvider;
 
 public class ListenerHandler {
 
@@ -40,6 +41,8 @@ public class ListenerHandler {
 
 	public static ListenerManager getSuuListenerManager() {
 		return new ListenerBuilder()
+			.setSlashes(SuuInvokeInterfaceProvider.provideSlashes())
+			.setModals(SuuInvokeInterfaceProvider.provideModals())
 			.build();
 	}
 }
