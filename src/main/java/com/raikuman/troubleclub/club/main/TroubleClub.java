@@ -1,6 +1,7 @@
-package com.raikuman.troubleclub.club;
+package com.raikuman.troubleclub.club.main;
 
 import com.raikuman.botutilities.configs.EnvLoader;
+import com.raikuman.botutilities.listener.ListenerManager;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -15,6 +16,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Bot main class
+ *
+ * @version 1.0 2023-13-01
+ * @since 1.0
+ */
 public class TroubleClub {
 
 	private static final Logger logger = LoggerFactory.getLogger(TroubleClub.class);
@@ -43,16 +50,20 @@ public class TroubleClub {
 		}
 	}
 
+	/**
+	 * Builds the JDA objects
+	 * @return The list of JDA objects
+	 */
 	private static List<JDA> constructJDAList() {
-		List<String> botTokenVars = Arrays.asList(
-			"destoken",
-			"inoritoken",
-			"crowtoken",
-			"suutoken"
-		);
-
 		List<JDA> jdaList = new ArrayList<>();
-		for (String tokenVar : botTokenVars) {
+		for (String tokenVar : getBotTokenVars()) {
+			ListenerManager listenerManager = ListenerHandler.getListenerManager(tokenVar);
+
+			if (listenerManager == null) {
+				logger.error("Could not load ListenerManager for token " + tokenVar);
+				continue;
+			}
+
 			try {
 				jdaList.add(
 					JDABuilder
@@ -60,7 +71,7 @@ public class TroubleClub {
 						.enableIntents(getGatewayIntents())
 						.setChunkingFilter(ChunkingFilter.ALL)
 						.enableCache(CacheFlag.VOICE_STATE)
-						//.addEventListeners()
+						.addEventListeners(listenerManager.getListeners())
 						.setMemberCachePolicy(MemberCachePolicy.ALL)
 						.setMaxReconnectDelay(32)
 						.setAutoReconnect(true)
@@ -75,11 +86,28 @@ public class TroubleClub {
 		return jdaList;
 	}
 
+	/**
+	 * Returns a list of gateway intents
+	 * @return The GatewayIntent list
+	 */
 	private static List<GatewayIntent> getGatewayIntents() {
 		return Arrays.asList(
 			GatewayIntent.GUILD_MEMBERS,
 			GatewayIntent.GUILD_MESSAGES,
 			GatewayIntent.MESSAGE_CONTENT
+		);
+	}
+
+	/**
+	 * Returns a list of variables for the EnvLoader to get tokens from
+	 * @return The list of token variables to load
+	 */
+	private static List<String> getBotTokenVars() {
+		return Arrays.asList(
+			"destoken",
+			"inoritoken",
+			"crowtoken",
+			"suutoken"
 		);
 	}
 }
