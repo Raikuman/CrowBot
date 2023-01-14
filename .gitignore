@@ -1,0 +1,37 @@
+#Intellij IDEA
+.idea/
+*.iml
+*.iws
+vcs.xml
+
+#Eclipse
+.metadata
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+.recommenders
+.project
+.classpath
+
+# Maven
+log/
+target/
+
+# Project
+.env
+.git
+config/
+commandresources/
+test/
+/TODO
+/src/main/resources/META-INF/MANIFEST.MF
+/src/main/java/META-INF/MANIFEST.MF
+/out/
+/database.db
+/keystore.jks
