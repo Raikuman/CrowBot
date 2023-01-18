@@ -1,4 +1,4 @@
-package com.raikuman.troubleclub.club.suu.commands.other.trello;
+package com.raikuman.troubleclub.club.members.suu.commands.other.trello;
 
 import com.raikuman.botutilities.commands.manager.CategoryInterface;
 import com.raikuman.botutilities.configs.EnvLoader;
