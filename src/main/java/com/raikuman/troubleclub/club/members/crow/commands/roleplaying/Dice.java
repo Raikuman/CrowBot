@@ -1,4 +1,4 @@
-package com.raikuman.troubleclub.club.crow.commands.roleplaying;
+package com.raikuman.troubleclub.club.members.crow.commands.roleplaying;
 
 import com.raikuman.botutilities.commands.manager.CategoryInterface;
 import com.raikuman.botutilities.commands.manager.CommandContext;
