@@ -1,9 +1,9 @@
-package com.raikuman.troubleclub.club.suu.listener.handler;
+package com.raikuman.troubleclub.club.members.suu.listener.handler;
 
 import com.raikuman.botutilities.modals.manager.ModalInterface;
 import com.raikuman.botutilities.slashcommands.manager.SlashInterface;
-import com.raikuman.troubleclub.club.suu.commands.other.trello.RequestFeature;
-import com.raikuman.troubleclub.club.suu.commands.other.trello.SubmitBug;
+import com.raikuman.troubleclub.club.members.suu.commands.other.trello.RequestFeature;
+import com.raikuman.troubleclub.club.members.suu.commands.other.trello.SubmitBug;
 
 import java.util.Arrays;
 import java.util.List;
