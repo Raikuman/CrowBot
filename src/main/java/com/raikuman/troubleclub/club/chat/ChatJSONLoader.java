@@ -4,11 +4,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Handles loading jsons for chat functionality
  *
- * @version 1.0 2023-20-01
+ * @version 1.1 2023-21-01
  * @since 1.0
  */
 public class ChatJSONLoader {
@@ -55,7 +57,11 @@ public class ChatJSONLoader {
 			return null;
 		}
 
-		return directoryFiles;
+		// Check only for jsons
+		List<File> fileList = Arrays.asList(directoryFiles);
+		fileList.removeIf(file -> !file.getName().contains(".json"));
+
+		return fileList.toArray(File[]::new);
 	}
 }
 

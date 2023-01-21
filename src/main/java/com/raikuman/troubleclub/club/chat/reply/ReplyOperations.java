@@ -1,5 +1,6 @@
 package com.raikuman.troubleclub.club.chat.reply;
 
+import com.raikuman.botutilities.configs.ConfigIO;
 import com.raikuman.troubleclub.club.chat.reply.objects.ReplyCharacterObject;
 import kotlin.Pair;
 import net.dv8tion.jda.api.JDA;
@@ -14,7 +15,7 @@ import java.security.SecureRandom;
 /**
  * Handles operations for replies
  *
- * @version 1.0 2023-20-01
+ * @version 1.1 2023-21-01
  * @since 1.0
  */
 public class ReplyOperations {
@@ -60,8 +61,12 @@ public class ReplyOperations {
 		if (doOperation && !memberVoiceState.inAudioChannel())
 			doOperation = false;
 
+		TextChannel operationChannel = operationObject.targetMessage.getGuild().getTextChannelById(
+			ConfigIO.readConfig("chat", "replycommandchannelid")
+		);
+
 		// Handle if operation could not be done
-		if (operationObject.operationChannel == null || !doOperation) {
+		if (operationChannel == null || !doOperation) {
 			operationObject.targetMessage.reply(
 				characterObject.unableDialogue.get(
 					rand.nextInt(characterObject.unableDialogue.size())
@@ -80,7 +85,7 @@ public class ReplyOperations {
 		).queue();
 
 		// Send operation command
-		operationObject.operationChannel.sendMessage(
+		operationChannel.sendMessage(
 			operationObject.operation + " " +
 				operationObject.targetMessage.getMember().getIdLong()
 		).queue();
@@ -96,7 +101,6 @@ public class ReplyOperations {
 class OperationObject {
 	public final ReplyCharacterObject characterObject;
 	public final Message targetMessage;
-	public final TextChannel operationChannel;
 	public final String operation;
 
 	public OperationObject(HandleObject handleObject, Pair<String, JDA> jdaPair, Message targetMessage) {
@@ -107,8 +111,6 @@ class OperationObject {
 			.get(handleObject.targetCharacter);
 
 		// Handle operations
-		this.operationChannel =
-			jdaPair.getSecond().getTextChannelById(handleObject.replyObject.operationChannelId);
 		this.operation = characterObject.operation;
 	}
 }

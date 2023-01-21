@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Holds information for the reply
  *
- * @version 1.0 2023-18-01
+ * @version 1.1 2023-21-01
  * @since 1.0
  */
 public class ReplyObject {
@@ -18,9 +18,6 @@ public class ReplyObject {
 
 	@JsonProperty("operation-type")
 	public REPLY_OPERATION_TYPE operationType;
-
-	@JsonProperty("operation-channel-id")
-	public long operationChannelId;
 
 	@JsonProperty("characters")
 	public HashMap<String, ReplyCharacterObject> replyCharacterMap;
