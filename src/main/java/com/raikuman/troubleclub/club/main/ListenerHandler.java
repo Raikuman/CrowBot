@@ -8,8 +8,19 @@ import com.raikuman.troubleclub.club.members.des.yamboard.ReactionEventListener;
 
 import java.util.List;
 
+/**
+ * Handles creating a listener manager
+ *
+ * @version 1.0 2023-18-01
+ * @since 1.0
+ */
 public class ListenerHandler {
 
+	/**
+	 * Creates a listener manager given the bot variable
+	 * @param botVar The bot variable to get the listener manager from
+	 * @return The listener manager associated with the bot variable
+	 */
 	public static ListenerManager getListenerManager(String botVar) {
 		switch (botVar) {
 			case "des":
@@ -47,6 +58,7 @@ public class ListenerHandler {
 	public static ListenerManager getSuuListenerManager() {
 		return new ListenerBuilder()
 			.setListeners(List.of(new ReplyEventListener()))
+			.setCommands(SuuInvokeInterfaceProvider.provideCommands())
 			.setSlashes(SuuInvokeInterfaceProvider.provideSlashes())
 			.setModals(SuuInvokeInterfaceProvider.provideModals())
 			.build();

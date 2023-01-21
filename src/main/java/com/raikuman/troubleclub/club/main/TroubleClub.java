@@ -1,8 +1,8 @@
 package com.raikuman.troubleclub.club.main;
 
+import com.raikuman.botutilities.configs.ConfigFileWriter;
 import com.raikuman.botutilities.configs.EnvLoader;
 import com.raikuman.botutilities.listener.ListenerManager;
-import com.raikuman.troubleclub.club.chat.reply.ReplyManager;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -25,6 +25,8 @@ public class TroubleClub {
 	private static final Logger logger = LoggerFactory.getLogger(TroubleClub.class);
 
 	public static void main(String[] args) {
+		ConfigFileWriter.handleConfigs(true);
+
 		HashMap<String, JDA> jdaMap = constructJDAList();
 
 		for (Map.Entry<String, JDA> entry : jdaMap.entrySet()) {
@@ -46,7 +48,7 @@ public class TroubleClub {
 			}
 		}
 
-		ReplyManager.getInstance().setJDAList(jdaMap);
+		JDAFinder.getInstance().setJDAMap(jdaMap);
 	}
 
 	/**
