@@ -24,7 +24,7 @@ public class JDAFinder {
 	 */
 	public static JDAFinder getInstance() {
 		if (instance == null)
-			return new JDAFinder();
+			instance = new JDAFinder();
 
 		return instance;
 	}

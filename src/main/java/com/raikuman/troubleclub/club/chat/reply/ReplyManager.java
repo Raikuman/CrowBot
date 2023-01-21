@@ -1,6 +1,7 @@
 package com.raikuman.troubleclub.club.chat.reply;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.raikuman.troubleclub.club.chat.ChatJSONLoader;
 import com.raikuman.troubleclub.club.chat.reply.objects.ReplyObject;
 import com.raikuman.troubleclub.club.main.JDAFinder;
 import kotlin.Pair;
@@ -19,7 +20,7 @@ import java.util.*;
 /**
  * Manages replying to a user message
  *
- * @version 1.0 2023-18-01
+ * @version 1.1 2023-20-01
  * @since 1.0
  */
 public class ReplyManager {
@@ -124,22 +125,9 @@ public class ReplyManager {
 	 * Load the reply data jsons to memory
 	 */
 	public void loadReplyJsons() {
-		File directory = new File("resources/reply");
-		if (!directory.exists()) {
-			if (!directory.mkdirs()) {
-				logger.error("Could not create reply directory");
-				return;
-			}
-		}
-
-		if (!directory.isDirectory()) {
-			logger.error("Reply file is not a directory");
-			return;
-		}
-
-		File[] directoryFiles = directory.listFiles();
+		File[] directoryFiles = ChatJSONLoader.getJsonFiles("reply");
 		if (directoryFiles == null) {
-			logger.error("Path  or I/O error, could not load files from directory");
+			logger.error("Could not load files for replies");
 			return;
 		}
 
