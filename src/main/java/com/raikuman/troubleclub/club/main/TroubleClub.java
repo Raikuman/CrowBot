@@ -4,6 +4,8 @@ import com.raikuman.botutilities.configs.ConfigFileWriter;
 import com.raikuman.botutilities.configs.EnvLoader;
 import com.raikuman.botutilities.listener.ListenerManager;
 import com.raikuman.troubleclub.club.chat.configs.ChatConfig;
+import com.raikuman.troubleclub.club.chat.configs.DialogueSchedulerConfig;
+import com.raikuman.troubleclub.club.chat.dialogue.DialogueScheduler;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -26,7 +28,7 @@ public class TroubleClub {
 	private static final Logger logger = LoggerFactory.getLogger(TroubleClub.class);
 
 	public static void main(String[] args) {
-		ConfigFileWriter.handleConfigs(true, new ChatConfig());
+		ConfigFileWriter.handleConfigs(true, new ChatConfig(), new DialogueSchedulerConfig());
 
 		HashMap<String, JDA> jdaMap = constructJDAList();
 
@@ -49,7 +51,11 @@ public class TroubleClub {
 			}
 		}
 
+		// Set JDA map
 		JDAFinder.getInstance().setJDAMap(jdaMap);
+
+		// Handle dialogue scheduling
+		DialogueScheduler.checkDialogueSchedulingTesting();
 	}
 
 	/**
