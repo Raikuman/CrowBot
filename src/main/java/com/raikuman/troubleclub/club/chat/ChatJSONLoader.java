@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -58,7 +59,7 @@ public class ChatJSONLoader {
 		}
 
 		// Check only for jsons
-		List<File> fileList = Arrays.asList(directoryFiles);
+		List<File> fileList = new ArrayList<>(Arrays.asList(directoryFiles));
 		fileList.removeIf(file -> !file.getName().contains(".json"));
 
 		return fileList.toArray(File[]::new);

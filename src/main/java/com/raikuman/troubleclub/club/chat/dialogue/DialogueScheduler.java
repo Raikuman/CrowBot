@@ -14,10 +14,19 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
 
+/**
+ * Handles scheduling dialogues on restart
+ *
+ * @version 1.0 2023-22-01
+ * @since 1.0
+ */
 public class DialogueScheduler {
 
 	public static final Logger logger = LoggerFactory.getLogger(DialogueScheduler.class);
 
+	/**
+	 * A testing function for per-day dialogue
+	 */
 	public static void checkDialogueSchedulingTesting() {
 		// Check for selected date
 		String configDate = ConfigIO.readConfig("dialoguescheduler", "selectdate");
@@ -59,8 +68,6 @@ public class DialogueScheduler {
 		String generatedTime = String.format("%02d", generateHour()) + ":" + String.format("%02d",
 			rand.nextInt(59)) + ":00";
 
-		System.out.println("GENERATE TIME: " + generatedTime);
-
 		// Parse date for timer
 		DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Date date;
@@ -79,10 +86,11 @@ public class DialogueScheduler {
 
 		//Use this if you want to execute it once
 		timer.schedule(new RunDialogueTask(), date);
-
-		System.out.println("SCHEDULED DATE" + date);
 	}
 
+	/**
+	 * Checks for dialogue scheduling and schedules it at a specified time
+	 */
 	public static void checkDialogueScheduling() {
 		// Check for selected date
 		String configDate = ConfigIO.readConfig("dialoguescheduler", "selectdate");
@@ -101,6 +109,14 @@ public class DialogueScheduler {
 			// Check if parsed date is today or before
 			if (selectedDate.isBefore(LocalDate.now())) {
 				selectedDate = generateSelectDate(LocalDate.now().plusDays(1));
+
+				ConfigIO.overwriteConfig("dialoguescheduler", "selectdate", selectedDate.toString());
+				return;
+			}
+
+			// Check if there are no more hours left to schedule a dialogue today
+			if (LocalTime.now().isAfter(LocalTime.of(22, 59, 59))) {
+				selectedDate = LocalDate.now().plusDays(1);
 
 				ConfigIO.overwriteConfig("dialoguescheduler", "selectdate", selectedDate.toString());
 				return;
@@ -136,6 +152,10 @@ public class DialogueScheduler {
 		timer.schedule(new RunDialogueTask(), date);
 	}
 
+	/**
+	 * Generates a random hour given a map of weighted valid hours
+	 * @return The hour randomly generated
+	 */
 	private static int generateHour() {
 		List<Integer> keyList = new ArrayList<>(getHourMap().keySet());
 
@@ -163,6 +183,11 @@ public class DialogueScheduler {
 		return retrievedHour;
 	}
 
+	/**
+	 * Generate a select date to schedule the dialogue on
+	 * @param targetDate The target date specified to generate the select date
+	 * @return The generated select date
+	 */
 	private static LocalDate generateSelectDate(LocalDate targetDate) {
 		SecureRandom rand = new SecureRandom();
 		int selectAfterNextDays = 5, numDaysToAdd = rand.nextInt(3);
@@ -193,6 +218,10 @@ public class DialogueScheduler {
 		return targetDate.plusDays(selectAfterNextDays + numDaysToAdd + trials);
 	}
 
+	/**
+	 * A map of hours with weighted values
+	 * @return The map of hours
+	 */
 	private static HashMap<Integer, Double> getHourMap() {
 		return new HashMap<>()
 		{{
@@ -215,6 +244,12 @@ public class DialogueScheduler {
 	}
 }
 
+/**
+ * Handles running the dialogue when scheduled
+ *
+ * @version 1.0 2023-22-01
+ * @since 1.0
+ */
 class RunDialogueTask extends TimerTask {
 	public void run() {
 		DialogueManager.getInstance().playDialogue();
