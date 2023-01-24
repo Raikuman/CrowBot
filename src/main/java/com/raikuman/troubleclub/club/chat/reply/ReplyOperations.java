@@ -15,7 +15,7 @@ import java.security.SecureRandom;
 /**
  * Handles operations for replies
  *
- * @version 1.1 2023-21-01
+ * @version 1.2 2023-23-01
  * @since 1.0
  */
 public class ReplyOperations {
@@ -62,7 +62,7 @@ public class ReplyOperations {
 			doOperation = false;
 
 		TextChannel operationChannel = operationObject.targetMessage.getGuild().getTextChannelById(
-			ConfigIO.readConfig("chat", "replycommandchannelid")
+			ConfigIO.readConfig("reply", "commandchannelid")
 		);
 
 		// Handle if operation could not be done
