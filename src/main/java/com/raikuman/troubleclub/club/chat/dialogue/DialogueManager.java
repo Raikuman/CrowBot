@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Manages playing dialogue between bot characters
  *
- * @version 1.1 2023-20-01
+ * @version 1.2 2023-23-01
  * @since 1.0
  */
 public class DialogueManager {
@@ -86,7 +86,7 @@ public class DialogueManager {
 			// Get target text channel for dialogue
 			JDA currentJDA = JDAFinder.getInstance().getJDA(dialogue.character).getSecond();
 			TextChannel textChannel = currentJDA.getTextChannelById(
-				ConfigIO.readConfig("chat", "dialoguechannelid")
+				ConfigIO.readConfig("dialoguescheduler", "dialoguechannelid")
 			);
 			if (textChannel == null)
 				return;
@@ -97,19 +97,19 @@ public class DialogueManager {
 				GuildSticker sticker = null;
 				switch (dialogue.character) {
 					case "crow":
-						sticker = guild.getStickerById(ConfigIO.readConfig("chat", "crowsticker"));
+						sticker = guild.getStickerById(ConfigIO.readConfig("dialoguescheduler", "crowsticker"));
 						break;
 
 					case "des":
-						sticker = guild.getStickerById(ConfigIO.readConfig("chat", "dessticker"));
+						sticker = guild.getStickerById(ConfigIO.readConfig("dialoguescheduler", "dessticker"));
 						break;
 
 					case "suu":
-						sticker = guild.getStickerById(ConfigIO.readConfig("chat", "suusticker"));
+						sticker = guild.getStickerById(ConfigIO.readConfig("dialoguescheduler", "suusticker"));
 						break;
 
 					case "inori":
-						sticker = guild.getStickerById(ConfigIO.readConfig("chat", "inoristicker"));
+						sticker = guild.getStickerById(ConfigIO.readConfig("dialoguescheduler", "inoristicker"));
 						break;
 				}
 
