@@ -1,16 +1,14 @@
-package com.raikuman.troubleclub.club.main;
+package com.raikuman.troubleclub.club.utilities;
 
 import kotlin.Pair;
 import net.dv8tion.jda.api.JDA;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Singleton that holds all JDA information related to the respective characters
  *
- * @version 1.0 2023-20-01
+ * @version 1.1 2023-19-02
  * @since 1.0
  */
 public class JDAFinder {
@@ -62,5 +60,21 @@ public class JDAFinder {
 			"des",
 			"crow"
 		);
+	}
+
+	/**
+	 * A list of character nicknames
+	 * @param character The character to get nicknames from
+	 * @return The list of character nicknames
+	 */
+	public static List<String> characterNicknames(String character) {
+		Map<String, List<String>> characterMap = new LinkedHashMap<>() {{
+			put("inori", Arrays.asList());
+			put("suu", Arrays.asList());
+			put("des", Arrays.asList());
+			put("crow", Arrays.asList());
+		}};
+
+		return characterMap.get(character);
 	}
 }
