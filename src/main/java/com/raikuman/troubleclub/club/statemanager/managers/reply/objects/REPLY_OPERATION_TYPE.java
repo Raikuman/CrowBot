@@ -1,4 +1,4 @@
-package com.raikuman.troubleclub.club.chat.reply.objects;
+package com.raikuman.troubleclub.club.statemanager.managers.reply.objects;
 
 /**
  * Reply enums
