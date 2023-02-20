@@ -1,6 +1,7 @@
-package com.raikuman.troubleclub.club.chat.dialogue.objects;
+package com.raikuman.troubleclub.club.statemanager.managers.dialogue.objects;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.raikuman.troubleclub.club.utilities.CharacterNames;
 
 /**
  * Holds information for the character of the dialogue
@@ -11,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class DialogueCharacterObject {
 
 	@JsonProperty("character")
-	public String character;
+	public CharacterNames character;
 
 	@JsonProperty("sticker")
 	public boolean sticker;
