@@ -1,6 +1,7 @@
 package com.raikuman.troubleclub.club.statemanager.managers.reply.objects;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.raikuman.troubleclub.club.utilities.CharacterNames;
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +21,7 @@ public class ReplyObject {
 	public REPLY_OPERATION_TYPE operationType;
 
 	@JsonProperty("characters")
-	public HashMap<String, ReplyCharacterObject> replyCharacterMap;
+	public HashMap<CharacterNames, ReplyCharacterObject> replyCharacterMap;
 
 	@JsonProperty("match-words")
 	public List<String> matchWords;

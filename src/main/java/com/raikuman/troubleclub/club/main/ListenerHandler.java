@@ -2,37 +2,38 @@ package com.raikuman.troubleclub.club.main;
 
 import com.raikuman.botutilities.listener.ListenerBuilder;
 import com.raikuman.botutilities.listener.ListenerManager;
-import com.raikuman.troubleclub.club.chat.reply.ReplyEventListener;
 import com.raikuman.troubleclub.club.members.suu.listener.handler.SuuInvokeInterfaceProvider;
 import com.raikuman.troubleclub.club.members.des.yamboard.ReactionEventListener;
+import com.raikuman.troubleclub.club.statemanager.managers.reply.ReplyEventListener;
+import com.raikuman.troubleclub.club.utilities.CharacterNames;
 
 import java.util.List;
 
 /**
  * Handles creating a listener manager
  *
- * @version 1.0 2023-18-01
+ * @version 1.1 2023-19-02
  * @since 1.0
  */
 public class ListenerHandler {
 
 	/**
 	 * Creates a listener manager given the bot variable
-	 * @param botVar The bot variable to get the listener manager from
+	 * @param characterName The character enum to get the listener manager from
 	 * @return The listener manager associated with the bot variable
 	 */
-	public static ListenerManager getListenerManager(String botVar) {
-		switch (botVar) {
-			case "des":
+	public static ListenerManager getListenerManager(CharacterNames characterName) {
+		switch (characterName) {
+			case DES:
 				return getDesListenerManager();
 
-			case "inori":
+			case INORI:
 				return getInoriListenerManager();
 
-			case "crow":
+			case CROW:
 				return getCrowListenerManager();
 
-			case "suu":
+			case SUU:
 				return getSuuListenerManager();
 		}
 
