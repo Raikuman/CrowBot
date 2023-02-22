@@ -3,8 +3,8 @@ package com.raikuman.troubleclub.club.members.suu.listener.handler;
 import com.raikuman.botutilities.commands.manager.CommandInterface;
 import com.raikuman.botutilities.modals.manager.ModalInterface;
 import com.raikuman.botutilities.slashcommands.manager.SlashInterface;
-import com.raikuman.troubleclub.club.members.suu.commands.other.Changelog;
-import com.raikuman.troubleclub.club.members.suu.commands.other.UpdateReplyManager;
+import com.raikuman.troubleclub.club.members.suu.commands.other.*;
+import com.raikuman.troubleclub.club.members.suu.commands.other.bot.*;
 import com.raikuman.troubleclub.club.members.suu.commands.other.trello.RequestFeature;
 import com.raikuman.troubleclub.club.members.suu.commands.other.trello.SubmitBug;
 
@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Provides commands, buttons, selects, slashes, and modals for the ListenerHandler
  *
- * @version 1.2 2023-23-01
+ * @version 1.2 2023-22-02
  * @since 1.0
  */
 public class SuuInvokeInterfaceProvider {
@@ -25,8 +25,15 @@ public class SuuInvokeInterfaceProvider {
 	 */
 	public static List<CommandInterface> provideCommands() {
 		return Arrays.asList(
-			new UpdateReplyManager(),
-			new Changelog()
+			new UpdateStateManager(),
+			new Changelog(),
+			new GetStickers(),
+			new BotShutdown(),
+			new RunDialogue(),
+			new RunStatus(),
+			new RunVoice(),
+			new RunIdling(),
+			new ShowStickers()
 		);
 	}
 
