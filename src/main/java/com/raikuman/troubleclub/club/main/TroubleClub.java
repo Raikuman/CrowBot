@@ -3,11 +3,10 @@ package com.raikuman.troubleclub.club.main;
 import com.raikuman.botutilities.configs.ConfigFileWriter;
 import com.raikuman.botutilities.configs.EnvLoader;
 import com.raikuman.botutilities.listener.ListenerManager;
-import com.raikuman.troubleclub.club.chat.configs.ReplyConfig;
-import com.raikuman.troubleclub.club.chat.configs.DialogueSchedulerConfig;
-import com.raikuman.troubleclub.club.chat.dialogue.DialogueScheduler;
-import com.raikuman.troubleclub.club.voice.VoiceScheduler;
-import com.raikuman.troubleclub.club.voice.configs.VoiceConfig;
+import com.raikuman.troubleclub.club.statemanager.CharacterStateManager;
+import com.raikuman.troubleclub.club.statemanager.configs.*;
+import com.raikuman.troubleclub.club.utilities.CharacterNames;
+import com.raikuman.troubleclub.club.utilities.JDAFinder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -22,7 +21,7 @@ import java.util.*;
 /**
  * Bot main class
  *
- * @version 1.2 2023-23-01
+ * @version 1.3 2023-22-02
  * @since 1.0
  */
 public class TroubleClub {
@@ -32,12 +31,14 @@ public class TroubleClub {
 	public static void main(String[] args) {
 		ConfigFileWriter.handleConfigs(true,
 			new ReplyConfig(),
-			new DialogueSchedulerConfig(),
-			new VoiceConfig());
+			new DialogueConfig(),
+			new VoiceConfig(),
+			new StatusConfig(),
+			new StateConfig());
 
-		HashMap<String, JDA> jdaMap = constructJDAList();
+		HashMap<CharacterNames, JDA> jdaMap = constructJDAList();
 
-		for (Map.Entry<String, JDA> entry : jdaMap.entrySet()) {
+		for (Map.Entry<CharacterNames, JDA> entry : jdaMap.entrySet()) {
 			if (entry.getValue() == null) {
 				logger.error("Could not create JDA objects for all bots");
 				return;
@@ -46,7 +47,7 @@ public class TroubleClub {
 			}
 		}
 
-		for (Map.Entry<String, JDA> entry : jdaMap.entrySet()) {
+		for (Map.Entry<CharacterNames, JDA> entry : jdaMap.entrySet()) {
 			try {
 				entry.getValue().awaitStatus(JDA.Status.CONNECTED);
 				logger.info("Bot " + entry.getValue() + " connected to Discord");
@@ -59,20 +60,17 @@ public class TroubleClub {
 		// Set JDA map
 		JDAFinder.getInstance().setJDAMap(jdaMap);
 
-		// Handle dialogue scheduling
-		DialogueScheduler.checkDialogueScheduling();
-
-		// Handle voice scheduling
-		VoiceScheduler.scheduleVoiceConnections();
+		// Handle state scheduling
+		CharacterStateManager.getInstance().handleScheduling();
 	}
 
 	/**
 	 * Builds the JDA objects
 	 * @return The list of JDA objects
 	 */
-	private static HashMap<String, JDA> constructJDAList() {
-		HashMap<String, JDA> jdaMap = new LinkedHashMap<>();
-		for (Map.Entry<String, String> entry : getBotTokenVars().entrySet()) {
+	private static HashMap<CharacterNames, JDA> constructJDAList() {
+		HashMap<CharacterNames, JDA> jdaMap = new LinkedHashMap<>();
+		for (Map.Entry<CharacterNames, String> entry : getBotTokenVars().entrySet()) {
 			ListenerManager listenerManager = ListenerHandler.getListenerManager(entry.getKey());
 
 			if (listenerManager == null) {
@@ -123,12 +121,12 @@ public class TroubleClub {
 	 * Returns a map of variables for the EnvLoader to get tokens from
 	 * @return The map of token variables to load
 	 */
-	private static HashMap<String, String> getBotTokenVars() {
-		HashMap<String, String> tokenVarMap = new LinkedHashMap<>();
-		tokenVarMap.put("des", "destoken");
-		tokenVarMap.put("inori", "inoritoken");
-		tokenVarMap.put("crow", "crowtoken");
-		tokenVarMap.put("suu", "suutoken");
+	private static HashMap<CharacterNames, String> getBotTokenVars() {
+		HashMap<CharacterNames, String> tokenVarMap = new LinkedHashMap<>();
+		tokenVarMap.put(CharacterNames.DES, "destoken");
+		tokenVarMap.put(CharacterNames.INORI, "inoritoken");
+		tokenVarMap.put(CharacterNames.CROW, "crowtoken");
+		tokenVarMap.put(CharacterNames.SUU, "suutoken");
 		return tokenVarMap;
 	}
 }
