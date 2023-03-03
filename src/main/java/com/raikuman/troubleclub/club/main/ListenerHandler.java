@@ -2,6 +2,7 @@ package com.raikuman.troubleclub.club.main;
 
 import com.raikuman.botutilities.listener.ListenerBuilder;
 import com.raikuman.botutilities.listener.ListenerManager;
+import com.raikuman.troubleclub.club.members.crow.listener.handler.CrowInvokeInterfaceProvider;
 import com.raikuman.troubleclub.club.members.suu.listener.handler.SuuInvokeInterfaceProvider;
 import com.raikuman.troubleclub.club.members.des.yamboard.ReactionEventListener;
 import com.raikuman.troubleclub.club.statemanager.managers.reply.ReplyEventListener;
@@ -12,7 +13,7 @@ import java.util.List;
 /**
  * Handles creating a listener manager
  *
- * @version 1.1 2023-19-02
+ * @version 1.2 2023-02-03
  * @since 1.0
  */
 public class ListenerHandler {
@@ -53,6 +54,7 @@ public class ListenerHandler {
 
 	public static ListenerManager getCrowListenerManager() {
 		return new ListenerBuilder()
+			.setCommands(CrowInvokeInterfaceProvider.provideCommands())
 			.build();
 	}
 
