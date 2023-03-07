@@ -2,7 +2,11 @@ package com.raikuman.troubleclub.club.main;
 
 import com.raikuman.botutilities.configs.ConfigFileWriter;
 import com.raikuman.botutilities.configs.EnvLoader;
+import com.raikuman.botutilities.database.DatabaseManager;
 import com.raikuman.botutilities.listener.ListenerManager;
+import com.raikuman.troubleclub.club.config.member.MemberConfig;
+import com.raikuman.troubleclub.club.config.member.MemberDB;
+import com.raikuman.troubleclub.club.config.yamboard.YamboardConfig;
 import com.raikuman.troubleclub.club.statemanager.CharacterStateManager;
 import com.raikuman.troubleclub.club.statemanager.configs.*;
 import com.raikuman.troubleclub.club.utilities.CharacterNames;
@@ -21,7 +25,7 @@ import java.util.*;
 /**
  * Bot main class
  *
- * @version 1.3 2023-22-02
+ * @version 1.4 2023-05-03
  * @since 1.0
  */
 public class TroubleClub {
@@ -34,7 +38,8 @@ public class TroubleClub {
 			new DialogueConfig(),
 			new VoiceConfig(),
 			new StatusConfig(),
-			new StateConfig());
+			new StateConfig(),
+			new YamboardConfig());
 
 		HashMap<CharacterNames, JDA> jdaMap = constructJDAList();
 
@@ -62,6 +67,8 @@ public class TroubleClub {
 
 		// Handle state scheduling
 		CharacterStateManager.getInstance().handleScheduling();
+
+		setDatabase(JDAFinder.getInstance().getJDA(CharacterNames.SUU));
 	}
 
 	/**
@@ -128,5 +135,18 @@ public class TroubleClub {
 		tokenVarMap.put(CharacterNames.CROW, "crowtoken");
 		tokenVarMap.put(CharacterNames.SUU, "suutoken");
 		return tokenVarMap;
+	}
+
+	/**
+	 * Handle database methods
+	 * @param jda The jda object to set database with
+	 */
+	private static void setDatabase(JDA jda) {
+		DatabaseManager.executeConfigStatements(List.of(
+			new MemberConfig(),
+			new YamboardConfig()
+		));
+
+		MemberDB.populateMemberTable(jda.getGuilds());
 	}
 }

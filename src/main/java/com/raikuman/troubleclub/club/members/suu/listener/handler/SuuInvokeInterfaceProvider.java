@@ -7,6 +7,9 @@ import com.raikuman.troubleclub.club.members.suu.commands.other.*;
 import com.raikuman.troubleclub.club.members.suu.commands.other.bot.*;
 import com.raikuman.troubleclub.club.members.suu.commands.other.trello.RequestFeature;
 import com.raikuman.troubleclub.club.members.suu.commands.other.trello.SubmitBug;
+import com.raikuman.troubleclub.club.members.suu.listener.MemberEventListener;
+import com.raikuman.troubleclub.club.statemanager.managers.reply.ReplyEventListener;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.util.Arrays;
 import java.util.List;
@@ -56,6 +59,17 @@ public class SuuInvokeInterfaceProvider {
 		return Arrays.asList(
 			new RequestFeature(),
 			new SubmitBug()
+		);
+	}
+
+	/**
+	 * Provides listener adapters to create a listener manager
+	 * @return The list of listener adapters
+	 */
+	public static List<ListenerAdapter> provideListeners() {
+		return Arrays.asList(
+			new ReplyEventListener(),
+			new MemberEventListener()
 		);
 	}
 }
