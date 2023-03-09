@@ -1,10 +1,8 @@
 package com.raikuman.troubleclub.club.members.suu.commands.other.bot;
 
-import com.raikuman.botutilities.commands.manager.CategoryInterface;
 import com.raikuman.botutilities.commands.manager.CommandContext;
 import com.raikuman.botutilities.commands.manager.CommandInterface;
 import com.raikuman.botutilities.configs.EnvLoader;
-import com.raikuman.troubleclub.club.category.OtherCategory;
 import com.raikuman.troubleclub.club.statemanager.managers.dialogue.DialogueStateManager;
 import com.raikuman.troubleclub.club.statemanager.managers.reply.ReplyStateManager;
 import com.raikuman.troubleclub.club.statemanager.managers.status.StatusStateManager;
@@ -16,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Handles updating the reply manager's json reply data
  *
- * @version 1.1 2023-22-01
+ * @version 1.2 2023-08-03
  * @since 1.0
  */
 public class UpdateStateManager implements CommandInterface {
@@ -52,10 +50,5 @@ public class UpdateStateManager implements CommandInterface {
 	@Override
 	public List<String> getAliases() {
 		return List.of("updatereply", "ur", "urm");
-	}
-
-	@Override
-	public CategoryInterface getCategory() {
-		return new OtherCategory();
 	}
 }

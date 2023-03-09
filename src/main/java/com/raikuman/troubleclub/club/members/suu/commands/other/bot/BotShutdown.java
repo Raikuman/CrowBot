@@ -1,10 +1,8 @@
 package com.raikuman.troubleclub.club.members.suu.commands.other.bot;
 
-import com.raikuman.botutilities.commands.manager.CategoryInterface;
 import com.raikuman.botutilities.commands.manager.CommandContext;
 import com.raikuman.botutilities.commands.manager.CommandInterface;
 import com.raikuman.botutilities.configs.EnvLoader;
-import com.raikuman.troubleclub.club.category.OtherCategory;
 import com.raikuman.troubleclub.club.utilities.CharacterNames;
 import com.raikuman.troubleclub.club.utilities.JDAFinder;
 
@@ -13,7 +11,7 @@ import java.util.List;
 /**
  * Handles shutting down the bot
  *
- * @version 1.0 2023-22-02
+ * @version 1.1 2023-08-03
  * @since 1.0
  */
 public class BotShutdown implements CommandInterface {
@@ -47,10 +45,5 @@ public class BotShutdown implements CommandInterface {
 	@Override
 	public List<String> getAliases() {
 		return List.of("bs");
-	}
-
-	@Override
-	public CategoryInterface getCategory() {
-		return new OtherCategory();
 	}
 }
