@@ -11,18 +11,12 @@ import org.slf4j.LoggerFactory;
 /**
  * Provides an event listener for reactions, detecting if any users react to a message.
  *
- * @version 1.0 2023-15-01
+ * @version 1.1 2023-07-03
  * @since 1.0
  */
 public class ReactionEventListener extends ListenerAdapter {
 
 	private static final Logger logger = LoggerFactory.getLogger(ReactionEventListener.class);
-
-	private final YamboardManager manager;
-
-	public ReactionEventListener() {
-		this.manager = new YamboardManager();
-	}
 
 	@Override
 	public void onReady(@NotNull ReadyEvent event) {
@@ -40,6 +34,6 @@ public class ReactionEventListener extends ListenerAdapter {
 		if (member.getUser().isBot())
 			return;
 
-		manager.handleReaction(event);
+		YamboardManager.getInstance().handleReaction(event);
 	}
 }

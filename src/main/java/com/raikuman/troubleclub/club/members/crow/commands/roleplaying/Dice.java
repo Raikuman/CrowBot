@@ -11,6 +11,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 
 import java.security.SecureRandom;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -73,7 +74,7 @@ public class Dice implements CommandInterface {
 
 	@Override
 	public List<String> getAliases() {
-		return CommandInterface.super.getAliases();
+		return Arrays.asList("roll", "d");
 	}
 
 	@Override

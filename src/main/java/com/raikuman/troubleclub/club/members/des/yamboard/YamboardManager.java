@@ -1,182 +1,388 @@
 package com.raikuman.troubleclub.club.members.des.yamboard;
 
-import com.raikuman.botutilities.configs.EnvLoader;
-import com.raikuman.botutilities.helpers.DateAndTime;
-import com.raikuman.botutilities.helpers.RandomColor;
+import com.raikuman.botutilities.configs.ConfigIO;
+import com.raikuman.troubleclub.club.config.yamboard.YamboardDB;
+import kotlin.Pair;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.MessageReaction;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.react.GenericMessageReactionEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Handles the YamBoard, a pinned-message board based around reactions. A target text channel is selected
- * to look for reactions. The reacted message will then be posted to a pinned text channel.
+ * Manages handling yamboard posts
  *
- * @version 1.0 2023-15-01
+ * @version 1.1 2023-09-03
  * @since 1.0
  */
 public class YamboardManager {
 
 	private static final Logger logger = LoggerFactory.getLogger(YamboardManager.class);
 
-	private final Map<Long, Long> messageIds = new LinkedHashMap<>();
-	private static final String yamEmoji = "U+1f360";
+	private static YamboardManager instance = null;
+	private final List<YamboardMessage> yamboardMessages = new ArrayList<>();
+
+	public static YamboardManager getInstance() {
+		if (instance == null)
+			instance = new YamboardManager();
+
+		return instance;
+	}
 
 	/**
-	 * Handles the reaction event and keeps track of the map of message ids with posts
-	 * @param event The generic message reaction event
+	 * Handles the reaction event for creating or removing posts
+	 * @param event The event to get yamboard post information from
 	 */
 	public void handleReaction(GenericMessageReactionEvent event) {
-		// Check reaction
-		String reactionUnicode = event.getEmoji().asUnicode().getAsCodepoints();
-
+		// Check for event user
 		if (event.getMember() == null)
 			return;
 
-		if (!yamEmoji.equalsIgnoreCase(reactionUnicode))
+		// Check for appropriate reaction
+		String emojiConfig = ConfigIO.readConfig("yamboard", "reactionemoji");
+		if (emojiConfig == null) {
+			logger.error("No reaction emoji found for yamboard");
+			return;
+		}
+
+		if (!emojiConfig.equalsIgnoreCase(event.getEmoji().asUnicode().getAsCodepoints()))
 			return;
 
-		// Get message and reactions
-		Message message = event.getChannel().retrieveMessageById(event.getMessageIdLong()).complete();
-		int numReactions = countReactions(message.getReactions());
-
-		Member messageMember = message.getMember();
-		if (messageMember == null)
+		// Get posting channel from config
+		String postChannelId = ConfigIO.readConfig("yamboard", "postchannel");
+		if (postChannelId == null)
 			return;
 
-		TextChannel postChannel = event.getGuild().getTextChannelById(EnvLoader.get("yampostchannel"));
+		TextChannel postChannel = event.getGuild().getTextChannelById(postChannelId);
 		if (postChannel == null)
 			return;
 
+		// Get message and reactions
+		Message originalMessage = event.getChannel().retrieveMessageById(event.getMessageIdLong()).complete();
+		if (originalMessage.getMember() == null)
+			return;
+
+		int numReactions = YamboardUtilities.countReactions(originalMessage.getReactions());
 		if (numReactions == 0) {
-			postChannel.deleteMessageById(messageIds.get(event.getMessageIdLong())).queue();
-			try {
-				messageIds.remove(event.getMessageIdLong());
-			} catch (NullPointerException e) {
-				logger.info("Id not in map: " + event.getMessageIdLong());
-			}
+			// No reactions, remove post
+			YamboardMessage post = getMessageFromOriginal(event.getMessageIdLong());
+			if (post == null)
+				return;
+
+			long originalPostId = post.getPostMessageId();
+			if (originalPostId == -1L)
+				return;
+
+			removePost(originalPostId, postChannel);
 		} else if (numReactions > 0) {
-			if (!messageIds.containsKey(event.getMessageIdLong()))
-				addMessageId(
-					event.getMessageIdLong(),
-					postMessage(message, messageMember, event.getChannel().asTextChannel(), postChannel)
+			// Reactions found, post if not already posted
+			if (!checkPostExistsFromOriginal(event.getMessageIdLong())) {
+				Pair<Long, EmbedBuilder> postMessageInfo = YamboardUtilities.postMessage(
+					originalMessage,
+					event.getMember(),
+					event.getChannel().asTextChannel(),
+					postChannel
 				);
+
+				if (postMessageInfo.getFirst() == -1L)
+					return;
+
+				addPost(
+					event.getMember().getIdLong(),
+					event.getMessageIdLong(),
+					postMessageInfo
+				);
+			}
 		}
 	}
 
 	/**
-	 * Posts a message to the pinned text channel given information from the original user message
-	 * @param userMessage The message that was reacted to
-	 * @param member The member associated with the original message
-	 * @param userChannel The text channel where the reaction took place
-	 * @param postChannel The text channel where the pinned message will be posted to
-	 * @return The id long of the posted message
+	 * Check if a post exists given a user's message
+	 * @param originalMessageId The original user's message
+	 * @return Whether if the user's message has a post
 	 */
-	private long postMessage(Message userMessage, Member member, TextChannel userChannel, TextChannel postChannel) {
-		EmbedBuilder builder = new EmbedBuilder()
-			.setAuthor(member.getEffectiveName(), null, member.getEffectiveAvatarUrl())
-			.setColor(RandomColor.getRandomColor())
-			.setFooter("#" + userChannel.getName() + " | " + DateAndTime.getDate() + " " + DateAndTime.getTime());
+	public boolean checkPostExistsFromOriginal(long originalMessageId) {
+		for (YamboardMessage post : yamboardMessages)
+			if (post.getOriginalMessageId() == originalMessageId)
+				return true;
 
-		String url = checkForUrl(userMessage.getContentRaw());
-		if (userMessage.getAttachments().isEmpty()) {
-			if (url.isEmpty()) {
-				builder.setDescription(userMessage.getContentRaw());
-			} else {
-				if (!userMessage.getEmbeds().isEmpty()) {
-					MessageEmbed.Thumbnail thumbnail = userMessage.getEmbeds().get(0).getThumbnail();
-					MessageEmbed.VideoInfo videoInfo = userMessage.getEmbeds().get(0).getVideoInfo();
+		return false;
+	}
 
-					if (thumbnail != null) {
-						if (videoInfo != null && videoInfo.getUrl() != null) {
-							if (videoInfo.getUrl().contains("tenor")) {
-								String gifLink = videoInfo.getUrl().replace("AAAPo", "AAAAd");
-								builder.setImage(gifLink.replace(".mp4", ".gif"));
-								builder.setDescription(userMessage.getContentRaw().replace(url, ""));
-							} else {
-								builder.setImage(thumbnail.getUrl());
-								builder.setDescription(userMessage.getContentRaw());
-							}
-						}
+	/**
+	 * Add a post to the manager and update the user's yamboard entry
+	 * @param posterId The user who reacted to the original message
+	 * @param originalMessageId The original message's id
+	 * @param postMessageInfo Information about the yamboard post
+	 */
+	public void addPost(long posterId, long originalMessageId, Pair<Long, EmbedBuilder> postMessageInfo) {
+		YamboardMessage foundPost = null;
+		for (YamboardMessage post : yamboardMessages) {
+			if (post.getOriginalMessageId() == originalMessageId) {
+				foundPost = post;
+				break;
+			}
+		}
+
+		if (foundPost != null)
+			return;
+
+		YamboardDB.handlePostNumber(posterId, true);
+		yamboardMessages.add(new YamboardMessage(posterId, originalMessageId, postMessageInfo));
+	}
+
+	/**
+	 * Remove a post from the manager and update the user's yamboard entry
+	 * @param originalPostId The post to remove
+	 * @param postChannel The channel where posts are posted
+	 */
+	public void removePost(long originalPostId, TextChannel postChannel) {
+		for (YamboardMessage post : yamboardMessages) {
+			if (post.getPostMessageId() == originalPostId) {
+				postChannel.deleteMessageById(originalPostId).queue();
+				YamboardDB.handlePostNumber(post.getPosterId(), false);
+
+				if (post.getNumUpvoters() > 0)
+					YamboardDB.manipulateKarma(post.getPosterId(), true, false, post.getNumUpvoters());
+
+				if (post.getNumDownvoters() > 0)
+					YamboardDB.manipulateKarma(post.getPosterId(), false, false, post.getNumDownvoters());
+
+				yamboardMessages.remove(post);
+				return;
+			}
+		}
+	}
+
+	/**
+	 * Get the yamboard message object from the original message id
+	 * @param originalMessageId The original message id to get the message object from
+	 * @return The yamboard message object from the message id
+	 */
+	public YamboardMessage getMessageFromOriginal(long originalMessageId) {
+		for (YamboardMessage post : yamboardMessages)
+			if (post.getOriginalMessageId() == originalMessageId)
+				return post;
+
+		return null;
+	}
+
+	/**
+	 * Get the yamboard message object from the post message id
+	 * @param postMessageId The post message id to get the message object from
+	 * @return The yamboard message object from the message id
+	 */
+	public YamboardMessage getMessageFromPost(long postMessageId) {
+		for (YamboardMessage post : yamboardMessages)
+			if (post.getPostMessageId() == postMessageId)
+				return post;
+
+		return null;
+	}
+}
+
+/**
+ * Holds information for the yamboard message
+ *
+ * @version 1.0 2023-07-03
+ * @since 1.0
+ */
+class YamboardMessage {
+
+	private final long posterId, originalMessageId, postMessageId;
+	private final List<Long> upvoters, downvoters;
+	private final EmbedBuilder postEmbed;
+
+	public YamboardMessage(long posterId, long originalMessageId, Pair<Long, EmbedBuilder> postMessageInfo) {
+		this.posterId = posterId;
+		this.originalMessageId = originalMessageId;
+		this.postMessageId = postMessageInfo.getFirst();
+		this.postEmbed = postMessageInfo.getSecond();
+		upvoters = new ArrayList<>();
+		downvoters = new ArrayList<>();
+	}
+
+	public long getOriginalMessageId() {
+		return originalMessageId;
+	}
+
+	public long getPostMessageId() {
+		return postMessageId;
+	}
+
+	public long getPosterId() {
+		return posterId;
+	}
+
+	public int getNumUpvoters() {
+		return upvoters.size();
+	}
+
+	public int getNumDownvoters() {
+		return downvoters.size();
+	}
+
+	/**
+	 * Add an upvote to the post. If the voting user previously downvoted, it will be overturned with an
+	 * upvote
+	 * @param voterId The voter's id
+	 */
+	public void addUpvote(long voterId) {
+		if (checkVoterStatus(voterId) == PostVoterStatus.DOWNVOTE) {
+			downvoters.remove(voterId);
+			YamboardDB.manipulateKarma(posterId, false, false, 1);
+		}
+
+		upvoters.add(voterId);
+		YamboardDB.manipulateKarma(posterId, true, true, 1);
+	}
+
+	/**
+	 * Remove an upvote from the post
+	 * @param voterId The voter's id
+	 */
+	public void removeUpvote(long voterId) {
+		if (checkVoterStatus(voterId) == PostVoterStatus.UPVOTE) {
+			upvoters.remove(voterId);
+			YamboardDB.manipulateKarma(posterId, true, false, 1);
+		}
+	}
+
+	/**
+	 * Add a downvote to the post. If the voting user previously upvoted, it will be overturned with an
+	 * downvote
+	 * @param voterId The voter's id
+	 */
+	public void addDownvote(long voterId) {
+		if (checkVoterStatus(voterId) == PostVoterStatus.UPVOTE) {
+			upvoters.remove(voterId);
+			YamboardDB.manipulateKarma(posterId, true, false, 1);
+		}
+
+		downvoters.add(voterId);
+		YamboardDB.manipulateKarma(posterId, false, true, 1);
+	}
+
+	/**
+	 * Remove a downvote from the post
+	 * @param voterId The voter's id
+	 */
+	public void removeDownvote(long voterId) {
+		if (checkVoterStatus(voterId) == PostVoterStatus.DOWNVOTE) {
+			downvoters.remove(voterId);
+			YamboardDB.manipulateKarma(posterId, false, false, 1);
+		}
+	}
+
+	/**
+	 * Check if the input voter voted
+	 * @param voterId The voter's id
+	 * @param upvote Whether to check for an upvote or downvote
+	 * @return Whether the voter voted
+	 */
+	public boolean checkVoterVoted(long voterId, boolean upvote) {
+		List<Long> checkList;
+
+		if (upvote)
+			checkList = upvoters;
+		else
+			checkList = downvoters;
+
+		for (Long voter : checkList) {
+			if (voter == voterId)
+				return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Check what type of vote the voter voted with
+	 * @param voterId The voter's id
+	 * @return The voter's voting status
+	 */
+	private PostVoterStatus checkVoterStatus(long voterId) {
+		for (long voter : upvoters)
+			if (voter == voterId)
+				return PostVoterStatus.UPVOTE;
+
+		for (long voter : downvoters)
+			if (voter == voterId)
+				return PostVoterStatus.DOWNVOTE;
+
+		return PostVoterStatus.NONE;
+	}
+
+	/**
+	 * Update the post embed with the post's new karma value
+	 * @param event The event to update the embed with
+	 */
+	public void updateEmbed(ButtonInteractionEvent event) {
+		List<MessageEmbed.Field> newFields = new ArrayList<>();
+		for (MessageEmbed.Field embedField : postEmbed.getFields()) {
+			if (embedField.getName() == null)
+				continue;
+
+			switch (embedField.getName()) {
+				case "Upvotes":
+					newFields.add(new MessageEmbed.Field(
+						"Upvotes",
+						String.valueOf(upvoters.size()),
+						true
+					));
+					break;
+
+				case "Downvotes":
+					newFields.add(new MessageEmbed.Field(
+						"Downvotes",
+						String.valueOf(downvoters.size()),
+						true
+					));
+					break;
+
+				case "Ratio":
+					DecimalFormat df = new DecimalFormat("#%");
+
+					// Check for 0
+					if (upvoters.size() + downvoters.size() == 0) {
+						newFields.add(new MessageEmbed.Field(
+							"Ratio",
+							"-%",
+							true
+						));
 					} else {
-						builder.setDescription(userMessage.getContentRaw());
+						newFields.add(new MessageEmbed.Field(
+							"Ratio",
+							df.format((double) (upvoters.size() / (upvoters.size() + downvoters.size()))),
+							true
+						));
 					}
-				}
-			}
-		} else {
-			if (userMessage.getAttachments().get(0).isImage()) {
-				builder
-					.setDescription(userMessage.getContentRaw())
-					.setImage(userMessage.getAttachments().get(0).getUrl());
-			} else {
-				StringBuilder videoDesc = new StringBuilder()
-					.append(userMessage.getContentRaw())
-					.append("\n\n")
-					.append("***[Jump to video](")
-					.append(userMessage.getJumpUrl())
-					.append(")***");
-
-				builder
-					.setDescription(videoDesc);
+					break;
 			}
 		}
 
-		return postChannel.sendMessageEmbeds(builder.build()).complete().getIdLong();
+		postEmbed.clearFields();
+
+		for (MessageEmbed.Field field : newFields)
+			postEmbed.addField(field);
+
+		event.editMessageEmbeds(postEmbed.build()).queue();
 	}
+}
 
-	/**
-	 * Check for a url in a string
-	 * @param message The message to check for a url
-	 * @return The url if found, else empty
-	 */
-	private String checkForUrl(String message) {
-		Pattern pattern = Pattern.compile("([a-zA-Z0-9]+://)?([a-zA-Z0-9_]+:[a-zA-Z0-9_]+@)?([a-zA-Z0-9.-]+\\" +
-			".[A-Za-z]{2,4})(:[0-9]+)?([^ ])+");
-		Matcher matcher = pattern.matcher(message);
-		String url = "";
-		if (matcher.find())
-		{
-			url = matcher.group(0);
-		}
-
-		return url;
-	}
-
-	/**
-	 * Puts message ids to the map with a limit of 10 entries
-	 * @param userMessageId The reacted to message id long
-	 * @param postMessageId The posted message id long
-	 */
-	private void addMessageId(long userMessageId, long postMessageId) {
-		if (messageIds.size() < 10) {
-			messageIds.put(userMessageId, postMessageId);
-		} else {
-			messageIds.remove(messageIds.keySet().iterator().next());
-			messageIds.put(userMessageId, postMessageId);
-		}
-	}
-
-	/**
-	 * Count the number of reactions in a given list
-	 * @param messageReactions The list of reactions on a message
-	 * @return The number of reactions of a certain emoji in the list
-	 */
-	private int countReactions(List<MessageReaction> messageReactions) {
-		int count = 0;
-		for (MessageReaction messageReaction : messageReactions) {
-			if (messageReaction.getEmoji().asUnicode().getAsCodepoints().equalsIgnoreCase(yamEmoji))
-				count++;
-		}
-
-		return count;
-	}
+/**
+ * Enums for voter status
+ *
+ * @version 1.0 2023-07-03
+ * @since 1.0
+ */
+enum PostVoterStatus {
+	UPVOTE, DOWNVOTE, NONE
 }
