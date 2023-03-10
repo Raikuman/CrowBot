@@ -1,9 +1,11 @@
 package com.raikuman.troubleclub.club.members.des.yamboard;
 
+import java.text.DecimalFormat;
+
 /**
  * Holds information for the karma object
  *
- * @version 1.0 2023-07-03
+ * @version 1.1 2023-09-03
  * @since 1.0
  */
 public class KarmaObject {
@@ -38,6 +40,7 @@ public class KarmaObject {
 		if (upvotes + downvotes == 0)
 			return "-%";
 
-		return String.format("%2f", (double) (upvotes / (upvotes + downvotes))) + "%";
+		DecimalFormat df = new DecimalFormat("#%");
+		return df.format((double) (upvotes / (upvotes + downvotes)));
 	}
 }
