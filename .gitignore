@@ -39,3 +39,6 @@ build/
 .DS_Store
 /config/
 /out/
+
+/resources/
+/database.db
