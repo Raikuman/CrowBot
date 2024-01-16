@@ -4,11 +4,11 @@ import com.raikuman.botutilities.config.Config;
 
 import java.util.LinkedHashMap;
 
-public class DialogueWeightsConfig implements Config {
+public class HourWeights implements Config {
 
     @Override
     public String fileName() {
-        return "dialogue/weights";
+        return "dialogue/hourweights";
     }
 
     @Override
@@ -37,7 +37,6 @@ public class DialogueWeightsConfig implements Config {
         configMap.put("21", "0");
         configMap.put("22", "0");
         configMap.put("23", "0");
-        configMap.put("24", "0");
         return configMap;
     }
 }

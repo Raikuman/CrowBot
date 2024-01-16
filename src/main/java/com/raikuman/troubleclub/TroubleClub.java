@@ -5,8 +5,9 @@ import com.raikuman.botutilities.invocation.type.Command;
 import com.raikuman.troubleclub.command.GetStickers;
 import com.raikuman.troubleclub.command.TestDialogue;
 import com.raikuman.troubleclub.dialogue.*;
+import com.raikuman.troubleclub.dialogue.config.DayWeights;
 import com.raikuman.troubleclub.dialogue.config.DialogueConfig;
-import com.raikuman.troubleclub.dialogue.config.DialogueWeightsConfig;
+import com.raikuman.troubleclub.dialogue.config.HourWeights;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -17,7 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -27,7 +27,7 @@ public class TroubleClub {
 
     private static final Logger logger = LoggerFactory.getLogger(TroubleClub.class);
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         // Schedule tasks
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(2);
         DialogueManager dialogueManager = new DialogueManager(executor);
@@ -56,7 +56,7 @@ public class TroubleClub {
                 BotSetup setup = BotSetup
                     .setup(jdaBuilder)
                     .disableDatabase(true)
-                    .setConfigs(new DialogueConfig(), new DialogueWeightsConfig());
+                    .setConfigs(new DialogueConfig(), new HourWeights(), new DayWeights());
 
                 // Handle commands
                 List<Command> commands = getCommands(dialogueManager).get(club);
@@ -75,7 +75,7 @@ public class TroubleClub {
         if (resourceDirectory.mkdirs()) {
             logger.info("Created resources directory");
         } else {
-            logger.error("Failed to create resources directory");
+            logger.info("Resources directory already exists");
         }
 
         // Program must load with all bots

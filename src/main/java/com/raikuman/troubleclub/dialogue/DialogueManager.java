@@ -1,15 +1,17 @@
 package com.raikuman.troubleclub.dialogue;
 
+import com.raikuman.botutilities.config.ConfigData;
 import com.raikuman.troubleclub.Club;
+import com.raikuman.troubleclub.dialogue.config.HourWeights;
 import net.dv8tion.jda.api.JDA;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -17,32 +19,33 @@ public class DialogueManager {
     private static final Logger logger = LoggerFactory.getLogger(DialogueManager.class);
     private final ScheduledExecutorService executor;
     private HashMap<Club, JDA> clubMap;
-    private final File playedDialogues, conversations;
+    private final File playedDialogues, conversations, scheduledDate;
 
     public DialogueManager(ScheduledExecutorService executor) {
         this.executor = executor;
 
         // Create file to hold played dialogues
         playedDialogues = new File("resources" + File.separator + "playeddialogues.txt");
-        try {
-            if (playedDialogues.createNewFile()) {
-                logger.info("Created file {}", playedDialogues.getAbsolutePath());
-            } else {
-                logger.error("Failed to create file {}", playedDialogues.getAbsolutePath());
-            }
-        } catch (IOException e) {
-            logger.error("Error creating file {}", playedDialogues.getAbsolutePath());
-        }
+        dialogueFileCheck(playedDialogues);
 
+        // Directory for conversations
         conversations = new File("resources" + File.separator + "conversations");
+        dialogueFileCheck(conversations);
+
+        // Create file for a scheduled date
+        scheduledDate = new File("resources" + File.separator + "scheduleddate.txt");
+        dialogueFileCheck(scheduledDate);
+    }
+
+    private void dialogueFileCheck(File file) {
         try {
-            if (conversations.createNewFile()) {
-                logger.info("Created file {}", conversations.getAbsolutePath());
+            if (file.createNewFile()) {
+                logger.info("Created file {}", file.getAbsolutePath());
             } else {
-                logger.error("Failed to create file {}", conversations.getAbsolutePath());
+                logger.info("File {} exists", file.getAbsolutePath());
             }
         } catch (IOException e) {
-            logger.error("Error creating file {}", conversations.getAbsolutePath());
+            logger.error("Error creating file {}", file.getAbsolutePath());
         }
     }
 
@@ -51,16 +54,28 @@ public class DialogueManager {
     }
 
     public void beginTask() {
-        executor.schedule(this::runDialogue, calculateDelay(), TimeUnit.MILLISECONDS);
-    }
+        LocalDate scheduledDate = getScheduledDate();
+        if (scheduledDate == null) {
+            logger.error("Error getting scheduled date");
+            return;
+        }
 
-    private long calculateDelay() {
-        return 0L;
+        LocalTime scheduledTime = DialogueScheduling.generateScheduledTime();
+        if (!LocalDate.now().equals(scheduledDate)) {
+            logger.info("Scheduled date is not today");
+            return;
+        } else {
+            logger.info("Executing dialogue task on {}", scheduledTime);
+        }
+
+        executor.schedule(
+            this::runDialogue,
+            ChronoUnit.MILLIS.between(LocalTime.now(), scheduledTime),
+            TimeUnit.MILLISECONDS);
     }
 
     private void runDialogue() {
         handleDialogue(false);
-
     }
 
     public void testDialogue() {
@@ -118,5 +133,25 @@ public class DialogueManager {
             logger.error("Error reading file {}", playedDialogues.getAbsolutePath());
             return new ArrayList<>(); // Return empty list if error reading file
         }
+    }
+
+    private LocalDate getScheduledDate() {
+        String dateString;
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(scheduledDate))) {
+            dateString = bufferedReader.readLine();
+        } catch (IOException e) {
+            logger.error("Error reading file {}", scheduledDate.getAbsolutePath());
+            dateString = "";
+        }
+
+        LocalDate scheduledDate;
+        if (dateString == null) {
+            scheduledDate = DialogueScheduling.generateScheduledDate();
+        } else {
+            // Parse string to date
+            scheduledDate = LocalDate.parse(dateString);
+        }
+
+        return scheduledDate;
     }
 }
