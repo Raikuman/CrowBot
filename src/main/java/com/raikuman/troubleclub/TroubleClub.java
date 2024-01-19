@@ -8,8 +8,12 @@ import com.raikuman.troubleclub.dialogue.*;
 import com.raikuman.troubleclub.dialogue.config.DayWeights;
 import com.raikuman.troubleclub.dialogue.config.DialogueConfig;
 import com.raikuman.troubleclub.dialogue.config.HourWeights;
+import com.raikuman.troubleclub.yamboard.YamboardListener;
+import com.raikuman.troubleclub.yamboard.config.YamboardConfig;
+import com.raikuman.troubleclub.yamboard.config.YamboardStartup;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
@@ -20,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -42,6 +47,7 @@ public class TroubleClub {
                     .create(List.of(
                         GatewayIntent.GUILD_MEMBERS,
                         GatewayIntent.GUILD_MESSAGES,
+                        GatewayIntent.GUILD_MESSAGE_REACTIONS,
                         GatewayIntent.GUILD_EMOJIS_AND_STICKERS,
                         GatewayIntent.GUILD_VOICE_STATES,
                         GatewayIntent.MESSAGE_CONTENT))
@@ -54,9 +60,16 @@ public class TroubleClub {
                     .setRequestTimeoutRetry(true);
 
                 BotSetup setup = BotSetup
-                    .setup(jdaBuilder)
-                    .disableDatabase(true)
-                    .setConfigs(new DialogueConfig(), new HourWeights(), new DayWeights());
+                    .setup(jdaBuilder);
+
+                if (club == Club.SUU) {
+                    setup = setup
+                        .setDatabases(new YamboardStartup())
+                        .setConfigs(new DialogueConfig(), new HourWeights(), new DayWeights(), new YamboardConfig());
+                } else {
+                    setup = setup
+                        .disableDatabase(true);
+                }
 
                 // Handle commands
                 List<Command> commands = getCommands(dialogueManager).get(club);
@@ -64,6 +77,11 @@ public class TroubleClub {
                     setup = setup.addCommands(commands);
                 }
 
+                // Handle listeners
+                List<ListenerAdapter> listeners = getListeners(setup.getExecutorService()).get(club);
+                if (listeners != null) {
+                    setup = setup.addListeners(listeners);
+                }
 
                 clubMap.put(club, setup.build(System.getenv(club + "TOKEN")));
             } catch (IllegalArgumentException e) {
@@ -95,5 +113,14 @@ public class TroubleClub {
         ));
 
         return commands;
+    }
+
+    private static HashMap<Club, List<ListenerAdapter>> getListeners(ExecutorService executor) {
+        HashMap<Club, List<ListenerAdapter>> listeners = new HashMap<>();
+        listeners.put(Club.DES, List.of(
+            new YamboardListener(executor)
+        ));
+
+        return listeners;
     }
 }

@@ -2,6 +2,7 @@ package com.raikuman.troubleclub.yamboard.config;
 
 import com.raikuman.botutilities.database.DatabaseManager;
 import com.raikuman.botutilities.database.DatabaseStartup;
+import com.raikuman.troubleclub.yamboard.YamboardDatabaseHandler;
 import net.dv8tion.jda.api.JDA;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +20,7 @@ public class YamboardStartup implements DatabaseStartup {
         // Setup tables
         if (!setupTables()) return;
 
-        populateTables();
+        YamboardDatabaseHandler.populateYamboardUsers();
     }
 
     private boolean setupTables() {
@@ -34,7 +35,9 @@ public class YamboardStartup implements DatabaseStartup {
                         "upvotes INTEGER NOT NULL DEFAULT 0," +
                         "downvotes INTEGER NOT NULL DEFAULT 0," +
                         "posts INTEGER NOT NULL DEFAULT 0," +
-                        "FOREIGN KEY(user_id) REFERENCES user(user_id) ON DELETE CASCADE" +
+                        "FOREIGN KEY(user_id) REFERENCES user(user_id) ON DELETE CASCADE," +
+                        "CHECK(upvotes >= 0)," +
+                        "CHECK(downvotes >= 0)" +
                         ")"
                 );
 
@@ -43,9 +46,5 @@ public class YamboardStartup implements DatabaseStartup {
             logger.error("An error occurred creating yamboard tables");
             return false;
         }
-    }
-
-    private void populateTables() {
-
     }
 }
