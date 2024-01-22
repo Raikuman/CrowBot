@@ -3,6 +3,7 @@ package com.raikuman.troubleclub;
 import com.raikuman.botutilities.BotSetup;
 import com.raikuman.botutilities.invocation.type.Command;
 import com.raikuman.troubleclub.command.GetStickers;
+import com.raikuman.troubleclub.command.Karma;
 import com.raikuman.troubleclub.command.TestDialogue;
 import com.raikuman.troubleclub.dialogue.*;
 import com.raikuman.troubleclub.dialogue.config.DayWeights;
@@ -110,6 +111,10 @@ public class TroubleClub {
         commands.put(Club.SUU, List.of(
             new GetStickers(),
             new TestDialogue(dialogueManager)
+        ));
+
+        commands.put(Club.DES, List.of(
+            new Karma()
         ));
 
         return commands;
