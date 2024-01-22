@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.time.Instant;
 import java.util.*;
 import java.util.List;
@@ -355,11 +356,13 @@ public class YamboardManager {
             .setFooter(Objects.requireNonNull(messageEmbed.getFooter()).getText())
             .setTimestamp(messageEmbed.getTimestamp());
 
+        DecimalFormat format = new DecimalFormat("0.#");
+
         builder
             .addField("Upvotes", String.valueOf(yamboardMessage.upvoters.size()), true)
             .addField("Downvotes", String.valueOf(yamboardMessage.downvoters.size()), true)
             .addField("Ratio",
-                (yamboardMessage.upvoters.size() / (yamboardMessage.upvoters.size() + yamboardMessage.downvoters.size())) * 100 + "%", true);
+                format.format((double) yamboardMessage.upvoters.size() / (yamboardMessage.upvoters.size() + yamboardMessage.downvoters.size()) * 100) + "%", true);
 
         return builder;
     }
