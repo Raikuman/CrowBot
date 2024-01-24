@@ -123,11 +123,5 @@ public class Karma extends Command {
         return null;
     }
 
-    class KarmaInfo {
-        int upvotes, downvotes, posts;
-
-        public KarmaInfo(int upvotes, int downvotes, int posts) {
-
-        }
-    }
+    record KarmaInfo(int upvotes, int downvotes, int posts) {}
 }
