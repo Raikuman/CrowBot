@@ -9,6 +9,8 @@ import com.raikuman.troubleclub.dialogue.*;
 import com.raikuman.troubleclub.dialogue.config.DayWeights;
 import com.raikuman.troubleclub.dialogue.config.DialogueConfig;
 import com.raikuman.troubleclub.dialogue.config.HourWeights;
+import com.raikuman.troubleclub.interaction.InteractionListener;
+import com.raikuman.troubleclub.interaction.InteractionManager;
 import com.raikuman.troubleclub.yamboard.YamboardListener;
 import com.raikuman.troubleclub.yamboard.config.YamboardConfig;
 import com.raikuman.troubleclub.yamboard.config.YamboardStartup;
@@ -39,10 +41,10 @@ public class TroubleClub {
         DialogueManager dialogueManager = new DialogueManager(executor);
         dialogueManager.beginTask();
 
+        InteractionManager interactionManager = new InteractionManager(executor);
+
         HashMap<Club, JDA> clubMap = new HashMap<>();
         for (Club club : Club.values()) {
-            //if (club != Club.SUU) continue;
-
             try {
                 JDABuilder jdaBuilder = JDABuilder
                     .create(List.of(
@@ -79,7 +81,7 @@ public class TroubleClub {
                 }
 
                 // Handle listeners
-                List<ListenerAdapter> listeners = getListeners(setup.getExecutorService()).get(club);
+                List<ListenerAdapter> listeners = getListeners(setup.getExecutorService(), interactionManager).get(club);
                 if (listeners != null) {
                     setup = setup.addListeners(listeners);
                 }
@@ -104,6 +106,7 @@ public class TroubleClub {
         }
 
         dialogueManager.setClubMap(clubMap);
+        interactionManager.setClubMap(clubMap);
     }
 
     private static HashMap<Club, List<Command>> getCommands(DialogueManager dialogueManager) {
@@ -120,8 +123,13 @@ public class TroubleClub {
         return commands;
     }
 
-    private static HashMap<Club, List<ListenerAdapter>> getListeners(ExecutorService executor) {
+    private static HashMap<Club, List<ListenerAdapter>> getListeners(ExecutorService executor,
+                                                                     InteractionManager interactionManager) {
         HashMap<Club, List<ListenerAdapter>> listeners = new HashMap<>();
+        listeners.put(Club.SUU, List.of(
+            new InteractionListener(executor, interactionManager)
+        ));
+
         listeners.put(Club.DES, List.of(
             new YamboardListener(executor)
         ));
