@@ -140,7 +140,7 @@ public class InteractionLoader {
             String line;
             while ((line = bufferedReader.readLine()) != null) {
                 // Wait to parse interaction
-                if (line.equals("[Interaction]")) {
+                if (line.equals("[Settings]")) {
                     beginParse = true;
                     continue;
                 }
@@ -150,9 +150,9 @@ public class InteractionLoader {
                 // Retrieve interaction settings
                 if (line.contains("isCommand")) {
                     String[] split = line.split("=");
-                    if (split.length != 2) isCommand = false;
-
-                    isCommand= Boolean.parseBoolean(split[1]);
+                    if (split.length == 2) {
+                        isCommand= Boolean.parseBoolean(split[1]);
+                    }
                 } else if (line.contains("invoker")) {
                     invoker = parseClub(parseSettingString(line));
 
