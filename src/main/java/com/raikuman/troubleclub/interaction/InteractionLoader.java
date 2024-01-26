@@ -1,13 +1,10 @@
 package com.raikuman.troubleclub.interaction;
 
-import com.raikuman.botutilities.config.ConfigData;
 import com.raikuman.troubleclub.Club;
-import com.raikuman.troubleclub.dialogue.config.DialogueConfig;
+import com.raikuman.troubleclub.parser.Dialogue;
+import com.raikuman.troubleclub.parser.DialogueParser;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.channel.unions.GuildMessageChannelUnion;
-import net.dv8tion.jda.api.entities.emoji.Emoji;
-import net.dv8tion.jda.api.entities.sticker.GuildSticker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,7 +83,7 @@ public class InteractionLoader {
                 } else if (line.contains("reqMatches")) {
                     String reqMatchesString = parseSettingString(line);
                     requiredMatches = parseIntegerFromString(reqMatchesString, 0);
-                } else if (line.contains("[Dialogue")) {
+                } else if (line.contains("[Settings]")) {
                     break;
                 }
             }
@@ -98,95 +95,34 @@ public class InteractionLoader {
         }
     }
 
-    public static Interaction loadInteraction(Message message, HashMap<Club, JDA> clubMap,
-                                               InteractionCache interactionCache) {
-        // Get interaction dialogue
-        Dialogue dialogue = parseInteractionFile(interactionCache.interactionFile());
-        if (dialogue == null) return null;
-
-        // Retrieve actors
-        HashMap<Club, GuildMessageChannelUnion> actors = new HashMap<>();
-        for (Club club : interactionCache.actors()) {
-            actors.put(
-                club,
-                clubMap.get(club).getChannelById(GuildMessageChannelUnion.class, message.getChannelId()));
-        }
-
-        Interaction interaction = new Interaction(actors, dialogue.isCommand(), dialogue.invoker(),
-                dialogue.command());
-
-        // Parse interaction dialogue
-        for (String line : dialogue.lines()) {
-            // Parse line
-            Interaction.Line interactionLine = parseLine(line, actors);
-            if (interactionLine == null) return null;
-
-            interaction.addLine(interactionLine);
-        }
-
-        return interaction;
+    public static Dialogue loadInteractionDialogue(Message message, HashMap<Club, JDA> clubMap,
+                                                                                   InteractionCache interactionCache) {
+        return parseInteractionDialogue(
+            interactionCache.interactionFile(),
+            clubMap,
+            message.getChannelId()
+        );
     }
 
-    private static Dialogue parseInteractionFile(File file) {
+    private static Dialogue parseInteractionDialogue(File file, HashMap<Club, JDA> clubMap, String defaultChannel) {
         List<Dialogue> dialogues = new ArrayList<>();
 
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
-            boolean beginParse = false, isCommand = false;
-            Club invoker = null;
-            String command = "";
-            int chance = 100;
-
-            List<String> dialogueLines = new ArrayList<>();
             String line;
             while ((line = bufferedReader.readLine()) != null) {
-                // Wait to parse interaction
-                if (line.equals("[Settings]")) {
-                    beginParse = true;
-                    continue;
-                }
-
-                if (!beginParse) continue;
-
-                // Retrieve interaction settings
-                if (line.contains("isCommand")) {
-                    String[] split = line.split("=");
-                    if (split.length == 2) {
-                        isCommand= Boolean.parseBoolean(split[1]);
-                    }
-                } else if (line.contains("invoker")) {
-                    invoker = parseClub(parseSettingString(line));
-
-                } else if (line.contains("command")) {
-                    command = parseSettingString(line);
-                }
-
-                // Retrieve lines
                 if (line.contains("[Dialogue")) {
-                    // Check for chance
-                    if (line.contains("=")) {
-                        String chanceString = parseSettingString(line).replace("]", "");
-                        chance = parseIntegerFromString(chanceString, 100);
-                    } else {
-                        chance = 100;
-                    }
-
-                    // Add lines to dialogue
-                    dialogueLines.add(line);
-
-                    // Construct dialogue
-                    if (line.isBlank()) {
-                        dialogues.add(new Dialogue(chance, isCommand, invoker, command, dialogueLines));
-                        dialogueLines = new ArrayList<>();
-                    }
+                    dialogues.add(
+                        DialogueParser.parse(
+                            bufferedReader,
+                            line,
+                            clubMap,
+                            defaultChannel
+                        )
+                    );
                 }
-            }
-
-            // Ensure last dialogue is added to list
-            if (!dialogueLines.isEmpty()) {
-                dialogues.add(new Dialogue(chance, isCommand, invoker, command, dialogueLines));
             }
         } catch (IOException e) {
-            logger.error("Failed to read interaction file: {}", file.getName());
+            logger.error("Error parsing interaction file {}", file.getName());
         }
 
         // Get random dialogue
@@ -194,14 +130,14 @@ public class InteractionLoader {
 
         int totalWeight = 0;
         for (Dialogue dialogue : dialogues) {
-            totalWeight += dialogue.chance();
+            totalWeight += dialogue.getChance();
         }
 
         Dialogue selectedDialogue = null;
         int random = (int) (Math.random() * totalWeight);
         int currentWeight = 0;
         for (Dialogue dialogue : dialogues) {
-            currentWeight += dialogue.chance();
+            currentWeight += dialogue.getChance();
 
             if (currentWeight >= random) {
                 selectedDialogue = dialogue;
@@ -233,73 +169,4 @@ public class InteractionLoader {
             return defaultInteger;
         }
     }
-
-    private static Interaction.Line parseLine(String line, HashMap<Club, GuildMessageChannelUnion> actors) {
-        String[] split = line.split("=");
-        if (split.length != 2) return null;
-
-        // Get actor
-        Club actor;
-        try {
-            actor = Club.valueOf(split[0]);
-        } catch (IllegalArgumentException e) {
-            logger.error("Could not parse actor for line: {}", line);
-            return null;
-        }
-
-        // Check for sticker or reaction
-        List<String> messageSplit = new ArrayList<>(Arrays.stream(split[1].split(" ")).toList());
-        if (messageSplit.isEmpty()) return null;
-
-        // Check for reaction or sticker
-        boolean isReaction = false, isSticker = false;
-        String reactionOrSticker = messageSplit.get(0);
-        if (reactionOrSticker.contains("(<") && reactionOrSticker.contains(">)")) {
-            // Is reaction
-            isReaction = true;
-        } else if (reactionOrSticker.contains("((") && reactionOrSticker.contains("))")) {
-            // Is sticker
-            isSticker = true;
-        }
-
-        // Get reaction
-        Emoji reaction = null;
-        if (isReaction) {
-            String stringReaction = messageSplit.get(0).replace("(<", "").replace(">)", "");
-            reaction = Emoji.fromFormatted(stringReaction);
-        }
-
-        // Get sticker
-        GuildSticker sticker = null;
-        ConfigData configData = new ConfigData(new DialogueConfig());
-        if (isSticker) {
-            try {
-                sticker = Objects.requireNonNull(
-                    actors.get(actor).getJDA()
-                        .getGuildById(configData.getConfig("targetguild")))
-                        .getStickerById(configData.getConfig(actor.name().toLowerCase() + "sticker"));
-            } catch (Exception e) {
-                logger.error("Could not parse sticker with actor: {}", actor);
-            }
-        }
-
-        // Remove first split
-        messageSplit.remove(0);
-
-        if (messageSplit.isEmpty()) {
-            return new Interaction.Line(
-                actors.get(actor),
-                reaction,
-                sticker,
-                "");
-        } else {
-            return new Interaction.Line(
-                actors.get(actor),
-                reaction,
-                sticker,
-                String.join(" ", messageSplit));
-        }
-    }
-
-    record Dialogue(int chance, boolean isCommand, Club invoker, String command, List<String> lines) {}
 }

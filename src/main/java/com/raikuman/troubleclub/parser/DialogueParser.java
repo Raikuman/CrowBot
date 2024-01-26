@@ -48,6 +48,8 @@ public class DialogueParser {
         // Parse dialogue
         String line;
         while ((line = bufferedReader.readLine()) != null) {
+            if (line.isBlank()) break;
+
             String[] split = line.split("=");
             if (split.length < 2) continue;    // Empty/incorrect formatting
 
@@ -107,7 +109,7 @@ public class DialogueParser {
             );
         }
 
-            return dialogue;
+        return dialogue;
     }
 
     private static Club parseActor(String actor) {
@@ -124,7 +126,7 @@ public class DialogueParser {
 
         Guild guild = jda.getGuildById(dialogueConfig.getConfig("targetguild"));
         if (guild == null) {
-            logger.error("Could not parse dialogue as target guild was null: {}", guild);
+            logger.error("Could not parse dialogue as target guild was null: {}", dialogueConfig.getConfig("targetguild"));
             return null;
         }
 
