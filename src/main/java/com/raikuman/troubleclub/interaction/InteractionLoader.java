@@ -100,11 +100,11 @@ public class InteractionLoader {
         return parseInteractionDialogue(
             interactionCache.interactionFile(),
             clubMap,
-            message.getChannelId()
+            message
         );
     }
 
-    private static Dialogue parseInteractionDialogue(File file, HashMap<Club, JDA> clubMap, String defaultChannel) {
+    private static Dialogue parseInteractionDialogue(File file, HashMap<Club, JDA> clubMap, Message firstMessage) {
         List<Dialogue> dialogues = new ArrayList<>();
 
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
@@ -116,7 +116,7 @@ public class InteractionLoader {
                             bufferedReader,
                             line,
                             clubMap,
-                            defaultChannel
+                            firstMessage
                         )
                     );
                 }

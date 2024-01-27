@@ -4,6 +4,7 @@ import com.raikuman.botutilities.config.ConfigData;
 import com.raikuman.troubleclub.Club;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.unions.GuildMessageChannelUnion;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.entities.sticker.GuildSticker;
@@ -22,7 +23,7 @@ public class DialogueParser {
     private static final ConfigData dialogueConfig = new ConfigData(new DialogueConfig());
 
     public static Dialogue parse(BufferedReader bufferedReader, String header, HashMap<Club, JDA> clubMap,
-                                 String defaultChannel) throws IOException {
+                                 Message firstMessage) throws IOException {
         // Parse header for chance
         int chance = 100;
         try {
@@ -32,6 +33,7 @@ public class DialogueParser {
         }
 
         Dialogue dialogue = new Dialogue();
+        dialogue.setPreviousMessage(firstMessage);
         dialogue.setChance(chance);
 
         // Get Discord target
@@ -53,19 +55,31 @@ public class DialogueParser {
             String[] split = line.split("=");
             if (split.length < 2) continue;    // Empty/incorrect formatting
 
-            // Check if actor is assigned to a specific channel
-            Club actor;
-            String targetChannel = defaultChannel;
-            if (split[0].contains(",")) {
-                String[] actorSplit = split[0].split(",");
-                actor = parseActor(actorSplit[0]);
+            // Handle parsing actor and line settings
+            String actorSettings = split[0];
 
-                if (actorSplit.length > 1) {
-                    // Get specific target channel
-                    targetChannel = actorSplit[1];
+            // Get actor
+            Club actor = parseActor(actorSettings.substring(0, actorSettings.indexOf("(")));
+
+            // Handle line settings
+            String targetChannel = firstMessage.getChannelId();
+            double lineSpeed = 1.0;
+            if (actorSettings.contains("(") && actorSettings.contains(")")) {
+                actorSettings = actorSettings.substring(actorSettings.indexOf("(") + 1, actorSettings.indexOf(")") - 1);
+
+                // Get specific target channel
+                String[] settings = actorSettings.split(",");
+                for (String setting : settings) {
+                    if (setting.contains("channel")) {
+                        targetChannel = setting.substring(setting.indexOf("=") + 1);
+                    } else if (setting.contains("speed")) {
+                        try {
+                            lineSpeed = Double.parseDouble(setting.substring(setting.indexOf("=") + 1));
+                        } catch (NumberFormatException e) {
+                            logger.error("Error parsing line speed: {}", setting);
+                        }
+                    }
                 }
-            } else {
-                actor = parseActor(split[0]);
             }
 
             // Get target channel
@@ -85,27 +99,28 @@ public class DialogueParser {
 
             String[] lineSplit = split[1].split("\\s+");
 
-            // Check current split for components
+            // Check current split for stickers/emojis
             String currentSplit = lineSplit[0];
-            Components components = new Components();
-            components.setSticker(parseSticker(currentSplit, targetGuild));
-            components.setReaction(parseEmoji(currentSplit));
+            LineComponents lineSettings = new LineComponents();
+            lineSettings.setSticker(parseSticker(currentSplit, targetGuild));
+            lineSettings.setReaction(parseEmoji(currentSplit));
 
-            // Check for another component in next split
+            // Check for another sticker/emoji in next split
             if (lineSplit.length > 2) {
-                components.setSticker(parseSticker(currentSplit, targetGuild));
-                components.setReaction(parseEmoji(currentSplit));
+                lineSettings.setSticker(parseSticker(currentSplit, targetGuild));
+                lineSettings.setReaction(parseEmoji(currentSplit));
             }
 
-            String sentence = String.join(" ", Arrays.copyOfRange(lineSplit, components.getComponentCount(),
+            String sentence = String.join(" ", Arrays.copyOfRange(lineSplit, lineSettings.getComponentCount(),
                 lineSplit.length));
 
             dialogue.addLine(
                 actor,
                 channel,
                 sentence,
-                components.getSticker(),
-                components.getReaction()
+                lineSpeed,
+                lineSettings.getSticker(),
+                lineSettings.getReaction()
             );
         }
 
@@ -153,7 +168,7 @@ public class DialogueParser {
         }
     }
 
-    private static class Components {
+    private static class LineComponents {
 
         private GuildSticker sticker = null;
         private Emoji reaction = null;
