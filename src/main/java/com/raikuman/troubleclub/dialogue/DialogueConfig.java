@@ -1,4 +1,4 @@
-package com.raikuman.troubleclub.parser;
+package com.raikuman.troubleclub.dialogue;
 
 import com.raikuman.botutilities.config.Config;
 
@@ -15,6 +15,8 @@ public class DialogueConfig implements Config {
     public LinkedHashMap<String, String> configs() {
         LinkedHashMap<String, String> configMap = new LinkedHashMap<>();
         configMap.put("targetguild", "");
+        configMap.put("targetchannel", "");
+        configMap.put("wpm", "40");
         configMap.put("suugoisticker", "");
         configMap.put("watsticker", "");
         configMap.put("clapsticker", "");

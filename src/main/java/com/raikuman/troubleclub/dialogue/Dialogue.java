@@ -1,83 +1,91 @@
 package com.raikuman.troubleclub.dialogue;
 
-import com.raikuman.botutilities.config.ConfigData;
 import com.raikuman.troubleclub.Club;
-import com.raikuman.troubleclub.dialogue.config.DialogueConfig;
-import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.channel.unions.GuildMessageChannelUnion;
-import net.dv8tion.jda.api.entities.sticker.GuildSticker;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public class Dialogue {
 
-    private final HashMap<Club, GuildMessageChannelUnion> actors;
-    private final List<Line> lines;
+    private int chance;
+    private List<Line> lines;
 
-    public Dialogue() {
-        this.actors = new HashMap<>();
-        this.lines = new ArrayList<>();
+    public int getChance() {
+        return chance;
     }
 
-    public void addActor(Club club, JDA jda) {
-        ConfigData config = new ConfigData(new DialogueConfig());
-        Guild guild = jda.getGuildById(config.getConfig("targetguild"));
-        if (guild == null) return;
-
-        GuildMessageChannelUnion channel = guild.getChannelById(GuildMessageChannelUnion.class, config.getConfig("targetchannel"));
-        if (channel == null) return;
-
-        this.actors.put(club, channel);
+    public List<Line> getLines() {
+        return lines;
     }
 
-    public boolean checkForActor(Club club) {
-        return actors.get(club) != null;
+    public void setChance(int chance) {
+        this.chance = chance;
     }
 
-    public void addLine(Club actor, String text, GuildSticker sticker, double speed) {
-        GuildMessageChannelUnion channel = actors.get(actor);
-        if (channel == null) return;
-
-        this.lines.add(new Line(channel, text, sticker, speed));
+    public void setLines(List<Line> lines) {
+        this.lines = lines;
     }
 
-    public void play() {
-        int wpm;
-        try {
-           wpm = Integer.parseInt(new ConfigData(new DialogueConfig()).getConfig("wpm"));
-        } catch (NumberFormatException e) {
-            wpm = 40;
+    public class Line {
+
+        private Club actor;
+        private String sticker, reaction, line;
+        private long targetChannel;
+        private double typeSpeed, readSpeed;
+
+        public Club getActor() {
+            return actor;
         }
 
-        for (Line line : lines) {
-            // Send
-            if (line.sticker != null) {
-                line.channel.sendStickers(line.sticker).completeAfter(
-                    1,
-                    TimeUnit.SECONDS
-                );
-            } else {
-                double doubleDelay = Math.pow(line.text.length(), 1 / (wpm * 5 / 60.0)) * line.speed;
-                int delay;
-                if (line.text.length() > 10) {
-                    delay = (int) Math.ceil(doubleDelay);
-                } else {
-                    delay = (int) doubleDelay;
-                }
-
-                line.channel.sendTyping().complete();
-                line.channel.sendMessage(line.text).completeAfter(
-                    delay,
-                    TimeUnit.SECONDS
-                );
-            }
+        public String getSticker() {
+            return sticker;
         }
-    }
 
-    public record Line(GuildMessageChannelUnion channel, String text, GuildSticker sticker, double speed) {
+        public String getReaction() {
+            return reaction;
+        }
+
+        public String getLine() {
+            return line;
+        }
+
+        public long getTargetChannel() {
+            return targetChannel;
+        }
+
+        public double getTypeSpeed() {
+            return typeSpeed;
+        }
+
+        public double getReadSpeed() {
+            return readSpeed;
+        }
+
+        public void setActor(Club actor) {
+            this.actor = actor;
+        }
+
+        public void setSticker(String sticker) {
+            this.sticker = sticker;
+        }
+
+        public void setReaction(String reaction) {
+            this.reaction = reaction;
+        }
+
+        public void setLine(String line) {
+            this.line = line;
+        }
+
+        public void setTargetChannel(long targetChannel) {
+            this.targetChannel = targetChannel;
+        }
+
+        public void setTypeSpeed(double typeSpeed) {
+            this.typeSpeed = typeSpeed;
+        }
+
+        public void setReadSpeed(double readSpeed) {
+            this.readSpeed = readSpeed;
+        }
     }
 }

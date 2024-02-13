@@ -1,4 +1,4 @@
-package com.raikuman.troubleclub.dialogue.config;
+package com.raikuman.troubleclub.conversation.config;
 
 import com.raikuman.botutilities.config.Config;
 
@@ -8,7 +8,7 @@ public class DayWeights implements Config {
 
     @Override
     public String fileName() {
-        return "dialogue/dayweights";
+        return "conversation/dayweights";
     }
 
     @Override
