@@ -1,14 +1,14 @@
-package com.raikuman.troubleclub.dialogue.config;
+package com.raikuman.troubleclub.conversation.config;
 
 import com.raikuman.botutilities.config.Config;
 
 import java.util.LinkedHashMap;
 
-public class DialogueConfig implements Config {
+public class ConversationConfig implements Config {
 
     @Override
     public String fileName() {
-        return "dialogue/dialogue";
+        return "conversation/conversation";
     }
 
     @Override

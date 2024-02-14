@@ -1,9 +1,9 @@
-package com.raikuman.troubleclub.dialogue;
+package com.raikuman.troubleclub.conversation;
 
 import com.raikuman.botutilities.config.ConfigData;
-import com.raikuman.troubleclub.dialogue.config.DayWeights;
-import com.raikuman.troubleclub.dialogue.config.DialogueConfig;
-import com.raikuman.troubleclub.dialogue.config.HourWeights;
+import com.raikuman.troubleclub.conversation.config.DayWeights;
+import com.raikuman.troubleclub.conversation.config.ConversationConfig;
+import com.raikuman.troubleclub.conversation.config.HourWeights;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,9 +15,9 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
 
-public class DialogueScheduling {
+public class ConversationScheduling {
 
-    private static final Logger logger = LoggerFactory.getLogger(DialogueScheduling.class);
+    private static final Logger logger = LoggerFactory.getLogger(ConversationScheduling.class);
 
     public static LocalTime generateScheduledTime() {
         List<HourWeight> hourWeights = getHourWeights();
@@ -48,7 +48,7 @@ public class DialogueScheduling {
 
         int weeksBetween = 1;
         try {
-            weeksBetween = Integer.parseInt(new ConfigData(new DialogueConfig()).getConfig("weeksbetween"));
+            weeksBetween = Integer.parseInt(new ConfigData(new ConversationConfig()).getConfig("weeksbetween"));
         } catch (NumberFormatException e) {
             logger.error("Error parsing weeks between config");
         }
@@ -59,7 +59,7 @@ public class DialogueScheduling {
         for (DayWeight dayweight : dayWeights) {
             currentWeight += dayweight.weight;
             if (currentWeight >= random) {
-                boolean isDaily = Boolean.parseBoolean(new ConfigData(new DialogueConfig()).getConfig("daily"));
+                boolean isDaily = Boolean.parseBoolean(new ConfigData(new ConversationConfig()).getConfig("daily"));
                 if (isDaily) {
                     // Calculate days from current day next day
                     scheduledDate = LocalDate.now().plusDays(
@@ -80,7 +80,7 @@ public class DialogueScheduling {
             return null;
         }
 
-        File dateFile = new File("resources" + File.separator + "scheduleddate.txt");
+        File dateFile = new File("resources" + File.separator + "schedConversation.txt");
         if (!dateFile.exists()) {
             logger.info("Scheduled date file does not exist");
             return null;
@@ -118,7 +118,7 @@ public class DialogueScheduling {
     }
 
     private static List<DayWeight> getDayWeights() {
-        boolean isDaily = Boolean.parseBoolean(new ConfigData(new DialogueConfig()).getConfig("daily"));
+        boolean isDaily = Boolean.parseBoolean(new ConfigData(new ConversationConfig()).getConfig("daily"));
 
         List<DayWeight> dayWeights = new ArrayList<>();
         ConfigData config = new ConfigData(new DayWeights());

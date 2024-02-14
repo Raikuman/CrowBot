@@ -1,8 +1,9 @@
-package com.raikuman.troubleclub.dialogue;
+package com.raikuman.troubleclub.conversation;
 
-import com.raikuman.botutilities.config.ConfigData;
+import com.raikuman.troubleclub.dialogue.Dialogue;
+import com.raikuman.troubleclub.dialogue.DialoguePlayer;
 import com.raikuman.troubleclub.Club;
-import com.raikuman.troubleclub.dialogue.config.HourWeights;
+import com.raikuman.troubleclub.dialogue.DialogueParser;
 import net.dv8tion.jda.api.JDA;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,25 +16,25 @@ import java.util.*;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class DialogueManager {
-    private static final Logger logger = LoggerFactory.getLogger(DialogueManager.class);
+public class ConversationManager {
+    private static final Logger logger = LoggerFactory.getLogger(ConversationManager.class);
     private final ScheduledExecutorService executor;
     private HashMap<Club, JDA> clubMap;
-    private final File playedDialogues, conversations, scheduledDate;
+    private final File playedConversations, conversations, scheduledDate;
 
-    public DialogueManager(ScheduledExecutorService executor) {
+    public ConversationManager(ScheduledExecutorService executor) {
         this.executor = executor;
 
         // Create file to hold played dialogues
-        playedDialogues = new File("resources" + File.separator + "playeddialogues.txt");
-        dialogueFileCheck(playedDialogues);
+        playedConversations = new File("resources" + File.separator + "playedConversations.txt");
+        dialogueFileCheck(playedConversations);
 
         // Directory for conversations
         conversations = new File("resources" + File.separator + "conversations");
         dialogueFileCheck(conversations);
 
         // Create file for a scheduled date
-        scheduledDate = new File("resources" + File.separator + "scheduleddate.txt");
+        scheduledDate = new File("resources" + File.separator + "schedConversation.txt");
         dialogueFileCheck(scheduledDate);
     }
 
@@ -53,6 +54,10 @@ public class DialogueManager {
         this.clubMap = clubMap;
     }
 
+    public HashMap<Club, JDA> getClubMap() {
+        return clubMap;
+    }
+
     public void beginTask() {
         LocalDate scheduledDate = getScheduledDate();
         if (scheduledDate == null) {
@@ -60,7 +65,7 @@ public class DialogueManager {
             return;
         }
 
-        LocalTime scheduledTime = DialogueScheduling.generateScheduledTime();
+        LocalTime scheduledTime = ConversationScheduling.generateScheduledTime();
         if (!LocalDate.now().equals(scheduledDate)) {
             logger.info("Scheduled date is not today");
             return;
@@ -76,10 +81,6 @@ public class DialogueManager {
 
     private void runDialogue() {
         handleDialogue(false);
-    }
-
-    public void testDialogue() {
-        handleDialogue(true);
     }
 
     private void handleDialogue(boolean ignoreAlreadyPlayed) {
@@ -104,10 +105,10 @@ public class DialogueManager {
 
         // Add dialogue to already played dialogues
         if (!ignoreAlreadyPlayed) {
-            try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(playedDialogues, true))) {
+            try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(playedConversations, true))) {
                 bufferedWriter.write(dialogueFile.getName());
             } catch (IOException e) {
-                logger.error("Error reading file {}", playedDialogues.getAbsolutePath());
+                logger.error("Error reading file {}", playedConversations.getAbsolutePath());
             }
         }
     }
@@ -116,21 +117,24 @@ public class DialogueManager {
         if (clubMap == null) return;
 
         // Get dialogue
-        Dialogue dialogue = ParseDialogue.parseDialogue(clubMap, file);
+        Conversation conversation = DialogueParser.getConversation(file.toPath());
+        if (conversation == null) return;
+
+        Dialogue dialogue = conversation.getDialogue();
         if (dialogue == null) return;
 
-        dialogue.play();
+        DialoguePlayer.setup(getClubMap(), dialogue).play(null);
     }
 
     private List<String> getAlreadyPlayed() {
-        if (!playedDialogues.exists()) {
+        if (!playedConversations.exists()) {
             return new ArrayList<>();
         }
 
-        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(playedDialogues))) {
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(playedConversations))) {
             return bufferedReader.lines().toList();
         } catch (IOException e) {
-            logger.error("Error reading file {}", playedDialogues.getAbsolutePath());
+            logger.error("Error reading file {}", playedConversations.getAbsolutePath());
             return new ArrayList<>(); // Return empty list if error reading file
         }
     }
@@ -146,7 +150,7 @@ public class DialogueManager {
 
         LocalDate scheduledDate;
         if (dateString == null) {
-            scheduledDate = DialogueScheduling.generateScheduledDate();
+            scheduledDate = ConversationScheduling.generateScheduledDate();
         } else {
             // Parse string to date
             scheduledDate = LocalDate.parse(dateString);
