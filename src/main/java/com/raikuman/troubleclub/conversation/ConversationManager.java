@@ -1,5 +1,7 @@
 package com.raikuman.troubleclub.conversation;
 
+import com.raikuman.botutilities.config.ConfigData;
+import com.raikuman.troubleclub.conversation.config.ConversationConfig;
 import com.raikuman.troubleclub.dialogue.Dialogue;
 import com.raikuman.troubleclub.dialogue.DialoguePlayer;
 import com.raikuman.troubleclub.Club;
@@ -80,7 +82,9 @@ public class ConversationManager {
     }
 
     private void runDialogue() {
-        handleDialogue(false);
+        handleDialogue(
+            Boolean.parseBoolean(new ConfigData(new ConversationConfig()).getConfig("ignoreplayed"))
+        );
     }
 
     private void handleDialogue(boolean ignoreAlreadyPlayed) {

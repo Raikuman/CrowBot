@@ -18,6 +18,7 @@ public class ConversationConfig implements Config {
         configMap.put("targetchannel", "");
         configMap.put("weeksbetween", "1");
         configMap.put("daily", "false");
+        configMap.put("ignoreplayed", "false");
         configMap.put("wpm", "40");
         configMap.put("suusticker", "");
         configMap.put("crowsticker", "");
