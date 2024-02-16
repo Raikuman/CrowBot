@@ -5,12 +5,12 @@ import com.raikuman.botutilities.invocation.type.Command;
 import com.raikuman.troubleclub.command.GetStickers;
 import com.raikuman.troubleclub.command.Karma;
 import com.raikuman.troubleclub.command.TestDialogue;
-import com.raikuman.troubleclub.dialogue.*;
-import com.raikuman.troubleclub.dialogue.config.DayWeights;
-import com.raikuman.troubleclub.dialogue.config.DialogueConfig;
-import com.raikuman.troubleclub.dialogue.config.HourWeights;
+import com.raikuman.troubleclub.conversation.*;
+import com.raikuman.troubleclub.conversation.config.DayWeights;
+import com.raikuman.troubleclub.conversation.config.HourWeights;
 import com.raikuman.troubleclub.interaction.InteractionListener;
 import com.raikuman.troubleclub.interaction.InteractionManager;
+import com.raikuman.troubleclub.dialogue.DialogueConfig;
 import com.raikuman.troubleclub.yamboard.YamboardListener;
 import com.raikuman.troubleclub.yamboard.config.YamboardConfig;
 import com.raikuman.troubleclub.yamboard.config.YamboardStartup;
@@ -38,10 +38,10 @@ public class TroubleClub {
     public static void main(String[] args) {
         // Schedule tasks
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(2);
-        DialogueManager dialogueManager = new DialogueManager(executor);
-        dialogueManager.beginTask();
+        ConversationManager conversationManager = new ConversationManager(executor);
+        conversationManager.beginTask();
 
-        InteractionManager interactionManager = new InteractionManager(executor);
+        InteractionManager interactionManager = new InteractionManager();
 
         HashMap<Club, JDA> clubMap = new HashMap<>();
         for (Club club : Club.values()) {
@@ -75,7 +75,7 @@ public class TroubleClub {
                 }
 
                 // Handle commands
-                List<Command> commands = getCommands(dialogueManager).get(club);
+                List<Command> commands = getCommands(conversationManager).get(club);
                 if (commands != null) {
                     setup = setup.addCommands(commands);
                 }
@@ -105,15 +105,15 @@ public class TroubleClub {
             System.exit(0);
         }
 
-        dialogueManager.setClubMap(clubMap);
+        conversationManager.setClubMap(clubMap);
         interactionManager.setClubMap(clubMap);
     }
 
-    private static HashMap<Club, List<Command>> getCommands(DialogueManager dialogueManager) {
+    private static HashMap<Club, List<Command>> getCommands(ConversationManager conversationManager) {
         HashMap<Club, List<Command>> commands = new HashMap<>();
         commands.put(Club.SUU, List.of(
             new GetStickers(),
-            new TestDialogue(dialogueManager)
+            new TestDialogue(conversationManager)
         ));
 
         commands.put(Club.DES, List.of(
