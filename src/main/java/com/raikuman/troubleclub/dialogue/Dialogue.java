@@ -31,6 +31,7 @@ public class Dialogue {
         private String sticker, reaction, line;
         private long targetChannel;
         private double typeSpeed, readSpeed;
+        private boolean isCommand;
 
         public Club getActor() {
             return actor;
@@ -60,6 +61,10 @@ public class Dialogue {
             return readSpeed;
         }
 
+        public boolean isCommand() {
+            return isCommand;
+        }
+
         public void setActor(Club actor) {
             this.actor = actor;
         }
@@ -86,6 +91,10 @@ public class Dialogue {
 
         public void setReadSpeed(double readSpeed) {
             this.readSpeed = readSpeed;
+        }
+
+        public void setCommand(boolean command) {
+            isCommand = command;
         }
     }
 }
