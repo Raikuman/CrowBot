@@ -61,7 +61,7 @@ public class Dialogue {
             return readSpeed;
         }
 
-        public boolean isCommand() {
+        public boolean getIsCommand() {
             return isCommand;
         }
 
@@ -93,7 +93,7 @@ public class Dialogue {
             this.readSpeed = readSpeed;
         }
 
-        public void setCommand(boolean command) {
+        public void setIsCommand(boolean command) {
             isCommand = command;
         }
     }

@@ -56,7 +56,6 @@ public class TroubleClub {
                         GatewayIntent.MESSAGE_CONTENT))
                     .setChunkingFilter(ChunkingFilter.ALL)
                     .enableCache(CacheFlag.VOICE_STATE)
-                    //.addEventListeners()
                     .setMemberCachePolicy(MemberCachePolicy.ALL)
                     .setMaxReconnectDelay(32)
                     .setAutoReconnect(true)
@@ -68,6 +67,7 @@ public class TroubleClub {
                 if (club == Club.SUU) {
                     setup = setup
                         .setDatabases(new YamboardStartup())
+                        .thinDatabase(false)
                         .setConfigs(new DialogueConfig(), new HourWeights(), new DayWeights(), new YamboardConfig());
                 } else {
                     setup = setup

@@ -86,7 +86,7 @@ public class InteractionManager {
         if (interactionData.caches().isEmpty()) {
             // Select random actor in data and send reply message for no interaction
             replyUnknownInteraction(interactionData.actors(), event.getMessage());
-            System.out.println("No cache");
+            logger.info("No interaction found, sending unknown interaction message.");
             return;
         }
 
@@ -99,12 +99,13 @@ public class InteractionManager {
         if (interaction == null) {
             // Select random actor in data and send reply message for no interaction
             replyUnknownInteraction(interactionData.actors(), event.getMessage());
-            System.out.println("No interaction");
+            logger.info("No interaction found, sending unknown interaction message.");
             return;
         }
 
         // Randomly select a dialogue from interaction dialogues
         List<Dialogue> dialogues = interaction.getDialogues();
+        System.out.println(dialogues);
         Dialogue chosenDialogue = null;
         if (dialogues.size() == 1) {
             chosenDialogue = dialogues.get(0);
@@ -129,12 +130,12 @@ public class InteractionManager {
         if (chosenDialogue == null) {
             // Select random actor in data and send reply message for no interaction
             replyUnknownInteraction(interactionData.actors(), event.getMessage());
-            System.out.println("No dialogue");
+            logger.info("No dialogue found, sending unknown interaction message.");
             return;
         }
 
         // Execute dialogue for interaction
-        DialoguePlayer.setup(clubMap, chosenDialogue).play(event.getMessage());
+        DialoguePlayer.setup(clubMap, chosenDialogue).play(event.getMessage(), event.getMember());
     }
 
     private void replyUnknownInteraction(List<Club> actors, Message message) {

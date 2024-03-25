@@ -1,13 +1,16 @@
 package com.raikuman.troubleclub.dialogue;
 
 import com.raikuman.botutilities.config.ConfigData;
+import com.raikuman.botutilities.defaults.database.DefaultDatabaseHandler;
 import com.raikuman.troubleclub.Club;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.channel.unions.GuildMessageChannelUnion;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.entities.sticker.GuildSticker;
+import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import org.slf4j.helpers.CheckReturnValue;
 
 import java.util.ArrayList;
@@ -38,7 +41,7 @@ public class DialoguePlayer {
 
     private void setupLines(Dialogue dialogue) {
         for (Dialogue.Line line : dialogue.getLines()) {
-            GuildMessageChannelUnion channel = getActorChannel(clubMap.get(line.getActor()), line.getTargetChannel());
+            TextChannel channel = getActorChannel(clubMap.get(line.getActor()), line.getTargetChannel());
             if (channel == null) continue;
 
             lines.add(
@@ -51,24 +54,28 @@ public class DialoguePlayer {
         }
     }
 
-    private GuildMessageChannelUnion getActorChannel(JDA jda, long targetChannel) {
+    private TextChannel getActorChannel(JDA jda, long targetChannel) {
         // Get target guild from JDA
         Guild guild = jda.getGuildById(dialogueConfig.getConfig("targetguild"));
         if (guild == null) return null;
 
-        GuildMessageChannelUnion channel;
+        TextChannel channel;
         if (targetChannel == 0L) {
             // Use default channel
-            channel = guild.getChannelById(GuildMessageChannelUnion.class, dialogueConfig.getConfig("targetchannel"));
+            channel = guild.getTextChannelById(dialogueConfig.getConfig("targetchannel"));
         } else {
             // Use custom channel
-            channel = guild.getChannelById(GuildMessageChannelUnion.class, targetChannel);
+            channel = guild.getTextChannelById(targetChannel);
         }
 
         return channel;
     }
 
     public void play(Message previousMessage) {
+        play(previousMessage, null);
+    }
+
+    public void play(Message previousMessage, Member member) {
         // Check if dialogue was set up correctly
         if (dialogue.getLines().size() != lines.size()) {
             return;
@@ -91,12 +98,24 @@ public class DialoguePlayer {
 
             // Handle reaction to previous message first
             if (line.getReaction() != null && currentMessage != null) {
-                currentMessage.addReaction(line.getReaction()).completeAfter(
-                    delay,
-                    TimeUnit.SECONDS
-                );
+                // Get the current message as the actor
+                TextChannel reactionChannel = clubMap.get(currentActor).getTextChannelById(currentMessage.getChannelId());
+                if (reactionChannel != null) {
+                    Message reactionMessage;
 
-                delay++;
+                    try {
+                        reactionMessage = reactionChannel.retrieveMessageById(currentMessage.getId()).complete();
+                    } catch (ErrorResponseException e) {
+                        reactionMessage = null;
+                    }
+
+                    if (reactionMessage != null) {
+                        reactionMessage.addReaction(line.getReaction()).completeAfter(
+                            delay,
+                            TimeUnit.SECONDS
+                        );
+                    }
+                }
             }
 
             // Handle sending a sticker second
@@ -105,8 +124,6 @@ public class DialoguePlayer {
                     delay,
                     TimeUnit.SECONDS
                 );
-
-                delay++;
             }
 
             // Handle sending actor line third
@@ -128,8 +145,15 @@ public class DialoguePlayer {
                 // Calculate typing delay
                 delay += getTypingDelay(line.getLine(), line.getTypeSpeed(), wpm);
 
+                String actorLine = line.getLine();
+
+                // Check response message for command, then append member id
+                if (line.isCommand() && member != null) {
+                    actorLine = DefaultDatabaseHandler.getPrefix(member.getGuild()) + actorLine + " " + member.getId();
+                }
+
                 // Send actor line
-                currentMessage = line.getChannel().sendMessage(line.getLine()).completeAfter(
+                currentMessage = line.getChannel().sendMessage(actorLine).completeAfter(
                     delay,
                     TimeUnit.SECONDS
                 );
@@ -171,12 +195,12 @@ public class DialoguePlayer {
 
     public static class LineData {
 
-        private final GuildMessageChannelUnion actorChannel;
+        private final TextChannel actorChannel;
         private final Dialogue.Line line;
         private final Emoji reaction;
         private final GuildSticker sticker;
 
-        public LineData(GuildMessageChannelUnion actorChannel, Dialogue.Line line, ConfigData dialogueConfig) {
+        public LineData(TextChannel actorChannel, Dialogue.Line line, ConfigData dialogueConfig) {
             this.actorChannel = actorChannel;
             this.line = line;
 
@@ -186,14 +210,14 @@ public class DialoguePlayer {
                 reaction = Emoji.fromFormatted(line.getReaction());
             }
 
-            if (line.getSticker().isBlank()) {
+            if (line.getSticker() == null || line.getSticker().isBlank()) {
                 sticker = null;
             } else {
                 sticker = actorChannel.getGuild().getStickerById(dialogueConfig.getConfig(line.getSticker() + "sticker"));
             }
         }
 
-        public GuildMessageChannelUnion getChannel() {
+        public TextChannel getChannel() {
             return actorChannel;
         }
 
@@ -215,6 +239,10 @@ public class DialoguePlayer {
 
         public double getReadSpeed() {
             return line.getReadSpeed();
+        }
+
+        public boolean isCommand() {
+            return line.getIsCommand();
         }
     }
 }
