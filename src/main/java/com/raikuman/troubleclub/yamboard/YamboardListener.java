@@ -4,7 +4,7 @@ import com.raikuman.botutilities.config.ConfigData;
 import com.raikuman.troubleclub.yamboard.buttons.YamboardButtonManager;
 import com.raikuman.troubleclub.yamboard.config.YamboardConfig;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
@@ -22,7 +22,7 @@ public class YamboardListener extends ListenerAdapter {
     private static final Logger logger = LoggerFactory.getLogger(YamboardListener.class);
     private final ExecutorService executor;
     private Emoji yamEmoji;
-    private MessageChannelUnion yamChannel, listenChannel;
+    private TextChannel yamChannel, listenChannel;
     private final YamboardButtonManager buttonManager = new YamboardButtonManager();
     private YamboardManager yamboardManager;
 
@@ -37,11 +37,9 @@ public class YamboardListener extends ListenerAdapter {
 
         ConfigData yamConfig = new ConfigData(new YamboardConfig());
 
-        yamChannel = event.getJDA().getChannelById(MessageChannelUnion.class,
-            yamConfig.getConfig("yamchannel"));
+        yamChannel = event.getJDA().getTextChannelById(yamConfig.getConfig("yamchannel"));
 
-        listenChannel = event.getJDA().getChannelById(MessageChannelUnion.class,
-            yamConfig.getConfig("listenchannel"));
+        listenChannel = event.getJDA().getTextChannelById(yamConfig.getConfig("listenchannel"));
 
         yamboardManager = new YamboardManager(buttonManager, yamConfig, yamChannel, listenChannel);
         yamEmoji = yamboardManager.getEmojis().get(0);

@@ -11,8 +11,9 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.MessageReaction;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
+import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,12 +36,12 @@ public class YamboardManager {
     private final LinkedList<YamboardMessage> yamboardMessages = new LinkedList<>();
     private final ConfigData yamboardConfig;
     private final List<Emoji> emojis;
-    private final MessageChannelUnion yamChannel, listenChannel;
+    private final TextChannel yamChannel, listenChannel;
     private final File yamFile;
 
     public YamboardManager(YamboardButtonManager buttonManager, ConfigData yamboardConfig,
-                           MessageChannelUnion yamChannel,
-                           MessageChannelUnion listenChannel) {
+                           TextChannel yamChannel,
+                           TextChannel listenChannel) {
         this.buttonManager = buttonManager;
         this.yamboardConfig = yamboardConfig;
 
@@ -241,8 +242,13 @@ public class YamboardManager {
                 // Get messages
                 Message original, post;
                 String[] messages = split[0].split(",");
-                original = listenChannel.retrieveMessageById(messages[0]).complete();
-                post = yamChannel.retrieveMessageById(messages[1]).complete();
+                try {
+                    original = listenChannel.retrieveMessageById(messages[0]).complete();
+                    post = yamChannel.retrieveMessageById(messages[1]).complete();
+                } catch (ErrorResponseException e) {
+                    logger.error("Could not retrieve messages as they do not exist/are unknown.");
+                    continue;
+                }
 
                 if (original == null || post == null) {
                     logger.error("Error getting messages for {}", line);

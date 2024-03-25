@@ -6,7 +6,7 @@ import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle;
 
-public class Downvote implements ButtonComponent {
+public class Downvote extends ButtonComponent {
 
     private final YamboardManager yamboardManager;
     private final Emoji emoji;
