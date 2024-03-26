@@ -165,9 +165,9 @@ public class DialoguePlayer {
         double delay;
         if (message.length() > 10) {
             // Make longer messages have a greater delay
-            delay = message.length() / 10.0;
-        } else {
             delay = message.length() / 20.0;
+        } else {
+            delay = message.length() / 40.0;
         }
 
         // Calculate delay with variance
