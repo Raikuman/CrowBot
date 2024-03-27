@@ -2,10 +2,12 @@ package com.raikuman.troubleclub.invoke.des;
 
 import com.raikuman.botutilities.database.DatabaseManager;
 import com.raikuman.botutilities.defaults.database.DefaultDatabaseHandler;
+import com.raikuman.botutilities.invocation.Category;
 import com.raikuman.botutilities.invocation.context.CommandContext;
 import com.raikuman.botutilities.invocation.type.Command;
 import com.raikuman.botutilities.utilities.EmbedResources;
 import com.raikuman.botutilities.utilities.MessageResources;
+import com.raikuman.troubleclub.invoke.category.Fun;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 import org.slf4j.Logger;
@@ -67,7 +69,7 @@ public class Karma extends Command {
         ctx.event().getChannel().sendMessageEmbeds(
             EmbedResources.defaultResponse(
                 Color.decode("#fc8403"),
-                title,
+                "\uD83C\uDF60 " + title,
                 "",
                 ctx.event().getChannel(),
                 ctx.event().getAuthor())
@@ -97,6 +99,11 @@ public class Karma extends Command {
     @Override
     public String getDescription() {
         return "Shows your (or another user's) karma";
+    }
+
+    @Override
+    public List<Category> getCategories() {
+        return List.of(new Fun());
     }
 
     private KarmaInfo getUserKarma(User user) {
