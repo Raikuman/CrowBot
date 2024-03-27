@@ -67,13 +67,21 @@ public class ConversationManager {
             return;
         }
 
-        LocalTime scheduledTime = ConversationScheduling.generateScheduledTime();
+        // Check if date is now
         if (!LocalDate.now().equals(scheduledDate)) {
             logger.info("Scheduled date is not today");
+
+            // Check if date is passed
+            if (LocalDate.now().isAfter(scheduledDate)) {
+                // Generate a new date
+                scheduledDate = ConversationScheduling.generateScheduledDate();
+                logger.info("Scheduling new conversation date for: {}", scheduledDate);
+            }
             return;
-        } else {
-            logger.info("Executing dialogue task on {}", scheduledTime);
         }
+
+        LocalTime scheduledTime = ConversationScheduling.generateScheduledTime();
+        logger.info("Executing dialogue task on {}", scheduledTime);
 
         executor.schedule(
             this::runDialogue,
