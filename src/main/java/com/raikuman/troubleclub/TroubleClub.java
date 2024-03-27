@@ -2,6 +2,9 @@ package com.raikuman.troubleclub;
 
 import com.raikuman.botutilities.BotSetup;
 import com.raikuman.botutilities.invocation.type.Command;
+import com.raikuman.botutilities.invocation.type.Slash;
+import com.raikuman.troubleclub.invoke.Invokes;
+import com.raikuman.troubleclub.invoke.crow.Dice;
 import com.raikuman.troubleclub.invoke.suu.GetStickers;
 import com.raikuman.troubleclub.invoke.des.Karma;
 import com.raikuman.troubleclub.invoke.suu.TestDialogue;
@@ -75,9 +78,15 @@ public class TroubleClub {
                 }
 
                 // Handle commands
-                List<Command> commands = getCommands(conversationManager).get(club);
+                List<Command> commands = Invokes.getCommands(conversationManager).get(club);
                 if (commands != null) {
                     setup = setup.addCommands(commands);
+                }
+
+                // Handle slashes
+                List<Slash> slashes = Invokes.getSlashes(conversationManager).get(club);
+                if (slashes != null) {
+                    setup = setup.addSlashes(slashes);
                 }
 
                 // Handle listeners
@@ -107,20 +116,6 @@ public class TroubleClub {
 
         conversationManager.setClubMap(clubMap);
         interactionManager.setClubMap(clubMap);
-    }
-
-    private static HashMap<Club, List<Command>> getCommands(ConversationManager conversationManager) {
-        HashMap<Club, List<Command>> commands = new HashMap<>();
-        commands.put(Club.SUU, List.of(
-            new GetStickers(),
-            new TestDialogue(conversationManager)
-        ));
-
-        commands.put(Club.DES, List.of(
-            new Karma()
-        ));
-
-        return commands;
     }
 
     private static HashMap<Club, List<ListenerAdapter>> getListeners(ExecutorService executor,
