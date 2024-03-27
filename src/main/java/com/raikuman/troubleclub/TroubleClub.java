@@ -2,9 +2,9 @@ package com.raikuman.troubleclub;
 
 import com.raikuman.botutilities.BotSetup;
 import com.raikuman.botutilities.invocation.type.Command;
-import com.raikuman.troubleclub.command.GetStickers;
-import com.raikuman.troubleclub.command.Karma;
-import com.raikuman.troubleclub.command.TestDialogue;
+import com.raikuman.troubleclub.invoke.suu.GetStickers;
+import com.raikuman.troubleclub.invoke.des.Karma;
+import com.raikuman.troubleclub.invoke.suu.TestDialogue;
 import com.raikuman.troubleclub.conversation.*;
 import com.raikuman.troubleclub.conversation.config.DayWeights;
 import com.raikuman.troubleclub.conversation.config.HourWeights;

@@ -1,4 +1,4 @@
-package com.raikuman.troubleclub.command;
+package com.raikuman.troubleclub.invoke.suu;
 
 import com.raikuman.botutilities.invocation.context.CommandContext;
 import com.raikuman.botutilities.invocation.type.Command;

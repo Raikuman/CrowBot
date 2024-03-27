@@ -1,4 +1,4 @@
-package com.raikuman.troubleclub.command;
+package com.raikuman.troubleclub.invoke.des;
 
 import com.raikuman.botutilities.database.DatabaseManager;
 import com.raikuman.botutilities.defaults.database.DefaultDatabaseHandler;
