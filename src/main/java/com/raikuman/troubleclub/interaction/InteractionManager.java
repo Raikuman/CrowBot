@@ -79,7 +79,10 @@ public class InteractionManager {
         if (event.getAuthor().isBot()) return;
 
         // Construct list of keys for retrieving interaction
-        List<String> keys = new ArrayList<>(List.of(event.getMessage().getContentRaw().trim().split(" ")));
+        List<String> keys =
+            new ArrayList<>(Arrays.stream(event.getMessage().getContentRaw().trim().split(" ")).map(
+                e -> e.replaceAll("[^a-zA-Z0-9]", "")
+            ).toList());
 
         // Get all caches that meet requirements
         InteractionData interactionData = extractInteractionData(event.getMessage().getMentions().getMembers(), keys);
@@ -105,7 +108,6 @@ public class InteractionManager {
 
         // Randomly select a dialogue from interaction dialogues
         List<Dialogue> dialogues = interaction.getDialogues();
-        System.out.println(dialogues);
         Dialogue chosenDialogue = null;
         if (dialogues.size() == 1) {
             chosenDialogue = dialogues.get(0);
@@ -218,7 +220,7 @@ public class InteractionManager {
             if (!new HashSet<>(cache.actors()).containsAll(actors)) continue;
 
             // Check for required words
-            if (cache.requiredMatches() < matchingWords(keys, cache.matchWords())) continue;
+            if (cache.requiredMatches() > matchingWords(keys, cache.matchWords())) continue;
 
             // Add interaction data
             foundCaches.add(cache);
