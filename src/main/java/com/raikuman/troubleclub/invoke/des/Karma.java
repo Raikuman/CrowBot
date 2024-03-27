@@ -5,9 +5,8 @@ import com.raikuman.botutilities.defaults.database.DefaultDatabaseHandler;
 import com.raikuman.botutilities.invocation.context.CommandContext;
 import com.raikuman.botutilities.invocation.type.Command;
 import com.raikuman.botutilities.utilities.EmbedResources;
-import net.dv8tion.jda.api.EmbedBuilder;
+import com.raikuman.botutilities.utilities.MessageResources;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,8 +16,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.List;
 
 public class Karma extends Command {
@@ -38,40 +35,47 @@ public class Karma extends Command {
             targetUser = mentionedMembers.get(0).getUser();
         } else {
             // Incorrect usage
-            ctx.event().getChannel().sendMessageEmbeds(
+            MessageResources.embedReplyDelete(ctx.event().getMessage(), 10, true,
                 EmbedResources.incorrectUsage(
                     getInvoke(),
                     getUsage(),
-                    ctx.event().getChannel()
-                ).build()
-            ).delay(Duration.ofSeconds(10)).flatMap(Message::delete).queue();
+                    ctx.event().getChannel()));
             return;
         }
 
         // Handle getting info from database
         KarmaInfo karmaInfo = getUserKarma(targetUser);
         if (karmaInfo == null) {
-            ctx.event().getChannel().sendMessageEmbeds(
+            MessageResources.embedDelete(ctx.event().getChannel(), 10,
                 EmbedResources.error(
                     "Error getting karma",
                     "Could not retrieve karma from command",
                     ctx.event().getChannel(),
                     ctx.event().getAuthor()
-                ).build()
-            ).queue();
+                ));
+            ctx.event().getMessage().delete().queue();
             return;
         }
 
-        EmbedBuilder builder = new EmbedBuilder()
-            .setColor(Color.decode("#fc8403"))
-            .setAuthor(targetUser.getEffectiveName() + "'s karma", null, targetUser.getEffectiveAvatarUrl())
-            .setFooter("#" + ctx.event().getChannel().getName())
-            .setTimestamp(Instant.now())
-            .addField("Upvotes", "" + karmaInfo.upvotes, true)
-            .addField("Downvotes", "" + karmaInfo.downvotes, true)
-            .addField("Posts", "" + karmaInfo.posts, true);
+        String title;
+        if (!mentionedMembers.isEmpty()) {
+            title = targetUser.getEffectiveName() + "'s Karma";
+        } else {
+            title = "Your Karma";
+        }
 
-        ctx.event().getChannel().sendMessageEmbeds(builder.build()).queue();
+        ctx.event().getChannel().sendMessageEmbeds(
+            EmbedResources.defaultResponse(
+                Color.decode("#fc8403"),
+                title,
+                "",
+                ctx.event().getChannel(),
+                ctx.event().getAuthor())
+                .addField("Upvotes", "" + karmaInfo.upvotes, true)
+                .addField("Downvotes", "" + karmaInfo.downvotes, true)
+                .addField("Posts", "" + karmaInfo.posts, true)
+                .build()
+        ).queue();
         ctx.event().getMessage().delete().queue();
     }
 
@@ -92,7 +96,7 @@ public class Karma extends Command {
 
     @Override
     public String getDescription() {
-        return "Shows your (or another) karma";
+        return "Shows your (or another user's) karma";
     }
 
     private KarmaInfo getUserKarma(User user) {
