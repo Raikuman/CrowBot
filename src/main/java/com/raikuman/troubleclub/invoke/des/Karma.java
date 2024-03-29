@@ -1,28 +1,18 @@
 package com.raikuman.troubleclub.invoke.des;
 
-import com.raikuman.botutilities.database.DatabaseManager;
-import com.raikuman.botutilities.defaults.database.DefaultDatabaseHandler;
 import com.raikuman.botutilities.invocation.Category;
 import com.raikuman.botutilities.invocation.context.CommandContext;
 import com.raikuman.botutilities.invocation.type.Command;
 import com.raikuman.botutilities.utilities.EmbedResources;
 import com.raikuman.botutilities.utilities.MessageResources;
 import com.raikuman.troubleclub.invoke.category.Fun;
+import com.raikuman.troubleclub.yamboard.YamboardDatabaseHandler;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.awt.*;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 
 public class Karma extends Command {
-
-    private static final Logger logger = LoggerFactory.getLogger(Karma.class);
 
     @Override
     public void handle(CommandContext ctx) {
@@ -46,7 +36,7 @@ public class Karma extends Command {
         }
 
         // Handle getting info from database
-        KarmaInfo karmaInfo = getUserKarma(targetUser);
+        KarmaInfo karmaInfo = YamboardDatabaseHandler.getUserKarma(targetUser);
         if (karmaInfo == null) {
             MessageResources.embedDelete(ctx.event().getChannel(), 10,
                 EmbedResources.error(
@@ -106,33 +96,5 @@ public class Karma extends Command {
         return List.of(new Fun());
     }
 
-    private KarmaInfo getUserKarma(User user) {
-        int userId = DefaultDatabaseHandler.getUserId(user);
-        if (userId == -1) {
-            return null;
-        }
-
-        try (
-            Connection connection = DatabaseManager.getConnection();
-            PreparedStatement statement = connection.prepareStatement(
-                "SELECT upvotes, downvotes, posts FROM yamboard WHERE user_id = ?"
-            )) {
-            statement.setInt(1, userId);
-            statement.execute();
-            try (ResultSet resultSet = statement.getResultSet()) {
-                if (resultSet.next()) {
-                    return new KarmaInfo(
-                        resultSet.getInt("upvotes"),
-                        resultSet.getInt("downvotes"),
-                        resultSet.getInt("posts"));
-                }
-            }
-        } catch (SQLException e) {
-            logger.error("Could not retrieve karma info for user: {}", userId);
-        }
-
-        return null;
-    }
-
-    record KarmaInfo(int upvotes, int downvotes, int posts) {}
+    public record KarmaInfo(int upvotes, int downvotes, int posts) {}
 }

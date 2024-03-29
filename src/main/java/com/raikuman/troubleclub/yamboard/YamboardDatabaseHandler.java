@@ -2,6 +2,7 @@ package com.raikuman.troubleclub.yamboard;
 
 import com.raikuman.botutilities.database.DatabaseManager;
 import com.raikuman.botutilities.defaults.database.DefaultDatabaseHandler;
+import com.raikuman.troubleclub.invoke.des.Karma;
 import net.dv8tion.jda.api.entities.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +46,34 @@ public class YamboardDatabaseHandler {
         } catch (SQLException e) {
             logger.error("An error occurred adding user to yamboard for: {}", userId);
         }
+    }
+
+    public static Karma.KarmaInfo getUserKarma(User user) {
+        int userId = DefaultDatabaseHandler.getUserId(user);
+        if (userId == -1) {
+            return null;
+        }
+
+        try (
+            Connection connection = DatabaseManager.getConnection();
+            PreparedStatement statement = connection.prepareStatement(
+                "SELECT upvotes, downvotes, posts FROM yamboard WHERE user_id = ?"
+            )) {
+            statement.setInt(1, userId);
+            statement.execute();
+            try (ResultSet resultSet = statement.getResultSet()) {
+                if (resultSet.next()) {
+                    return new Karma.KarmaInfo(
+                        resultSet.getInt("upvotes"),
+                        resultSet.getInt("downvotes"),
+                        resultSet.getInt("posts"));
+                }
+            }
+        } catch (SQLException e) {
+            logger.error("An error occurred retrieving karma info for user: {}", userId);
+        }
+
+        return null;
     }
 
     public static void upvote(User user, int karma) {
