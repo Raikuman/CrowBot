@@ -1,19 +1,19 @@
 package com.raikuman.troubleclub;
 
 import com.raikuman.botutilities.BotSetup;
+import com.raikuman.botutilities.invocation.component.ComponentHandler;
 import com.raikuman.botutilities.invocation.type.Command;
 import com.raikuman.botutilities.invocation.type.Slash;
 import com.raikuman.troubleclub.invoke.Invokes;
-import com.raikuman.troubleclub.invoke.crow.Dice;
-import com.raikuman.troubleclub.invoke.suu.GetStickers;
-import com.raikuman.troubleclub.invoke.des.Karma;
-import com.raikuman.troubleclub.invoke.suu.TestDialogue;
 import com.raikuman.troubleclub.conversation.*;
 import com.raikuman.troubleclub.conversation.config.DayWeights;
 import com.raikuman.troubleclub.conversation.config.HourWeights;
 import com.raikuman.troubleclub.interaction.InteractionListener;
 import com.raikuman.troubleclub.interaction.InteractionManager;
 import com.raikuman.troubleclub.dialogue.DialogueConfig;
+import com.raikuman.troubleclub.tamagopet.TamagopetListener;
+import com.raikuman.troubleclub.tamagopet.config.TamagopetConfig;
+import com.raikuman.troubleclub.tamagopet.config.TamagopetStartup;
 import com.raikuman.troubleclub.yamboard.YamboardListener;
 import com.raikuman.troubleclub.yamboard.config.YamboardConfig;
 import com.raikuman.troubleclub.yamboard.config.YamboardStartup;
@@ -69,9 +69,16 @@ public class TroubleClub {
 
                 if (club == Club.SUU) {
                     setup = setup
-                        .setDatabases(new YamboardStartup())
+                        .setDatabases(
+                            new YamboardStartup(),
+                            new TamagopetStartup())
                         .thinDatabase(false)
-                        .setConfigs(new DialogueConfig(), new HourWeights(), new DayWeights(), new YamboardConfig());
+                        .setConfigs(
+                            new DialogueConfig(),
+                            new HourWeights(),
+                            new DayWeights(),
+                            new YamboardConfig(),
+                            new TamagopetConfig());
                 } else {
                     setup = setup
                         .disableDatabase(true);
@@ -90,7 +97,8 @@ public class TroubleClub {
                 }
 
                 // Handle listeners
-                List<ListenerAdapter> listeners = getListeners(setup.getExecutorService(), interactionManager).get(club);
+                List<ListenerAdapter> listeners =
+                    getListeners(setup.getExecutorService(), interactionManager, setup.getComponentHandler()).get(club);
                 if (listeners != null) {
                     setup = setup.addListeners(listeners);
                 }
@@ -119,7 +127,8 @@ public class TroubleClub {
     }
 
     private static HashMap<Club, List<ListenerAdapter>> getListeners(ExecutorService executor,
-                                                                     InteractionManager interactionManager) {
+                                                                     InteractionManager interactionManager,
+                                                                     ComponentHandler componentHandler) {
         HashMap<Club, List<ListenerAdapter>> listeners = new HashMap<>();
         listeners.put(Club.SUU, List.of(
             new InteractionListener(executor, interactionManager)
@@ -127,6 +136,10 @@ public class TroubleClub {
 
         listeners.put(Club.DES, List.of(
             new YamboardListener(executor)
+        ));
+
+        listeners.put(Club.INORI, List.of(
+            new TamagopetListener(executor, componentHandler)
         ));
 
         return listeners;
