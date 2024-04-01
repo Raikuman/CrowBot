@@ -8,12 +8,12 @@ import com.raikuman.botutilities.invocation.type.SelectComponent;
 import com.raikuman.troubleclub.invoke.category.Tamagopet;
 import com.raikuman.troubleclub.tamagopet.config.TamagopetConfig;
 import com.raikuman.troubleclub.tamagopet.event.TamagopetEvent;
-import com.raikuman.troubleclub.tamagopet.event.normal.TamagopetFeed;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.requests.restaction.MessageCreateAction;
+import net.dv8tion.jda.api.utils.FileUpload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +34,7 @@ public class TamagopetManager {
     private final List<TamagopetEvent> normalEvent, enragedEvent;
     private int noEventProcs = 0;
 
-    public TamagopetManager(ComponentHandler componentHandler) {
+    protected TamagopetManager(ComponentHandler componentHandler) {
         this.componentHandler = componentHandler;
 
         // Load config
@@ -45,14 +45,13 @@ public class TamagopetManager {
         this.pointsPerImage = getConfigDefault(tamagoConfig, "pointsimage", 20);
         this.maxHappiness = getConfigDefault(tamagoConfig, "maxhappiness", 100);
 
-        // Load Ben data
+        // Load Tamagopet data
         File file = new File("resources" + File.separator + "tamagopetData.txt");
         TamagopetData data;
         try {
             if (file.createNewFile()) {
                 logger.info("Created file {}", file.getAbsolutePath());
                 data = new TamagopetData();
-                saveBenData(data, file);
             } else {
                 logger.info("File {} exists", file.getAbsolutePath());
                 data = loadTamagopetData();
@@ -66,8 +65,11 @@ public class TamagopetManager {
         tamagopetFile = file;
         tamagopetData = data;
 
+        saveTamagopetData();
+
         // Load events
-        normalEvent = List.of(new TamagopetFeed());
+        //normalEvent = List.of(new TamagopetFeed());
+        normalEvent = new ArrayList<>();
         enragedEvent = new ArrayList<>();
     }
 
@@ -79,17 +81,24 @@ public class TamagopetManager {
         }
     }
 
-    private void saveBenData(TamagopetData benData, File benFile) {
-        try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(benFile))) {
-            bufferedWriter.write(String.valueOf(benData.getHappiness()));
+    public void saveTamagopetData() {
+        if (tamagopetFile == null) {
+            logger.error("No file to save Tamagopet data to");
+            return;
+        }
+
+        try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(tamagopetFile))) {
+            bufferedWriter.write(String.valueOf(tamagopetData.getHappiness()));
             bufferedWriter.newLine();
-            bufferedWriter.write(String.valueOf(benData.getPoints()));
+            bufferedWriter.write(String.valueOf(tamagopetData.getTotalPoints()));
             bufferedWriter.newLine();
-            bufferedWriter.write(String.valueOf(benData.getHealth()));
+            bufferedWriter.write(String.valueOf(tamagopetData.getPoints()));
             bufferedWriter.newLine();
-            bufferedWriter.write(String.valueOf(benData.isEnraged()));
+            bufferedWriter.write(String.valueOf(tamagopetData.getHealth()));
+            bufferedWriter.newLine();
+            bufferedWriter.write(String.valueOf(tamagopetData.isEnraged()));
         } catch (IOException e) {
-            logger.error("Could not save Ben data to file: {}", benFile.getAbsolutePath());
+            logger.error("Could not save Tamagopet data to file: {}", tamagopetFile.getAbsolutePath());
         }
     }
 
@@ -114,13 +123,21 @@ public class TamagopetManager {
 
                     case 1:
                         try {
+                            tamagopetData.setTotalPoints(Integer.parseInt(line));
+                        } catch (NumberFormatException e) {
+                            tamagopetData.setTotalPoints(0);
+                        }
+                        break;
+
+                    case 2:
+                        try {
                             tamagopetData.setPoints(Integer.parseInt(line));
                         } catch (NumberFormatException e) {
                             tamagopetData.setPoints(0);
                         }
                         break;
 
-                    case 2:
+                    case 3:
                         try {
                             tamagopetData.setHealth(Integer.parseInt(line));
                         } catch (NumberFormatException e) {
@@ -128,7 +145,7 @@ public class TamagopetManager {
                         }
                         break;
 
-                    case 3:
+                    case 4:
                         tamagopetData.setEnraged(Boolean.parseBoolean(line));
                         break;
                 }
@@ -143,7 +160,49 @@ public class TamagopetManager {
         return loadData;
     }
 
-    public void handleTamagopet(Message message, boolean forceEvent) {
+    public void addHappiness(MessageChannelUnion channel, int happiness) {
+        tamagopetData.addHappiness(happiness);
+
+        if (tamagopetData.getHappiness() >= 100) {
+            tamagopetData.setEnraged(true);
+
+            // Enrage notice
+            channel.sendMessageEmbeds(
+                new EmbedBuilder()
+                    .setColor(Tamagopet.BEN_COLOR)
+                    .setFooter("#" + channel.getName())
+                    .setTimestamp(Instant.now())
+                    .setAuthor("Ben has become enraged!")
+                    .setDescription("Ben transformed into Bengrammaz!")
+                    .setImage("attachment://ben.png").build()
+            ).queue();
+        }
+
+        saveTamagopetData();
+    }
+
+    public void reduceHealth(MessageChannelUnion channel, int health) {
+        tamagopetData.reduceHealth(health);
+
+        if (tamagopetData.getHealth() <= 0) {
+            tamagopetData.setEnraged(false);
+
+            // Normal notice
+            channel.sendMessageEmbeds(
+                new EmbedBuilder()
+                    .setColor(Tamagopet.BEN_COLOR)
+                    .setFooter("#" + channel.getName())
+                    .setTimestamp(Instant.now())
+                    .setAuthor("Bengrammaz has reduced in size!")
+                    .setDescription("Bengrammaz transformed back into Ben!")
+                    .setImage("attachment://ben.png").build()
+            ).queue();
+        }
+
+        saveTamagopetData();
+    }
+
+    protected void handleTamagopet(Message message, boolean forceEvent) {
         if (message.getAuthor().isBot()) {
             return;
         }
@@ -151,7 +210,7 @@ public class TamagopetManager {
         handleEvent(message, forceEvent);
 
         // Save data
-        saveBenData(tamagopetData, tamagopetFile);
+        saveTamagopetData();
     }
 
     private void handleEvent(Message message, boolean forceEvent) {
@@ -198,14 +257,18 @@ public class TamagopetManager {
     }
 
     private void playEvent(TamagopetEvent event, Message message) {
-        MessageCreateAction messageCreateAction = message.getChannel().sendFiles(event.getImage()).setEmbeds(
-            getTamagopetEmbed(
-                event,
-                message.getChannel()
-            ).build());
+        MessageCreateAction embedImageAction = embedImageAction(
+            new EmbedBuilder()
+                .setColor(Tamagopet.BEN_COLOR)
+                .setFooter("#" + message.getChannel().getName())
+                .setTimestamp(Instant.now())
+                .setAuthor(event.title())
+                .setDescription(event.description()),
+            event.getImage(),
+            message.getChannel());
 
         List<ActionRow> actionRows = new ArrayList<>();
-        List<ButtonComponent> buttons = event.getButtons(tamagopetData);
+        List<ButtonComponent> buttons = event.getButtons(this);
         if (!buttons.isEmpty()) {
             componentHandler.addButtons(message.getAuthor(), message, buttons);
             actionRows.add(ComponentBuilder.buildButtons(message.getAuthor(), buttons));
@@ -229,16 +292,11 @@ public class TamagopetManager {
             ));
         }
 
-        messageCreateAction.setComponents(actionRows).queue();
+        embedImageAction.setComponents(actionRows).queue();
     }
 
-    private EmbedBuilder getTamagopetEmbed(TamagopetEvent event, MessageChannelUnion channel) {
-        return new EmbedBuilder()
-            .setColor(Tamagopet.BEN_COLOR)
-            .setFooter("#" + channel.getName())
-            .setTimestamp(Instant.now())
-            .setAuthor(event.title())
-            .setDescription(event.description())
-            .setImage("attachment://ben.png");
+    public static MessageCreateAction embedImageAction(EmbedBuilder embedBuilder, FileUpload image, MessageChannelUnion channel) {
+        embedBuilder.setImage("attachment://" + image.getName());
+        return channel.sendFiles(image).setEmbeds(embedBuilder.build());
     }
 }
