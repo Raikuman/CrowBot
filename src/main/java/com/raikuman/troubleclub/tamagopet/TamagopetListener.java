@@ -1,6 +1,9 @@
 package com.raikuman.troubleclub.tamagopet;
 
+import com.raikuman.botutilities.defaults.database.DefaultDatabaseHandler;
 import com.raikuman.botutilities.invocation.component.ComponentHandler;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -13,7 +16,7 @@ public class TamagopetListener extends ListenerAdapter {
 
     private static final Logger logger = LoggerFactory.getLogger(TamagopetListener.class);
     private final ExecutorService executor;
-    private TamagopetManager tamagopetManager;
+    private final TamagopetManager tamagopetManager;
 
     public TamagopetListener(ExecutorService executor, ComponentHandler componentHandler) {
         this.executor = executor;
@@ -30,7 +33,18 @@ public class TamagopetListener extends ListenerAdapter {
     public void onMessageReceived(MessageReceivedEvent event) {
         executor.submit(() -> {
             synchronized (this) {
-                tamagopetManager.handleTamagopet(event.getMessage());
+                Member member = event.getMember();
+                if (member == null) {
+                    return;
+                }
+
+                if (event.getMessage().getContentRaw().equals(DefaultDatabaseHandler.getPrefix(event.getGuild()) +
+                    "event") && member.getPermissions().contains(Permission.ADMINISTRATOR)) {
+                    tamagopetManager.handleTamagopet(event.getMessage(), true);
+                    return;
+                }
+
+                tamagopetManager.handleTamagopet(event.getMessage(), false);
             }
         });
     }
