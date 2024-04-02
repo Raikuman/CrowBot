@@ -64,5 +64,8 @@ public class TamagopetData {
 
     public void reduceHealth(int health) {
         this.health -= health;
+        if (this.health < 0) {
+            this.health = 0;
+        }
     }
 }

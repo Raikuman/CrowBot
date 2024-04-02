@@ -8,6 +8,7 @@ import com.raikuman.botutilities.invocation.type.SelectComponent;
 import com.raikuman.troubleclub.invoke.category.Tamagopet;
 import com.raikuman.troubleclub.tamagopet.config.TamagopetConfig;
 import com.raikuman.troubleclub.tamagopet.event.TamagopetEvent;
+import com.raikuman.troubleclub.tamagopet.event.normal.TamagopetFeed;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
@@ -18,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +56,7 @@ public class TamagopetManager {
                 data = new TamagopetData();
             } else {
                 logger.info("File {} exists", file.getAbsolutePath());
-                data = loadTamagopetData();
+                data = loadTamagopetData(file);
             }
         } catch (IOException e) {
             logger.error("Error creating file {}", file.getAbsolutePath());
@@ -68,8 +70,7 @@ public class TamagopetManager {
         saveTamagopetData();
 
         // Load events
-        //normalEvent = List.of(new TamagopetFeed());
-        normalEvent = new ArrayList<>();
+        normalEvent = List.of(new TamagopetFeed());
         enragedEvent = new ArrayList<>();
     }
 
@@ -102,58 +103,57 @@ public class TamagopetManager {
         }
     }
 
-    private TamagopetData loadTamagopetData() {
-        if (tamagopetFile == null) {
+    private TamagopetData loadTamagopetData(File file) {
+        if (file == null) {
             return new TamagopetData();
         }
 
         TamagopetData loadData = new TamagopetData();
-        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(tamagopetFile))) {
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
             int currentData = 0;
             for (String line = bufferedReader.readLine(); line != null; line = bufferedReader.readLine()) {
-
                 switch (currentData) {
                     case 0:
                         try {
-                            tamagopetData.setHappiness(Integer.parseInt(line));
+                            loadData.setHappiness(Integer.parseInt(line));
                         } catch (NumberFormatException e) {
-                            tamagopetData.setHappiness(0);
+                            loadData.setHappiness(0);
                         }
                         break;
 
                     case 1:
                         try {
-                            tamagopetData.setTotalPoints(Integer.parseInt(line));
+                            loadData.setTotalPoints(Integer.parseInt(line));
                         } catch (NumberFormatException e) {
-                            tamagopetData.setTotalPoints(0);
+                            loadData.setTotalPoints(0);
                         }
                         break;
 
                     case 2:
                         try {
-                            tamagopetData.setPoints(Integer.parseInt(line));
+                            loadData.setPoints(Integer.parseInt(line));
                         } catch (NumberFormatException e) {
-                            tamagopetData.setPoints(0);
+                            loadData.setPoints(0);
                         }
                         break;
 
                     case 3:
                         try {
-                            tamagopetData.setHealth(Integer.parseInt(line));
+                            loadData.setHealth(Integer.parseInt(line));
                         } catch (NumberFormatException e) {
-                            tamagopetData.setHealth(0);
+                            loadData.setHealth(0);
                         }
                         break;
 
                     case 4:
-                        tamagopetData.setEnraged(Boolean.parseBoolean(line));
+                        loadData.setEnraged(Boolean.parseBoolean(line));
                         break;
                 }
 
                 currentData++;
             }
         } catch (IOException e) {
-            logger.error("Could not load Tamagopet data from file: {}", tamagopetFile.getAbsolutePath());
+            logger.error("Could not load Tamagopet data from file: {}", file.getAbsolutePath());
             return new TamagopetData();
         }
 
@@ -163,8 +163,9 @@ public class TamagopetManager {
     public void addHappiness(MessageChannelUnion channel, int happiness) {
         tamagopetData.addHappiness(happiness);
 
-        if (tamagopetData.getHappiness() >= 100) {
+        if (tamagopetData.getHappiness() >= maxHappiness) {
             tamagopetData.setEnraged(true);
+            tamagopetData.setHappiness(0);
 
             // Enrage notice
             channel.sendMessageEmbeds(
@@ -175,7 +176,7 @@ public class TamagopetManager {
                     .setAuthor("Ben has become enraged!")
                     .setDescription("Ben transformed into Bengrammaz!")
                     .setImage("attachment://ben.png").build()
-            ).queue();
+            ).delay(Duration.ofSeconds(10)).flatMap(Message::delete).queue();
         }
 
         saveTamagopetData();
@@ -184,8 +185,9 @@ public class TamagopetManager {
     public void reduceHealth(MessageChannelUnion channel, int health) {
         tamagopetData.reduceHealth(health);
 
-        if (tamagopetData.getHealth() <= 0) {
+        if (tamagopetData.getHealth() == 0) {
             tamagopetData.setEnraged(false);
+            tamagopetData.setHealth(0);
 
             // Normal notice
             channel.sendMessageEmbeds(
@@ -196,7 +198,7 @@ public class TamagopetManager {
                     .setAuthor("Bengrammaz has reduced in size!")
                     .setDescription("Bengrammaz transformed back into Ben!")
                     .setImage("attachment://ben.png").build()
-            ).queue();
+            ).delay(Duration.ofSeconds(10)).flatMap(Message::delete).queue();
         }
 
         saveTamagopetData();
@@ -257,15 +259,16 @@ public class TamagopetManager {
     }
 
     private void playEvent(TamagopetEvent event, Message message) {
-        MessageCreateAction embedImageAction = embedImageAction(
+        FileUpload image = event.getImage();
+        MessageCreateAction embedImageAction = message.getChannel().sendFiles(image).setEmbeds(
             new EmbedBuilder()
                 .setColor(Tamagopet.BEN_COLOR)
                 .setFooter("#" + message.getChannel().getName())
                 .setTimestamp(Instant.now())
                 .setAuthor(event.title())
-                .setDescription(event.description()),
-            event.getImage(),
-            message.getChannel());
+                .setDescription(event.description())
+                .setImage("attachment://" + image.getName()).build()
+        );
 
         List<ActionRow> actionRows = new ArrayList<>();
         List<ButtonComponent> buttons = event.getButtons(this);
@@ -293,10 +296,5 @@ public class TamagopetManager {
         }
 
         embedImageAction.setComponents(actionRows).queue();
-    }
-
-    public static MessageCreateAction embedImageAction(EmbedBuilder embedBuilder, FileUpload image, MessageChannelUnion channel) {
-        embedBuilder.setImage("attachment://" + image.getName());
-        return channel.sendFiles(image).setEmbeds(embedBuilder.build());
     }
 }
