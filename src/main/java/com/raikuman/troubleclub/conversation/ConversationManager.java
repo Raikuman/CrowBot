@@ -11,6 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
@@ -32,8 +34,14 @@ public class ConversationManager {
         dialogueFileCheck(playedConversations);
 
         // Directory for conversations
-        conversations = new File("resources" + File.separator + "conversations");
-        dialogueFileCheck(conversations);
+        File conversations;
+        try {
+            conversations = Files.createDirectories(Path.of("resources" + File.separator + "conversations")).toFile();
+        } catch (IOException e) {
+            conversations = null;
+            logger.error("Could not create directory for conversations");
+        }
+        this.conversations = conversations;
 
         // Create file for a scheduled date
         scheduledDate = new File("resources" + File.separator + "schedConversation.txt");
@@ -96,6 +104,10 @@ public class ConversationManager {
     }
 
     private void handleDialogue(boolean ignoreAlreadyPlayed) {
+        if (conversations == null) {
+            return;
+        }
+
         // Get the already played dialogues
         List<String> alreadyPlayed;
         if (!ignoreAlreadyPlayed) {

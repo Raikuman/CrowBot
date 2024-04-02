@@ -17,6 +17,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -33,15 +35,12 @@ public class InteractionManager {
 
     private void loadInteractionCaches() {
         // Directory for interactions
-        File interactionDir = new File("resources" + File.separator + "interactions");
+        File interactionDir;
         try {
-            if (interactionDir.createNewFile()) {
-                logger.info("Created file {}", interactionDir.getAbsolutePath());
-            } else {
-                logger.info("File {} exists", interactionDir.getAbsolutePath());
-            }
+            interactionDir = Files.createDirectories(Path.of("resources" + File.separator + "interactions")).toFile();
         } catch (IOException e) {
-            logger.error("Error creating file {}", interactionDir.getAbsolutePath());
+            logger.error("Could not create directory for interactions");
+            return;
         }
 
         // Get list of interaction files
