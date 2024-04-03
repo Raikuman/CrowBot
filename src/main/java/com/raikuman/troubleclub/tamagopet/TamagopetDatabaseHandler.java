@@ -37,7 +37,7 @@ public class TamagopetDatabaseHandler {
                         resultSet.getInt("bath"),
                         resultSet.getInt("spell"),
                         resultSet.getInt("physical"),
-                        resultSet.getInt("magic")
+                        resultSet.getInt("magical")
                     );
                 } else {
                     // Create row
@@ -87,8 +87,8 @@ public class TamagopetDatabaseHandler {
         addEvent(user, "physical", amount);
     }
 
-    public static void addMagicEvent(User user, int amount) {
-        addEvent(user, "magic", amount);
+    public static void addMagicalEvent(User user, int amount) {
+        addEvent(user, "magical", amount);
     }
 
     private static void addEvent(User user, String event, int amount) {

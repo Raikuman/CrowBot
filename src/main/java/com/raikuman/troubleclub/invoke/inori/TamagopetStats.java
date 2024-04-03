@@ -58,7 +58,7 @@ public class TamagopetStats extends Command {
         statBuilder.append("!\n");
 
         statBuilder.append(" - You used magic against Bengrammaz :: ");
-        statBuilder.append(plurality(stats.getMagic()));
+        statBuilder.append(plurality(stats.getMagical()));
         statBuilder.append("!");
 
         statBuilder.append("\n```");

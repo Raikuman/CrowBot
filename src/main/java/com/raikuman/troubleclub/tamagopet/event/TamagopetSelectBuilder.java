@@ -137,8 +137,8 @@ public class TamagopetSelectBuilder {
                         TamagopetDatabaseHandler.addPhysicalEvent(ctx.getUser(), 1);
                     }
 
-                    case MAGIC -> {
-                        TamagopetDatabaseHandler.addMagicEvent(ctx.getUser(), 1);
+                    case MAGICAL -> {
+                        TamagopetDatabaseHandler.addMagicalEvent(ctx.getUser(), 1);
                     }
                 }
             }

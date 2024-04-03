@@ -5,7 +5,7 @@ import net.dv8tion.jda.api.entities.User;
 public class TamagopetStats {
 
     private final User user;
-    private final int food, bath, spell, physical, magic;
+    private final int food, bath, spell, physical, magical;
 
     public TamagopetStats(User user, int food, int bath, int spell, int physical, int magic) {
         this.user = user;
@@ -13,7 +13,7 @@ public class TamagopetStats {
         this.bath = bath;
         this.spell = spell;
         this.physical = physical;
-        this.magic = magic;
+        this.magical = magic;
     }
 
     public User getUser() {
@@ -36,7 +36,7 @@ public class TamagopetStats {
         return physical;
     }
 
-    public int getMagic() {
-        return magic;
+    public int getMagical() {
+        return magical;
     }
 }

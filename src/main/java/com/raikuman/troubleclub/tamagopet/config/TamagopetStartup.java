@@ -28,7 +28,7 @@ public class TamagopetStartup implements DatabaseStartup {
                     "bath INTEGER NOT NULL DEFAULT 0," +
                     "spell INTEGER NOT NULL DEFAULT 0," +
                     "physical INTEGER NOT NULL DEFAULT 0," +
-                    "magic INTEGER NOT NULL DEFAULT 0," +
+                    "magical INTEGER NOT NULL DEFAULT 0," +
                     "FOREIGN KEY(user_id) REFERENCES user(user_id) ON DELETE CASCADE" +
                     ")"
             );
