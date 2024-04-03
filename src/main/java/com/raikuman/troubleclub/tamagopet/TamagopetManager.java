@@ -9,7 +9,8 @@ import com.raikuman.botutilities.invocation.type.SelectComponent;
 import com.raikuman.troubleclub.invoke.category.Tamagopet;
 import com.raikuman.troubleclub.tamagopet.config.TamagopetConfig;
 import com.raikuman.troubleclub.tamagopet.event.TamagopetEvent;
-import com.raikuman.troubleclub.tamagopet.event.normal.feed.TamagopetFeed;
+import com.raikuman.troubleclub.tamagopet.event.normal.TamagopetFeed;
+import com.raikuman.troubleclub.tamagopet.image.TamagopetImage;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
@@ -127,14 +128,11 @@ public class TamagopetManager {
             tamagopetData.setHappiness(0);
 
             // Enrage notice
-            channel.sendMessageEmbeds(
-                new EmbedBuilder()
-                    .setColor(Tamagopet.BEN_COLOR)
-                    .setFooter("#" + channel.getName())
-                    .setTimestamp(Instant.now())
-                    .setAuthor("Ben has become enraged!")
-                    .setDescription("Ben transformed into Bengrammaz!")
-                    .setImage("attachment://ben.png").build()
+            TamagopetImage.sendEmbedImageAction(
+                "Ben has become enraged!",
+                "Ben transformed into Bengrammaz!",
+                new TamagopetImage().retrieveAsFile(),
+                channel
             ).delay(Duration.ofSeconds(10)).flatMap(Message::delete).queue();
         }
 
@@ -149,14 +147,11 @@ public class TamagopetManager {
             tamagopetData.setHealth(0);
 
             // Normal notice
-            channel.sendMessageEmbeds(
-                new EmbedBuilder()
-                    .setColor(Tamagopet.BEN_COLOR)
-                    .setFooter("#" + channel.getName())
-                    .setTimestamp(Instant.now())
-                    .setAuthor("Bengrammaz has reduced in size!")
-                    .setDescription("Bengrammaz transformed back into Ben!")
-                    .setImage("attachment://ben.png").build()
+            TamagopetImage.sendEmbedImageAction(
+                "Bengrammaz has reduced in size!",
+                "Bengrammaz transformed back into Ben!",
+                new TamagopetImage().retrieveAsFile(),
+                channel
             ).delay(Duration.ofSeconds(10)).flatMap(Message::delete).queue();
         }
 
@@ -218,16 +213,11 @@ public class TamagopetManager {
     }
 
     private void playEvent(TamagopetEvent event, Message message) {
-        FileUpload image = event.getImage();
-        MessageCreateAction embedImageAction = message.getChannel().sendFiles(image).setEmbeds(
-            new EmbedBuilder()
-                .setColor(Tamagopet.BEN_COLOR)
-                .setFooter("#" + message.getChannel().getName())
-                .setTimestamp(Instant.now())
-                .setAuthor(event.title())
-                .setDescription(event.description())
-                .setImage("attachment://" + image.getName()).build()
-        );
+        MessageCreateAction embedImageAction = TamagopetImage.sendEmbedImageAction(
+            event.title(),
+            event.description(),
+            event.getImage(),
+            message.getChannel());
 
         List<ActionRow> actionRows = new ArrayList<>();
         List<ButtonComponent> buttons = event.getButtons();

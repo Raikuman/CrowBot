@@ -1,10 +1,13 @@
 package com.raikuman.troubleclub.tamagopet.image;
 
+import com.raikuman.troubleclub.invoke.category.Tamagopet;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.interactions.InteractionHook;
+import net.dv8tion.jda.api.requests.restaction.MessageCreateAction;
 import net.dv8tion.jda.api.requests.restaction.interactions.MessageEditCallbackAction;
 import net.dv8tion.jda.api.utils.FileUpload;
 import org.slf4j.Logger;
@@ -18,6 +21,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
+import java.time.Instant;
 
 public class TamagopetImage {
 
@@ -140,6 +144,19 @@ public class TamagopetImage {
             .setFiles(tamagopetImage.retrieveAsFile())
             .delay(Duration.ofSeconds(10))
             .flatMap(InteractionHook::deleteOriginal).queue();
+    }
+
+    public static MessageCreateAction sendEmbedImageAction(String title, String description, FileUpload image,
+                                                           MessageChannelUnion channel) {
+        return channel.sendFiles(image).setEmbeds(
+            new EmbedBuilder()
+                .setColor(Tamagopet.BEN_COLOR)
+                .setFooter("#" + channel.getName())
+                .setTimestamp(Instant.now())
+                .setAuthor(title)
+                .setDescription(description)
+                .setImage("attachment://" + image.getName()).build()
+        );
     }
 }
 

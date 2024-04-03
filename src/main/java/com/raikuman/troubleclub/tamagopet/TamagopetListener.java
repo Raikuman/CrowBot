@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +31,7 @@ public class TamagopetListener extends ListenerAdapter {
     }
 
     @Override
-    public void onMessageReceived(MessageReceivedEvent event) {
+    public void onMessageReceived(@NotNull MessageReceivedEvent event) {
         executor.submit(() -> {
             synchronized (this) {
                 Member member = event.getMember();
@@ -41,6 +42,7 @@ public class TamagopetListener extends ListenerAdapter {
                 if (event.getMessage().getContentRaw().equals(DefaultDatabaseHandler.getPrefix(event.getGuild()) +
                     "event") && member.getPermissions().contains(Permission.ADMINISTRATOR)) {
                     tamagopetManager.handleTamagopet(event.getMessage(), true);
+                    event.getMessage().delete().queue();
                     return;
                 }
 
