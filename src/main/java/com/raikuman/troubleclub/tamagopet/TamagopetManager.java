@@ -1,5 +1,6 @@
 package com.raikuman.troubleclub.tamagopet;
 
+import com.alibaba.fastjson2.JSON;
 import com.raikuman.botutilities.config.ConfigData;
 import com.raikuman.botutilities.invocation.component.ComponentBuilder;
 import com.raikuman.botutilities.invocation.component.ComponentHandler;
@@ -8,7 +9,7 @@ import com.raikuman.botutilities.invocation.type.SelectComponent;
 import com.raikuman.troubleclub.invoke.category.Tamagopet;
 import com.raikuman.troubleclub.tamagopet.config.TamagopetConfig;
 import com.raikuman.troubleclub.tamagopet.event.TamagopetEvent;
-import com.raikuman.troubleclub.tamagopet.event.normal.TamagopetFeed;
+import com.raikuman.troubleclub.tamagopet.event.normal.feed.TamagopetFeed;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
@@ -54,6 +55,7 @@ public class TamagopetManager {
             if (file.createNewFile()) {
                 logger.info("Created file {}", file.getAbsolutePath());
                 data = new TamagopetData();
+                saveTamagopetData();
             } else {
                 logger.info("File {} exists", file.getAbsolutePath());
                 data = loadTamagopetData(file);
@@ -67,10 +69,8 @@ public class TamagopetManager {
         tamagopetFile = file;
         tamagopetData = data;
 
-        saveTamagopetData();
-
         // Load events
-        normalEvent = List.of(new TamagopetFeed());
+        normalEvent = List.of(new TamagopetFeed(this));
         enragedEvent = new ArrayList<>();
     }
 
@@ -89,15 +89,7 @@ public class TamagopetManager {
         }
 
         try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(tamagopetFile))) {
-            bufferedWriter.write(String.valueOf(tamagopetData.getHappiness()));
-            bufferedWriter.newLine();
-            bufferedWriter.write(String.valueOf(tamagopetData.getTotalPoints()));
-            bufferedWriter.newLine();
-            bufferedWriter.write(String.valueOf(tamagopetData.getPoints()));
-            bufferedWriter.newLine();
-            bufferedWriter.write(String.valueOf(tamagopetData.getHealth()));
-            bufferedWriter.newLine();
-            bufferedWriter.write(String.valueOf(tamagopetData.isEnraged()));
+            bufferedWriter.write(JSON.toJSONString(tamagopetData));
         } catch (IOException e) {
             logger.error("Could not save Tamagopet data to file: {}", tamagopetFile.getAbsolutePath());
         }
@@ -108,56 +100,23 @@ public class TamagopetManager {
             return new TamagopetData();
         }
 
-        TamagopetData loadData = new TamagopetData();
+        //TamagopetData loadData = new TamagopetData();
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
-            int currentData = 0;
-            for (String line = bufferedReader.readLine(); line != null; line = bufferedReader.readLine()) {
-                switch (currentData) {
-                    case 0:
-                        try {
-                            loadData.setHappiness(Integer.parseInt(line));
-                        } catch (NumberFormatException e) {
-                            loadData.setHappiness(0);
-                        }
-                        break;
-
-                    case 1:
-                        try {
-                            loadData.setTotalPoints(Integer.parseInt(line));
-                        } catch (NumberFormatException e) {
-                            loadData.setTotalPoints(0);
-                        }
-                        break;
-
-                    case 2:
-                        try {
-                            loadData.setPoints(Integer.parseInt(line));
-                        } catch (NumberFormatException e) {
-                            loadData.setPoints(0);
-                        }
-                        break;
-
-                    case 3:
-                        try {
-                            loadData.setHealth(Integer.parseInt(line));
-                        } catch (NumberFormatException e) {
-                            loadData.setHealth(0);
-                        }
-                        break;
-
-                    case 4:
-                        loadData.setEnraged(Boolean.parseBoolean(line));
-                        break;
-                }
-
-                currentData++;
+            String data = bufferedReader.readLine();
+            if (data == null) {
+                return new TamagopetData();
             }
+
+            TamagopetData loadedData = JSON.parseObject(data, TamagopetData.class);
+            if (loadedData == null) {
+                return new TamagopetData();
+            }
+
+            return loadedData;
         } catch (IOException e) {
             logger.error("Could not load Tamagopet data from file: {}", file.getAbsolutePath());
             return new TamagopetData();
         }
-
-        return loadData;
     }
 
     public void addHappiness(MessageChannelUnion channel, int happiness) {
@@ -271,13 +230,13 @@ public class TamagopetManager {
         );
 
         List<ActionRow> actionRows = new ArrayList<>();
-        List<ButtonComponent> buttons = event.getButtons(this);
+        List<ButtonComponent> buttons = event.getButtons();
         if (!buttons.isEmpty()) {
             componentHandler.addButtons(message.getAuthor(), message, buttons);
             actionRows.add(ComponentBuilder.buildButtons(message.getAuthor(), buttons));
         }
 
-        List<SelectComponent> selects = event.getSelects(tamagopetData);
+        List<SelectComponent> selects = event.getSelects();
         if (!selects.isEmpty()) {
             String menuPlaceholder;
             if (event.selectMenuPlaceholder().isEmpty()) {

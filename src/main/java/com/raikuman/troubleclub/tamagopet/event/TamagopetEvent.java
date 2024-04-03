@@ -9,21 +9,27 @@ import net.dv8tion.jda.api.utils.FileUpload;
 import java.util.ArrayList;
 import java.util.List;
 
-public interface TamagopetEvent {
+public abstract class TamagopetEvent {
 
-    default List<ButtonComponent> getButtons(TamagopetManager tamagopetManager) {
+    public final TamagopetManager tamagopetManager;
+
+    protected TamagopetEvent(TamagopetManager tamagopetManager) {
+        this.tamagopetManager = tamagopetManager;
+    }
+
+    public List<ButtonComponent> getButtons() {
         return new ArrayList<>();
     }
 
-    default List<SelectComponent> getSelects(TamagopetData tamagopetData) {
+    public List<SelectComponent> getSelects() {
         return new ArrayList<>();
     }
 
-    default String selectMenuPlaceholder() {
+    public String selectMenuPlaceholder() {
         return "";
     }
 
-    String title();
-    String description();
-    FileUpload getImage();
+    public abstract String title();
+    public abstract String description();
+    public abstract FileUpload getImage();
 }
