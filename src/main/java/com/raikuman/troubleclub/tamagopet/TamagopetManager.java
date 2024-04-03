@@ -6,23 +6,19 @@ import com.raikuman.botutilities.invocation.component.ComponentBuilder;
 import com.raikuman.botutilities.invocation.component.ComponentHandler;
 import com.raikuman.botutilities.invocation.type.ButtonComponent;
 import com.raikuman.botutilities.invocation.type.SelectComponent;
-import com.raikuman.troubleclub.invoke.category.Tamagopet;
 import com.raikuman.troubleclub.tamagopet.config.TamagopetConfig;
 import com.raikuman.troubleclub.tamagopet.event.TamagopetEvent;
 import com.raikuman.troubleclub.tamagopet.event.normal.TamagopetFeed;
 import com.raikuman.troubleclub.tamagopet.image.TamagopetImage;
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.requests.restaction.MessageCreateAction;
-import net.dv8tion.jda.api.utils.FileUpload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.time.Duration;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -36,7 +32,6 @@ public class TamagopetManager {
     private final TamagopetData tamagopetData;
     private final ComponentHandler componentHandler;
     private final List<TamagopetEvent> normalEvent, enragedEvent;
-    private int noEventProcs = 0;
 
     protected TamagopetManager(ComponentHandler componentHandler) {
         this.componentHandler = componentHandler;
@@ -127,6 +122,10 @@ public class TamagopetManager {
             tamagopetData.setEnraged(true);
             tamagopetData.setHappiness(0);
 
+            // Calculate health
+            tamagopetData.setHealth(tamagopetData.getTotalPoints() * 2);
+            tamagopetData.setTotalPoints(0);
+
             // Enrage notice
             TamagopetImage.sendEmbedImageAction(
                 "Ben has become enraged!",
@@ -145,6 +144,7 @@ public class TamagopetManager {
         if (tamagopetData.getHealth() == 0) {
             tamagopetData.setEnraged(false);
             tamagopetData.setHealth(0);
+            tamagopetData.setTotalPoints(0);
 
             // Normal notice
             TamagopetImage.sendEmbedImageAction(
@@ -175,19 +175,19 @@ public class TamagopetManager {
         List<Message.Attachment> attachments = message.getAttachments();
 
         // Handle points
-        int points = 0;
-        points += text.length() * pointsPerCharacter;
-        points += attachments.size() * pointsPerImage;
+        long points = 0;
+        points += (long) text.length() * pointsPerCharacter;
+        points += (long) attachments.size() * pointsPerImage;
         tamagopetData.addPoints(points);
 
-        double chance = Math.pow(tamagopetData.getPoints() / 100.0, 2);
+        double chance = Math.pow(tamagopetData.getPoints() / 250.0, 2);
         Random rand = new Random();
         double randomValue = 100.0 * rand.nextDouble();
 
-        if (chance * (noEventProcs + 1) >= randomValue || forceEvent) {
+        if (chance * tamagopetData.getNoEventMulti() >= randomValue || forceEvent) {
             // Do event
-            noEventProcs = 0;
             tamagopetData.setPoints(0);
+            tamagopetData.resetEventMulti();
 
             if (tamagopetData.isEnraged()) {
                 if (enragedEvent.isEmpty()) {
@@ -208,7 +208,7 @@ public class TamagopetManager {
             }
         } else {
             // Don't do event
-            noEventProcs++;
+            tamagopetData.addEventMulti(points / 1000.0);
         }
     }
 

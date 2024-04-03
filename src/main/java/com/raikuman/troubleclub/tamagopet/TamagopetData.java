@@ -2,13 +2,16 @@ package com.raikuman.troubleclub.tamagopet;
 
 public class TamagopetData {
 
-    private int happiness, totalPoints, points, health;
+    private long points, totalPoints, health;
+    private int happiness;
+    private double noEventMulti;
     private boolean isEnraged;
 
     public TamagopetData() {
         this.happiness = 0;
         this.totalPoints = 0;
         this.points = 0;
+        this.noEventMulti = 1;
         this.health = 100;
         this.isEnraged = false;
     }
@@ -17,15 +20,19 @@ public class TamagopetData {
         return happiness;
     }
 
-    public int getTotalPoints() {
+    public long getTotalPoints() {
         return totalPoints;
     }
 
-    public int getPoints() {
+    public long getPoints() {
         return points;
     }
 
-    public int getHealth() {
+    public double getNoEventMulti() {
+        return noEventMulti;
+    }
+
+    public long getHealth() {
         return health;
     }
 
@@ -37,15 +44,19 @@ public class TamagopetData {
         this.happiness = happiness;
     }
 
-    public void setTotalPoints(int totalPoints) {
+    public void setTotalPoints(long totalPoints) {
         this.totalPoints = totalPoints;
     }
 
-    public void setPoints(int points) {
+    public void setPoints(long points) {
         this.points = points;
     }
 
-    public void setHealth(int health) {
+    public void setNoEventMulti(double noEventMulti) {
+        this.noEventMulti = noEventMulti;
+    }
+
+    public void setHealth(long health) {
         this.health = health;
     }
 
@@ -53,7 +64,7 @@ public class TamagopetData {
         isEnraged = enraged;
     }
 
-    public void addPoints(int points) {
+    public void addPoints(long points) {
         this.totalPoints += points;
         this.points += points;
     }
@@ -62,10 +73,18 @@ public class TamagopetData {
         this.happiness += happiness;
     }
 
-    public void reduceHealth(int health) {
+    public void reduceHealth(long health) {
         this.health -= health;
         if (this.health < 0) {
             this.health = 0;
         }
+    }
+
+    public void resetEventMulti() {
+        this.noEventMulti = 1;
+    }
+
+    public void addEventMulti(double add) {
+        this.noEventMulti += add;
     }
 }

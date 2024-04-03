@@ -14,7 +14,6 @@ public class TamagopetConfig implements Config {
     @Override
     public LinkedHashMap<String, String> configs() {
         LinkedHashMap<String, String> configMap = new LinkedHashMap<>();
-        configMap.put("benchannel", "");
         configMap.put("categoryemojiid", "");
         configMap.put("pointstext", "1");
         configMap.put("pointsimage", "20");
