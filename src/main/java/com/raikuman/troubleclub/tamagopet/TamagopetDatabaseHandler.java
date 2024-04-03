@@ -24,7 +24,7 @@ public class TamagopetDatabaseHandler {
         try (
             Connection connection = DatabaseManager.getConnection();
             PreparedStatement statement = connection.prepareStatement(
-                "SELECT food, bath, spell, physical, magic FROM tamagopet_stats WHERE user_id = ?"
+                "SELECT food, bath, spell, physical, magical FROM tamagopet_stats WHERE user_id = ?"
             )) {
             statement.setInt(1, userId);
             statement.execute();
