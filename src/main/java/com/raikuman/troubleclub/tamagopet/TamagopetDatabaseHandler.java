@@ -70,4 +70,45 @@ public class TamagopetDatabaseHandler {
             return false;
         }
     }
+
+    public static void addFoodEvent(User user, int amount) {
+        addEvent(user, "food", amount);
+    }
+
+    public static void addBathEvent(User user, int amount) {
+        addEvent(user, "bath", amount);
+    }
+
+    public static void addSpellEvent(User user, int amount) {
+        addEvent(user, "spell", amount);
+    }
+
+    public static void addPhysicalEvent(User user, int amount) {
+        addEvent(user, "physical", amount);
+    }
+
+    public static void addMagicEvent(User user, int amount) {
+        addEvent(user, "magic", amount);
+    }
+
+    private static void addEvent(User user, String event, int amount) {
+        int userId = DefaultDatabaseHandler.getUserId(user);
+        if (userId == -1) {
+            return;
+        }
+
+        getUserStats(user);
+
+        try (
+            Connection connection = DatabaseManager.getConnection();
+            PreparedStatement statement = connection.prepareStatement(
+                "UPDATE tamagopet_stats SET " + event + " = " + event + " + " + amount + " WHERE user_id = ?"
+            )) {
+            statement.setInt(1, userId);
+            statement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.error("An error occurred modifying event for: {}", event);
+        }
+    }
 }

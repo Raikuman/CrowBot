@@ -1,6 +1,8 @@
 package com.raikuman.troubleclub.tamagopet.event;
 
 import com.raikuman.botutilities.invocation.type.SelectComponent;
+import com.raikuman.troubleclub.tamagopet.TamagopetDatabaseHandler;
+import com.raikuman.troubleclub.tamagopet.TamagopetEnum;
 import com.raikuman.troubleclub.tamagopet.TamagopetManager;
 import com.raikuman.troubleclub.tamagopet.image.TamagopetImage;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
@@ -13,11 +15,13 @@ import java.util.Random;
 public class TamagopetSelectBuilder {
 
     private final TamagopetManager tamagopetManager;
+    private final TamagopetEnum tamagopetEnum;
     private String label, baseImage, imposeImage;
     private int happiness, health, x, y;
     private List<String> titles, descriptions;
 
-    private TamagopetSelectBuilder(String label, TamagopetManager tamagopetManager) {
+    private TamagopetSelectBuilder(String label, TamagopetManager tamagopetManager, TamagopetEnum tamagopetEnum) {
+        this.tamagopetEnum = tamagopetEnum;
         this.tamagopetManager = tamagopetManager;
         this.label = label;
         this.baseImage = "";
@@ -31,8 +35,8 @@ public class TamagopetSelectBuilder {
     }
 
     @CheckReturnValue
-    public static TamagopetSelectBuilder setup(String label, TamagopetManager tamagopetManager) {
-        return new TamagopetSelectBuilder(label, tamagopetManager);
+    public static TamagopetSelectBuilder setup(String label, TamagopetManager tamagopetManager, TamagopetEnum tamagopetEnum) {
+        return new TamagopetSelectBuilder(label, tamagopetManager, tamagopetEnum);
     }
 
     @CheckReturnValue
@@ -114,6 +118,29 @@ public class TamagopetSelectBuilder {
                     image,
                     ctx
                 );
+
+                // Handle data for user
+                switch (tamagopetEnum) {
+                    case FOOD -> {
+                        TamagopetDatabaseHandler.addFoodEvent(ctx.getUser(), 1);
+                    }
+
+                    case BATH -> {
+                        TamagopetDatabaseHandler.addBathEvent(ctx.getUser(), 1);
+                    }
+
+                    case SPELL -> {
+                        TamagopetDatabaseHandler.addSpellEvent(ctx.getUser(), 1);
+                    }
+
+                    case PHYSICAL -> {
+                        TamagopetDatabaseHandler.addPhysicalEvent(ctx.getUser(), 1);
+                    }
+
+                    case MAGIC -> {
+                        TamagopetDatabaseHandler.addMagicEvent(ctx.getUser(), 1);
+                    }
+                }
             }
 
             @Override
