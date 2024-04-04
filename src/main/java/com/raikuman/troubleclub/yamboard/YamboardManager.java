@@ -55,7 +55,7 @@ public class YamboardManager {
         this.listenChannel = listenChannel;
 
         // Create file for yams
-        yamFile = new File("resources" + File.separator + " yamboard.txt");
+        yamFile = new File("resources" + File.separator + "yamboard.txt");
         try {
             if (yamFile.createNewFile()) {
                 logger.info("Created file {}", yamFile.getAbsolutePath());
