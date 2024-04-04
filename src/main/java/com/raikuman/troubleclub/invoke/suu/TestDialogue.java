@@ -7,6 +7,7 @@ import com.raikuman.troubleclub.conversation.ConversationManager;
 import com.raikuman.troubleclub.dialogue.Dialogue;
 import com.raikuman.troubleclub.dialogue.DialoguePlayer;
 import com.raikuman.troubleclub.dialogue.DialogueParser;
+import net.dv8tion.jda.api.Permission;
 
 import java.io.File;
 import java.util.List;
@@ -21,6 +22,10 @@ public class TestDialogue extends Command {
 
     @Override
     public void handle(CommandContext ctx) {
+        if (ctx.event().getMember() != null && !ctx.event().getMember().getPermissions().contains(Permission.ADMINISTRATOR)) {
+            return;
+        }
+
         File file = new File("resources/conversations/sande.json");
         Conversation conversation = DialogueParser.getConversation(file.toPath());
         if (conversation == null) return;
