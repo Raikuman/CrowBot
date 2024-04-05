@@ -1,9 +1,7 @@
 package com.raikuman.troubleclub.invoke;
 
-import com.raikuman.botutilities.config.ConfigData;
 import com.raikuman.botutilities.defaults.invocation.Help;
 import com.raikuman.botutilities.defaults.invocation.Settings;
-import com.raikuman.botutilities.invocation.Category;
 import com.raikuman.botutilities.invocation.type.Command;
 import com.raikuman.botutilities.invocation.type.Slash;
 import com.raikuman.troubleclub.Club;
@@ -16,9 +14,6 @@ import com.raikuman.troubleclub.invoke.inori.Ben;
 import com.raikuman.troubleclub.invoke.inori.TamagopetStats;
 import com.raikuman.troubleclub.invoke.suu.GetStickers;
 import com.raikuman.troubleclub.invoke.suu.TestDialogue;
-import com.raikuman.troubleclub.tamagopet.config.TamagopetConfig;
-import net.dv8tion.jda.api.entities.emoji.Emoji;
-import net.dv8tion.jda.api.entities.emoji.RichCustomEmoji;
 
 import java.util.ArrayList;
 import java.util.HashMap;

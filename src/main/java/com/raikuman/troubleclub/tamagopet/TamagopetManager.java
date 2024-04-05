@@ -6,19 +6,27 @@ import com.raikuman.botutilities.invocation.component.ComponentBuilder;
 import com.raikuman.botutilities.invocation.component.ComponentHandler;
 import com.raikuman.botutilities.invocation.type.ButtonComponent;
 import com.raikuman.botutilities.invocation.type.SelectComponent;
+import com.raikuman.troubleclub.invoke.category.Tamagopet;
 import com.raikuman.troubleclub.tamagopet.config.TamagopetConfig;
 import com.raikuman.troubleclub.tamagopet.event.TamagopetEvent;
+import com.raikuman.troubleclub.tamagopet.event.enraged.TamagopetMagical;
+import com.raikuman.troubleclub.tamagopet.event.enraged.TamagopetPhysical;
+import com.raikuman.troubleclub.tamagopet.event.normal.TamagopetBath;
 import com.raikuman.troubleclub.tamagopet.event.normal.TamagopetFeed;
+import com.raikuman.troubleclub.tamagopet.event.normal.TamagopetSpell;
 import com.raikuman.troubleclub.tamagopet.image.TamagopetImage;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.requests.restaction.MessageCreateAction;
+import net.dv8tion.jda.api.utils.FileUpload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -66,8 +74,16 @@ public class TamagopetManager {
         tamagopetData = data;
 
         // Load events
-        normalEvent = List.of(new TamagopetFeed(this));
-        enragedEvent = new ArrayList<>();
+        normalEvent = List.of(
+            new TamagopetFeed(this),
+            new TamagopetBath(this),
+            new TamagopetSpell(this)
+        );
+
+        enragedEvent = List.of(
+            new TamagopetPhysical(this),
+            new TamagopetMagical(this)
+        );
     }
 
     private int getConfigDefault(ConfigData configData, String config, int defaultInt) {
@@ -127,7 +143,7 @@ public class TamagopetManager {
             tamagopetData.setTotalPoints(0);
 
             // Enrage notice
-            TamagopetImage.sendEmbedImageAction(
+            sendEmbedImageAction(
                 "Ben has become enraged!",
                 "Ben transformed into Bengrammaz!",
                 new TamagopetImage().retrieveAsFile(),
@@ -147,7 +163,7 @@ public class TamagopetManager {
             tamagopetData.setTotalPoints(0);
 
             // Normal notice
-            TamagopetImage.sendEmbedImageAction(
+            sendEmbedImageAction(
                 "Bengrammaz has reduced in size!",
                 "Bengrammaz transformed back into Ben!",
                 new TamagopetImage().retrieveAsFile(),
@@ -213,7 +229,7 @@ public class TamagopetManager {
     }
 
     private void playEvent(TamagopetEvent event, Message message) {
-        MessageCreateAction embedImageAction = TamagopetImage.sendEmbedImageAction(
+        MessageCreateAction embedImageAction = sendEmbedImageAction(
             event.title(),
             event.description(),
             event.getImage(),
@@ -223,7 +239,7 @@ public class TamagopetManager {
         List<ButtonComponent> buttons = event.getButtons();
         if (!buttons.isEmpty()) {
             componentHandler.addButtons(message.getAuthor(), message, buttons);
-            actionRows.add(ComponentBuilder.buildButtons(message.getAuthor(), buttons));
+            actionRows.addAll(ComponentBuilder.buildButtons(message.getAuthor(), buttons));
         }
 
         List<SelectComponent> selects = event.getSelects();
@@ -245,5 +261,18 @@ public class TamagopetManager {
         }
 
         embedImageAction.setComponents(actionRows).queue();
+    }
+
+    private MessageCreateAction sendEmbedImageAction(String title, String description, FileUpload image,
+                                                           MessageChannelUnion channel) {
+        return channel.sendFiles(image).setEmbeds(
+            new EmbedBuilder()
+                .setColor(Tamagopet.BEN_COLOR)
+                .setFooter("#" + channel.getName())
+                .setTimestamp(Instant.now())
+                .setAuthor(title)
+                .setDescription(description)
+                .setImage("attachment://" + image.getName()).build()
+        );
     }
 }
