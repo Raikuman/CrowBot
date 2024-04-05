@@ -10,7 +10,6 @@ import com.raikuman.troubleclub.invoke.category.Fun;
 import com.raikuman.troubleclub.invoke.category.Tamagopet;
 import com.raikuman.troubleclub.invoke.crow.Dice;
 import com.raikuman.troubleclub.invoke.des.Karma;
-import com.raikuman.troubleclub.invoke.inori.Ben;
 import com.raikuman.troubleclub.invoke.inori.TamagopetStats;
 import com.raikuman.troubleclub.invoke.suu.GetStickers;
 import com.raikuman.troubleclub.invoke.suu.TestDialogue;
@@ -62,8 +61,7 @@ public class Invokes {
 
     private static List<Command> getInoriCommands() {
         return List.of(
-            new TamagopetStats(),
-            new Ben()
+            new TamagopetStats()
         );
     }
 

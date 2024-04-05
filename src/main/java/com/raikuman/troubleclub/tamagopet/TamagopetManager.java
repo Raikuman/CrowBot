@@ -112,7 +112,6 @@ public class TamagopetManager {
             return new TamagopetData();
         }
 
-        //TamagopetData loadData = new TamagopetData();
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
             String data = bufferedReader.readLine();
             if (data == null) {
