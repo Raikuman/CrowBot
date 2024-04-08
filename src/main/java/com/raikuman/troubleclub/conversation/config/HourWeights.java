@@ -14,6 +14,7 @@ public class HourWeights implements Config {
     @Override
     public LinkedHashMap<String, String> configs() {
         LinkedHashMap<String, String> configMap = new LinkedHashMap<>();
+        configMap.put("0", "0");
         configMap.put("1", "0");
         configMap.put("2", "0");
         configMap.put("3", "0");

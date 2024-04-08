@@ -101,15 +101,15 @@ public class ConversationScheduling {
         ConfigData config = new ConfigData(new HourWeights());
         for (int i = 0; i < 24; i++) {
             // Only get hours after current time
-            if ((i + 1) < LocalTime.now().getHour()) continue;
+            if (i < LocalTime.now().getHour()) continue;
 
             try {
-                int weight = Integer.parseInt(config.getConfig(String.valueOf(i + 1)));
+                int weight = Integer.parseInt(config.getConfig(String.valueOf(i)));
                 if (weight == 0) continue;
 
-                hourWeights.add(new HourWeight(i + 1, weight));
+                hourWeights.add(new HourWeight(i, weight));
             } catch (NumberFormatException e) {
-                logger.error("Error parsing weight for hour {}", i + 1);
+                logger.error("Error parsing weight for hour {}", i);
             }
         }
 
