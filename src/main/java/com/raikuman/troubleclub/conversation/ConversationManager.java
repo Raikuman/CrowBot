@@ -76,7 +76,6 @@ public class ConversationManager {
         }
 
         // Check if date is now
-        boolean justGenerated = false;
         if (!LocalDate.now().equals(scheduledDate)) {
             logger.info("Scheduled date is not today");
 
@@ -84,14 +83,8 @@ public class ConversationManager {
             if (LocalDate.now().isAfter(scheduledDate)) {
                 // Generate a new date
                 scheduledDate = ConversationScheduling.generateScheduledDate();
-                justGenerated = true;
                 logger.info("Scheduling new conversation date for: {}", scheduledDate);
             }
-        }
-
-        // Check if a schedule date was generated
-        if (!justGenerated) {
-            return;
         }
 
         // Check if the generated schedule date is today

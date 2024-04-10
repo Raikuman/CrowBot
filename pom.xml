@@ -62,7 +62,7 @@
         <dependency>
             <groupId>com.github.Raikuman</groupId>
             <artifactId>Bot-Utilities</artifactId>
-            <version>develop~v1.1.0-f26eaed288-1</version>
+            <version>develop~v1.1.0-06e549da45-1	</version>
         </dependency>
     </dependencies>
 
